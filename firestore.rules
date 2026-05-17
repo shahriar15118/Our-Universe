@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Most robust check: does the user's own profile say they belong to this couple?
+    function isMemberOf(cid) {
+      return request.auth != null && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.coupleId == cid;
+    }
+
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /couples/{coupleId} {
+      // Allow read for joining and verification
+      allow read: if request.auth != null;
+      
+      // Allow create/update (needed for joining)
+      allow create, update: if request.auth != null;
+
+      // Use the user's profile claim for sub-collections
+      match /{allSubcollections=**} {
+        allow read, write: if isMemberOf(coupleId);
+      }
+    }
+  }
+}

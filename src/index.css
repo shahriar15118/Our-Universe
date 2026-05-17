@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700&family=Amiri:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-arabic: "Amiri", serif;
+  --font-bangla: "Noto Serif Bengali", serif;
+
+  --color-midnight: #05070A;
+  --color-indigo-deep: #1A1F2C;
+  --color-gold: #C5A059;
+  --color-champagne: #E5D5B8;
+  --color-slate-gray: #8E9299;
+  --color-ivory: #F3F4F6;
+  
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-3xl: 2.5rem;
+}
+
+@layer base {
+  body {
+    @apply bg-midnight text-ivory font-sans antialiased overflow-x-hidden;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-champagne;
+  }
+}
+
+.glass-card {
+  @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl;
+}
+
+.arabic-text {
+  @apply font-arabic;
+  direction: rtl;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-midnight;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+}
+
+/* Page transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Bottom nav pill style */
+.mobile-nav-pill {
+  @apply flex flex-col items-center justify-center py-2 px-6 rounded-full transition-all duration-300;
+}
+
+.mobile-nav-pill.active {
+  @apply bg-gold text-midnight shadow-[0_0_15px_rgba(197,160,89,0.3)];
+}
+
+.heading-accent {
+  @apply text-[10px] uppercase tracking-[0.2em] text-slate-gray font-medium;
+}
+
+.text-gold-gradient {
+  background: linear-gradient(to bottom, #E5D5B8, #C5A059);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+

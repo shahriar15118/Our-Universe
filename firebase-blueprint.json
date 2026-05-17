@@ -1,0 +1,98 @@
+{
+  "entities": {
+    "Couple": {
+      "title": "Couple",
+      "description": "Shared space linking two spouses.",
+      "type": "object",
+      "properties": {
+        "coupleCode": { "type": "string", "description": "6-digit private link key" },
+        "spouseIds": { "type": "array", "items": { "type": "string" } },
+        "weddingDate": { "type": "string", "format": "date-time" },
+        "anniversary": { "type": "string", "format": "date-time" },
+        "theme": { "type": "string", "enum": ["Moonlit Night", "Desert Rose", "Ocean Calm", "Golden Dusk"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "deenStreak": { "type": "integer" },
+        "lastDeenDate": { "type": "string" }
+      },
+      "required": ["coupleCode", "spouseIds", "createdAt"]
+    },
+    "DeenDaily": {
+      "title": "DeenDaily",
+      "description": "Daily spiritual progress for the couple.",
+      "type": "object",
+      "properties": {
+        "notes": { "type": "array" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      }
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Individual spouse profile.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "coupleId": { "type": "string" },
+        "name": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "role": { "type": "string", "enum": ["husband", "wife"] }
+      },
+      "required": ["userId", "coupleId", "name"]
+    },
+    "Memory": {
+      "title": "Memory",
+      "description": "A shared milestone or photo.",
+      "type": "object",
+      "properties": {
+        "coupleId": { "type": "string" },
+        "type": { "type": "string", "enum": ["photo", "video", "audio", "note"] },
+        "mediaUrl": { "type": "string" },
+        "caption": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "emotion": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "likes": { "type": "array", "items": { "type": "string" } },
+        "isLocked": { "type": "boolean" }
+      },
+      "required": ["coupleId", "type", "date"]
+    },
+    "Letter": {
+      "title": "Letter",
+      "description": "Private letters written for specific moments.",
+      "type": "object",
+      "properties": {
+        "authorId": { "type": "string" },
+        "coupleId": { "type": "string" },
+        "category": { "type": "string" },
+        "title": { "type": "string" },
+        "contentEncrypted": { "type": "string" },
+        "isOpened": { "type": "boolean" },
+        "openedAt": { "type": "string", "format": "date-time" },
+        "scheduledFor": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorId", "coupleId", "title", "contentEncrypted", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/couples/{coupleId}": {
+      "schema": "Couple",
+      "description": "The shared couple document."
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Spouse profile data."
+    },
+    "/couples/{coupleId}/memories/{memoryId}": {
+      "schema": "Memory",
+      "description": "Memories belonging to a couple."
+    },
+    "/couples/{coupleId}/letters/{letterId}": {
+      "schema": "Letter",
+      "description": "Secret letters for a couple."
+    },
+    "/couples/{coupleId}/deen_daily/{date}": {
+      "schema": "DeenDaily",
+      "description": "Daily deen tracking data for the couple."
+    }
+  }
+}
