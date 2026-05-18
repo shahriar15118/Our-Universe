@@ -2,28 +2,57 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Most robust check: does the user's own profile say they belong to this couple?
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getProfileData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
     function isMemberOf(cid) {
-      return request.auth != null && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.coupleId == cid;
+      return isSignedIn() && getProfileData().coupleId == cid;
     }
 
     match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
     }
 
     match /couples/{coupleId} {
-      // Allow read for joining and verification
-      allow read: if request.auth != null;
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn();
       
-      // Allow create/update (needed for joining)
-      allow create, update: if request.auth != null;
-
-      // Use the user's profile claim for sub-collections
-      match /{allSubcollections=**} {
+      match /letters/{letterId} {
         allow read, write: if isMemberOf(coupleId);
       }
+      
+      match /deen_daily/{date} {
+        allow read, write: if isMemberOf(coupleId);
+      }
+
+      match /secrets/{secretId} {
+        allow read, write: if isMemberOf(coupleId);
+      }
+
+      match /moods/{moodId} {
+        allow read, write: if isMemberOf(coupleId);
+      }
+    }
+
+    match /memories/{memoryId} {
+      allow read: if isSignedIn() && (
+        resource == null || isMemberOf(resource.data.coupleId) || resource.data.authorId == request.auth.uid
+      );
+      
+      allow create: if isSignedIn() && 
+        request.resource.data.authorId == request.auth.uid &&
+        isMemberOf(request.resource.data.coupleId);
+        
+      allow update, delete: if isSignedIn() && (
+        resource.data.authorId == request.auth.uid ||
+        isMemberOf(resource.data.coupleId)
+      );
     }
   }
 }

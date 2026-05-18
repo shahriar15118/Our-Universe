@@ -71,6 +71,20 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["authorId", "coupleId", "title", "contentEncrypted", "createdAt"]
+    },
+    "DailySecret": {
+      "title": "DailySecret",
+      "description": "A secret shared for the day.",
+      "type": "object",
+      "properties": {
+        "coupleId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "text": { "type": "string" },
+        "date": { "type": "string" },
+        "isRevealed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["coupleId", "authorId", "text", "date", "createdAt"]
     }
   },
   "firestore": {
@@ -82,9 +96,13 @@
       "schema": "UserProfile",
       "description": "Spouse profile data."
     },
-    "/couples/{coupleId}/memories/{memoryId}": {
+    "/memories/{memoryId}": {
       "schema": "Memory",
       "description": "Memories belonging to a couple."
+    },
+    "/couples/{coupleId}/secrets/{secretId}": {
+      "schema": "DailySecret",
+      "description": "Secrets shared between a couple."
     },
     "/couples/{coupleId}/letters/{letterId}": {
       "schema": "Letter",

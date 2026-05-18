@@ -22,20 +22,29 @@ export interface UserProfile {
   photoUrl?: string;
   role?: 'husband' | 'wife';
   quranProgress?: number; // Total number of ayahs read
+  reminderSettings?: Record<string, boolean>;
 }
 
 // Memory
 export interface Memory {
   id: string;
   coupleId: string;
-  type: 'photo' | 'video' | 'audio' | 'note';
+  authorId: string;
+  type: 'photo' | 'video' | 'audio' | 'note' | 'milestone';
   mediaUrl?: string;
+  title: string;
   caption: string;
   tags: string[];
   emotion?: string;
-  date: any;
+  date: string; // ISO String
   likes: string[];
   isLocked: boolean;
+  comments?: {
+    userId: string;
+    userName: string;
+    text: string;
+    createdAt: string;
+  }[];
 }
 
 // Letter
@@ -64,6 +73,25 @@ export interface EmotionVerse {
   reflection: string;
   dua: { arabic: string; translation: string; };
   audioUrl?: string;
+}
+
+// Daily Secret
+export interface DailySecret {
+  id: string;
+  coupleId: string;
+  authorId: string;
+  text: string;
+  date: string; // YYYY-MM-DD
+  isRevealed: boolean;
+  createdAt: any;
+}
+
+export interface Mood {
+  id?: string;
+  userId: string;
+  emotionId: string;
+  date: string; // YYYY-MM-DD
+  timestamp: any;
 }
 
 export type AppTheme = 'Moonlit Night' | 'Desert Rose' | 'Ocean Calm' | 'Golden Dusk';

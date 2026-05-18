@@ -6,27 +6,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { motion } from "motion/react";
 
-function SocialButton({ icon, onClick }: { icon: string, onClick?: () => void }) {
-  const icons: Record<string, string> = {
-    google: "G",
-    facebook: "f",
-    instagram: "📸",
-    x: "𝕏"
-  };
-  
-  return (
-    <motion.button 
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-      type="button"
-      onClick={onClick}
-      className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-ivory/60 hover:text-gold hover:border-gold/30 transition-all shadow-inner"
-    >
-      <span className="font-bold text-lg">{icons[icon]}</span>
-    </motion.button>
-  );
-}
-
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +13,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'x') => {
+  const handleSocialLogin = async (provider: 'google') => {
     setLoading(true);
     setError("");
     try {
@@ -82,11 +61,17 @@ export default function Login() {
 
         <GlassCard className="p-8">
           <form onSubmit={handleLogin} className="space-y-8">
-            <div className="flex items-center justify-center gap-4 mb-2">
-              <SocialButton icon="google" onClick={() => handleSocialLogin('google')} />
-              <SocialButton icon="facebook" onClick={() => handleSocialLogin('facebook')} />
-              <SocialButton icon="instagram" />
-              <SocialButton icon="x" onClick={() => handleSocialLogin('x')} />
+            <div className="space-y-4 mb-2">
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="button"
+                onClick={() => handleSocialLogin('google')}
+                className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center gap-3 text-ivory/80 hover:text-gold hover:border-gold/30 transition-all shadow-inner group"
+              >
+                <span className="font-bold text-xl">G</span>
+                <span className="text-xs uppercase tracking-widest font-bold">Sign in with Google</span>
+              </motion.button>
             </div>
 
             <div className="flex items-center gap-4">
@@ -130,6 +115,11 @@ export default function Login() {
           <p className="mt-10 text-center text-xs text-slate-gray uppercase tracking-widest font-medium">
             Don't have a space yet? <Link to="/signup" className="text-gold font-bold ml-2">Create Ours</Link>
           </p>
+          
+          <div className="mt-6 pt-6 border-t border-white/5 flex justify-center gap-6">
+             <Link to="/privacy" className="text-[9px] uppercase tracking-widest text-slate-gray/60 hover:text-gold transition-colors font-bold">Privacy</Link>
+             <Link to="/terms" className="text-[9px] uppercase tracking-widest text-slate-gray/60 hover:text-gold transition-colors font-bold">Terms</Link>
+          </div>
         </GlassCard>
       </motion.div>
     </div>

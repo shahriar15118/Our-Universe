@@ -28,7 +28,7 @@ export function GlassCard({ children, className, id, delay = 0, ...props }: Glas
         backgroundSize: '120px 120px'
       }} />
 
-      <div className="relative z-10">
+      <div className={cn("relative z-10 h-full w-full", className && className.includes("flex") ? "flex flex-col" : "")}>
         {children}
       </div>
     </motion.div>

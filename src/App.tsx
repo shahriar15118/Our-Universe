@@ -20,6 +20,7 @@ export const useCouple = () => useContext(CoupleContext);
 // Components
 import { ParticleBackground } from "@/src/components/ui/ParticleBackground";
 import { MobileNav } from "@/src/components/layout/MobileNav";
+import { ScrollToTop } from "@/src/components/layout/ScrollToTop";
 
 // Pages (to be created)
 const Dashboard = React.lazy(() => import("@/src/pages/Dashboard"));
@@ -32,6 +33,8 @@ const RuhChat = React.lazy(() => import("@/src/pages/RuhChat"));
 const Profile = React.lazy(() => import("@/src/pages/Profile"));
 const Journey = React.lazy(() => import("@/src/pages/Journey"));
 const Journal = React.lazy(() => import("@/src/pages/Journal"));
+const Privacy = React.lazy(() => import("@/src/pages/Privacy"));
+const Terms = React.lazy(() => import("@/src/pages/Terms"));
 
 // Providers
 function Providers({ children }: { children: React.ReactNode }) {
@@ -66,25 +69,25 @@ function Providers({ children }: { children: React.ReactNode }) {
     // Fetch Profile
     const userDocRef = doc(db, "users", user.uid);
     const unsubProfile = onSnapshot(userDocRef, async (docSnap) => {
-      if (docSnap.exists()) {
-        const profile = docSnap.data() as UserProfile;
-        
-        if (profile.coupleId) {
-          // Fetch Couple
-          const coupleDocRef = doc(db, "couples", profile.coupleId);
-          const unsubCouple = onSnapshot(coupleDocRef, async (coupleSnap) => {
-            if (coupleSnap.exists()) {
-              const couple = { id: coupleSnap.id, ...coupleSnap.data() } as Couple;
-              
-              // Fetch Partner
-              const partnerId = couple.spouseIds.find(id => id !== user.uid);
-              let partner: UserProfile | null = null;
-              if (partnerId) {
-                const partnerSnap = await getDoc(doc(db, "users", partnerId));
-                if (partnerSnap.exists()) {
-                  partner = partnerSnap.data() as UserProfile;
+        if (docSnap.exists()) {
+          const profile = { userId: docSnap.id, ...docSnap.data() } as UserProfile;
+          
+          if (profile.coupleId) {
+            // Fetch Couple
+            const coupleDocRef = doc(db, "couples", profile.coupleId);
+            const unsubCouple = onSnapshot(coupleDocRef, async (coupleSnap) => {
+              if (coupleSnap.exists()) {
+                const couple = { id: coupleSnap.id, ...coupleSnap.data() } as Couple;
+                
+                // Fetch Partner
+                const partnerId = couple.spouseIds.find(id => id !== user.uid);
+                let partner: UserProfile | null = null;
+                if (partnerId) {
+                  const partnerSnap = await getDoc(doc(db, "users", partnerId));
+                  if (partnerSnap.exists()) {
+                    partner = { userId: partnerSnap.id, ...partnerSnap.data() } as UserProfile;
+                  }
                 }
-              }
 
               setCoupleData({ couple, profile, partner, loading: false });
             }
@@ -127,6 +130,7 @@ export default function App() {
   return (
     <Providers>
       <BrowserRouter>
+        <ScrollToTop />
         <div className="min-h-screen flex flex-col">
           <ParticleBackground />
           
@@ -144,6 +148,8 @@ export default function App() {
                 <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
                 <Route path="/journey" element={<PrivateRoute><Journey /></PrivateRoute>} /> 
                 <Route path="/journal" element={<PrivateRoute><Journal /></PrivateRoute>} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
                 
                 <Route path="/" element={<Navigate to="/dashboard" />} />
               </Routes>
