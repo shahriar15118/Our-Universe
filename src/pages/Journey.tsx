@@ -57,6 +57,54 @@ const postSalahAdhkar = [
   },
 ];
 
+const morningAdhkar = [
+  { 
+    arabic: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ", 
+    transliteration: "Asbahna wa asbahal-mulku lillah...", 
+    banglaUccharon: "আসবাহনা ওয়া আসবাহাল মুলকু লিল্লাহি ওয়ালহামদু লিল্লাহ, লা ইলাহা ইল্লাল্লাহু ওয়াহদাহু লা শারিকা লাহু",
+    translation: "আমরা সকালে উপনীত হয়েছি এবং রাজত্ব আল্লাহর হয়ে সকালে উপনীত হয়েছে...", 
+    repeat: 1 
+  },
+  { 
+    arabic: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ", 
+    transliteration: "Ya Hayyu Ya Qayyum...", 
+    banglaUccharon: "ইয়া হাইয়ু ইয়া কাইয়ূমু বিরাহমাতিকা আস্তাগীসু আসলিহ লী শা'নী কুল্লাহু ওয়া লা তাকিলনী ইলা নাফসী তারফাতা আইন",
+    translation: "হে চিরঞ্জীব, হে চিরস্থায়ী! আপনার রহমতের উসিলায় আমি সাহায্য প্রার্থনা করছি...", 
+    repeat: 1 
+  },
+  {
+    arabic: "اللَّهُمَّ مَا أَصْبَحَ بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ، فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَهُ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ",
+    transliteration: "Allahumma ma asbaha bi min ni'mah...",
+    banglaUccharon: "আল্লাহুম্মা মা আসবাহা বি মিন নিমাতিন আও বিআহাদিম মিন খালকিকা পামীনকা ওয়াহদাকা লা শারিকা লাকা ফালাকাল হামদু ওয়ালাকাশ শুকর",
+    translation: "হে আল্লাহ! যে নেয়ামত আমার এই ভোরে আমি পেয়েছি বা আপনার সৃষ্টির কেউ পেয়েছে তা সবই শুধু আপনার পক্ষ থেকে...",
+    repeat: 1
+  }
+];
+
+const eveningAdhkar = [
+  { 
+    arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ", 
+    transliteration: "Amsayna wa amsal-mulku lillah...", 
+    banglaUccharon: "আমসাইনা ওয়া আমসাল মুলকু লিল্লাহি ওয়ালহামদু লিল্লাহ, লা ইলাহা ইল্লাল্লাহু ওয়াহদাহু লা শারিকা লাহু",
+    translation: "আমরা সন্ধ্যায় উপনীত হয়েছি এবং রাজত্ব আল্লাহর হয়ে সন্ধ্যায় উপনীত হয়েছে...", 
+    repeat: 1 
+  },
+  { 
+    arabic: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ", 
+    transliteration: "Allahumma bika amsayna...", 
+    banglaUccharon: "আল্লাহুম্মা বিকা আমসাইনা, ওয়া বিকা আসবাহনা, ওয়া বিকা নাহইয়া, ওয়া বিকা নামূতু, ওয়া ইলাইকাল মাসীর",
+    translation: "হে আল্লাহ! আপনার সাহায্যেই আমরা সন্ধ্যা করেছি, আপনার সাহায্যেই ভোর করেছি...", 
+    repeat: 1 
+  },
+  {
+    arabic: "اللَّهُمَّ مَا أَمْسَى بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ، فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَهُ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ",
+    transliteration: "Allahumma ma amsa bi min ni'mah...",
+    banglaUccharon: "আল্লাহুম্মা মা আমসা বি মিন নিমাতিন আও বিআহাদিম মিন খালকিকা পামীনকা ওয়াহদাকা লা শারিকা লাকা ফালাকাল হামদু ওয়ালাকাশ শুকর",
+    translation: "হে আল্লাহ! যে নেয়ামত আমার এই সন্ধ্যায় আমি পেয়েছি বা আপনার সৃষ্টির কেউ পেয়েছে তা সবই শুধু আপনার পক্ষ থেকে...",
+    repeat: 1
+  }
+];
+
 interface DeenData {
   prayers: Record<string, boolean>;
   quran: boolean;
@@ -698,8 +746,7 @@ export default function Journey() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {[
               { id: "quran", label: "Quran", icon: Book, desc: "Recitation Plan", color: "gold" },
-              { id: "dhikr", label: "Morning Adhkar", icon: Sun, desc: "After Fajr", color: "emerald-400" },
-              { id: "dhikrEvening", label: "Evening Adhkar", icon: Moon, desc: "After Asr", color: "indigo-400" },
+              { id: "dhikr", label: "Dhikr", icon: Star, desc: "Morning/Evening/Salah", color: "emerald-400" },
               { id: "tahajjud", label: "Tahajjud", icon: Star, desc: "Night Vigil", color: "blue-400" },
               { id: "duha", label: "Duha", icon: Sun, desc: "Forenoon Salah", color: "amber-400" },
               { id: "learning", label: "Learning", icon: Compass, desc: "Deen Knowledge", color: "rose-400" },
@@ -712,7 +759,7 @@ export default function Journey() {
                 if (item.id === "quran") {
                   setShowQuranModal(true);
                   fetchAyahs();
-                } else if (item.id === "dhikr" || item.id === "dhikrEvening") {
+                } else if (item.id === "dhikr") {
                    setShowDhikrModal(true);
                 } else {
                    toggleItem("extra", item.id);
@@ -1042,7 +1089,25 @@ export default function Journey() {
 
       {/* Dhikr Modal */}
       <AnimatePresence>
-        {showDhikrModal && (
+        {showDhikrModal && (() => {
+          const now = new Date();
+          const hour = now.getHours();
+          const current = getCurrentPrayer();
+          let dhikrSet = postSalahAdhkar;
+          let modalTitle = `Post-${current} Adhkar`;
+          let modalIcon = Moon;
+
+          if (current === "Fajr" || (hour >= 4 && hour < 11)) {
+            dhikrSet = morningAdhkar;
+            modalTitle = "Morning Adhkar (সকালের আজকার)";
+            modalIcon = Sun;
+          } else if (current === "Asr" || (hour >= 15 && hour < 19)) {
+            dhikrSet = eveningAdhkar;
+            modalTitle = "Evening Adhkar (সন্ধ্যার আজকার)";
+            modalIcon = Moon;
+          }
+
+          return (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-midnight/80 backdrop-blur-xl">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -1060,16 +1125,16 @@ export default function Journey() {
                 <div className="space-y-10">
                   <div className="text-center space-y-6">
                     <div className="p-5 bg-gold text-midnight rounded-full inline-block shadow-lg">
-                      <Moon size={32} />
+                      {React.createElement(modalIcon, { size: 32 })}
                     </div>
                     <div>
-                      <h2 className="text-3xl font-serif text-champagne mb-2">Post-{getCurrentPrayer()} Adhkar</h2>
+                      <h2 className="text-3xl font-serif text-champagne mb-2">{modalTitle}</h2>
                       <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">According to Sunnah</p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    {postSalahAdhkar.map((dhikr, idx) => {
+                    {dhikrSet.map((dhikr, idx) => {
                        return (
                         <div key={idx} className="bg-white/5 border border-white/5 p-6 rounded-[28px] space-y-4 group hover:bg-white/[0.08] transition-all text-left">
                           <div className="flex justify-between items-start gap-4">
@@ -1098,7 +1163,7 @@ export default function Journey() {
                       );
                     })}
 
-                    {(getCurrentPrayer() === "Fajr" || getCurrentPrayer() === "Maghrib") && (
+                    {(current === "Fajr" || current === "Maghrib") && dhikrSet === postSalahAdhkar && (
                       <div className="bg-gold/10 border border-gold/20 p-6 rounded-[28px] space-y-4 text-left">
                          <div className="flex justify-between items-center">
                             <span className="text-[10px] uppercase tracking-widest text-gold font-bold">Sunnah for {getCurrentPrayer()}</span>
@@ -1136,7 +1201,8 @@ export default function Journey() {
               </GlassCard>
             </motion.div>
           </div>
-        )}
+          );
+        })()}
       </AnimatePresence>
     </div>
   );

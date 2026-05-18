@@ -229,16 +229,44 @@ export default function EmotionGuide() {
   const { user } = useAuth();
   const { couple } = useCouple();
   const [selectedEmotion, setSelectedEmotion] = useState<string | null>(null);
+  const [customEmotion, setCustomEmotion] = useState("");
   const [activeGuidance, setActiveGuidance] = useState<GuidanceItem | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
 
   const handleEmotionSelect = (id: string) => {
     setSelectedEmotion(id);
+    setCustomEmotion(""); // Clear custom input when selecting a preset
     const options = guidanceData[id];
     if (options && options.length > 0) {
       const randomItem = options[Math.floor(Math.random() * options.length)];
       setActiveGuidance(randomItem);
+    }
+  };
+
+  const handleCustomSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customEmotion.trim()) return;
+
+    setIsSearching(true);
+    setSelectedEmotion(customEmotion);
+    setActiveGuidance(null);
+
+    try {
+      const res = await fetch("/api/emotion/guidance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emotion: customEmotion }),
+      });
+      const data = await res.json();
+      if (data.ayah) {
+        setActiveGuidance(data);
+      }
+    } catch (error) {
+      console.error("Custom emotion search failed:", error);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -281,6 +309,28 @@ export default function EmotionGuide() {
         <h1 className="text-4xl font-serif text-champagne mb-2">Heart's Compass</h1>
         <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">Divine guidance for your soul's state</p>
       </header>
+
+      <GlassCard className="p-0 border-white/10 overflow-hidden mb-12 shadow-2xl">
+        <form onSubmit={handleCustomSearch} className="flex items-center gap-4 p-4 md:p-6 bg-white/5 backdrop-blur-xl">
+           <div className="p-4 bg-gold/10 text-gold rounded-2xl">
+             <Search size={20} />
+           </div>
+           <input 
+             type="text"
+             placeholder="How is your heart today? (e.g., 'stressed about work', 'feeling empty')"
+             value={customEmotion}
+             onChange={(e) => setCustomEmotion(e.target.value)}
+             className="flex-1 bg-transparent border-none outline-none text-ivory placeholder:text-slate-gray/50 font-serif text-lg"
+           />
+           <button 
+             type="submit"
+             disabled={isSearching}
+             className="px-8 py-4 bg-gold text-midnight rounded-xl font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-gold/20 disabled:opacity-50"
+           >
+             {isSearching ? "Searching..." : "Listen"}
+           </button>
+        </form>
+      </GlassCard>
 
       <div className="grid grid-cols-4 gap-4 mb-12">
         {emotions.map((emotion) => (

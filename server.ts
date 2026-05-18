@@ -196,6 +196,40 @@ app.post("/api/ruh/chat", async (req, res) => {
   }
 });
 
+// Emotion Guidance Assistant Endpoint
+app.post("/api/emotion/guidance", async (req, res) => {
+  if (!genAI) {
+    return res.status(500).json({ error: "Gemini API key not configured" });
+  }
+
+  try {
+    const { emotion } = req.body;
+    
+    const response = await genAI.models.generateContent({ 
+      model: "gemini-3-flash-preview",
+      contents: [{ parts: [{ text: `Provide spiritual guidance from the Quran and Sunnah for someone feeling "${emotion}". 
+      Return the response in a structured JSON format with the following fields:
+      - ayah: The Arabic text of a relevant Quranic verse.
+      - ref: The reference (Surah:Verse).
+      - trans: An English translation of the verse.
+      - tafsir: A short (2-3 sentence) spiritual reflection or explanation.
+      - dua: An object containing:
+          - arabic: The Arabic text of a relevant Dua.
+          - trans: English translation of the Dua.
+          - bangla: Bengali transliteration (Bangla Uccharon) of the Dua.` }] }],
+      config: {
+        responseMimeType: "application/json",
+        systemInstruction: "You are a compassionate Islamic counselor providing soul-stirring spiritual guidance."
+      }
+    });
+
+    res.json(JSON.parse(response.text || "{}"));
+  } catch (error: any) {
+    console.error("Gemini Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

@@ -73,6 +73,8 @@ export default function Timeline() {
       // Sort client-side to avoid index requirement
       const sorted = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       setMilestones(sorted);
+    }, (error) => {
+      console.error("Timeline Snapshot Error:", error);
     });
 
     return () => unsubscribe();

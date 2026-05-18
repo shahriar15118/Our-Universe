@@ -91,6 +91,9 @@ function Providers({ children }: { children: React.ReactNode }) {
 
               setCoupleData({ couple, profile, partner, loading: false });
             }
+          }, (error) => {
+            console.error("Couple Snapshot Error:", error);
+            setCoupleData(prev => ({ ...prev, loading: false }));
           });
           return () => unsubCouple();
         } else {
@@ -99,6 +102,9 @@ function Providers({ children }: { children: React.ReactNode }) {
       } else {
         setCoupleData({ couple: null, profile: null, partner: null, loading: false });
       }
+    }, (error) => {
+      console.error("Profile Snapshot Error:", error);
+      setCoupleData(prev => ({ ...prev, loading: false }));
     });
 
     return () => unsubProfile();

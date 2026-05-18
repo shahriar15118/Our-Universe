@@ -87,6 +87,8 @@ export default function Dashboard() {
       } else {
         setPartnerMood(null);
       }
+    }, (error) => {
+      console.error("Partner Mood Snapshot Error:", error);
     });
 
     return () => unsubscribe();
@@ -108,6 +110,8 @@ export default function Dashboard() {
       } else {
         setDailySecret(null);
       }
+    }, (error) => {
+      console.error("Daily Secret Snapshot Error:", error);
     });
 
     return () => unsubscribe();

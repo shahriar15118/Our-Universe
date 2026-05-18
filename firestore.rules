@@ -2,57 +2,96 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
     function isSignedIn() {
       return request.auth != null;
     }
 
-    function getProfileData() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
     }
 
-    function isMemberOf(cid) {
-      return isSignedIn() && getProfileData().coupleId == cid;
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
+
+    function existingData() {
+      return resource.data;
+    }
+
+    function incomingData() {
+      return request.resource.data;
+    }
+
+    function getProfile(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
+    function hasCouple(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid)) && 
+             getProfile(uid).get('coupleId', null) != null;
+    }
+
+    function isMemberOf(uid, cid) {
+      return isSignedIn() && hasCouple(uid) && getProfile(uid).coupleId == cid;
+    }
+
+    // --- Collections ---
 
     match /users/{userId} {
       allow read: if isSignedIn();
-      allow write: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isOwner(userId) && 
+                      incomingData().userId == userId &&
+                      incomingData().keys().hasAll(['userId', 'name']);
+      allow update: if isOwner(userId) && 
+                      incomingData().userId == userId;
+      allow delete: if false;
     }
 
     match /couples/{coupleId} {
-      allow read: if isSignedIn();
-      allow create, update: if isSignedIn();
+      allow read: if isSignedIn() && (request.auth.uid in existingData().spouseIds);
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (request.auth.uid in existingData().spouseIds);
       
       match /letters/{letterId} {
-        allow read, write: if isMemberOf(coupleId);
+        allow read, write: if isMemberOf(request.auth.uid, coupleId);
       }
       
       match /deen_daily/{date} {
-        allow read, write: if isMemberOf(coupleId);
+        allow read, write: if isMemberOf(request.auth.uid, coupleId);
       }
 
       match /secrets/{secretId} {
-        allow read, write: if isMemberOf(coupleId);
+        allow read, write: if isMemberOf(request.auth.uid, coupleId);
       }
 
       match /moods/{moodId} {
-        allow read, write: if isMemberOf(coupleId);
+        allow read, write: if isMemberOf(request.auth.uid, coupleId);
       }
     }
 
     match /memories/{memoryId} {
+      // List/read memories belonging to the user's couple
       allow read: if isSignedIn() && (
-        resource == null || isMemberOf(resource.data.coupleId) || resource.data.authorId == request.auth.uid
+        resource == null || isMemberOf(request.auth.uid, existingData().coupleId)
       );
       
       allow create: if isSignedIn() && 
-        request.resource.data.authorId == request.auth.uid &&
-        isMemberOf(request.resource.data.coupleId);
+                      incomingData().authorId == request.auth.uid &&
+                      isMemberOf(request.auth.uid, incomingData().coupleId);
         
-      allow update, delete: if isSignedIn() && (
-        resource.data.authorId == request.auth.uid ||
-        isMemberOf(resource.data.coupleId)
-      );
+      allow update: if isSignedIn() && 
+                      isMemberOf(request.auth.uid, existingData().coupleId);
+
+      allow delete: if isSignedIn() && (
+                      existingData().authorId == request.auth.uid ||
+                      isMemberOf(request.auth.uid, existingData().coupleId)
+                    );
     }
   }
 }
