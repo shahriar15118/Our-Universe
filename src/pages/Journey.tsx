@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { GlassCard } from "@/src/components/ui/GlassCard";
-import { Book, Heart, Moon, Star, Sun, Compass, Send, CheckCircle2, MessageSquare, AlertCircle, TrendingUp, Clock, User, Users, Bell, Settings } from "lucide-react";
+import { Book, Heart, Moon, Star, Sun, Compass, Send, CheckCircle2, MessageSquare, AlertCircle, TrendingUp, Clock, User, Users, Bell, Settings, ChevronRight } from "lucide-react";
 import { useAuth, useCouple } from "@/src/App";
 import { db } from "@/src/lib/firebase";
 import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, serverTimestamp, getDoc } from "firebase/firestore";
@@ -279,6 +279,89 @@ const prayersConfig = [
   { id: "Isha", icon: Moon },
 ];
 
+const learningTopics = [
+  {
+    title: "তাফসির অধ্যায়ন (Tafsir Study)",
+    subtitle: "সূরা আল-ফাতিহা ও সূরা আল-ইখলাস",
+    desc: "কুরআনের যেকোনো একটি সূরার তাফসির আলোচনা করা।",
+    quote: "“আমার বান্দা যখন বলে, ‘সমস্ত প্রশংসা জগতসমূহের প্রতিপালক আল্লাহর’, তখন আল্লাহ বলেন, ‘আমার বান্দা আমার প্রশংসা করল।’” — সহীহ মুসলিম: ৩৯৫",
+    details: [
+      {
+        section: "১. সূরা আল-ফাতিহা: আল্লাহর সাথে সরাসরি কথোপকথন",
+        content: "সালাতে যখন আমরা সূরা ফাতিহা পড়ি, তখন প্রতিটি আয়াতে আল্লাহ রাব্বুল আলামীন আমাদের সরাসরি উত্তর দেন। বান্দা যখন বলে 'আলহামদুলিল্লাহি রাব্বিল আলামিন' (সমস্ত প্রশংসা বিশ্বজাহানের রবের), আল্লাহ বলেন 'আমার বান্দা আমার প্রশংসা করেছে।' এটি পরম এক ভালোবাসার সম্পর্ক। দাম্পত্য জীবনে পারস্পরিক কৃতজ্ঞতা ও সৌন্দর্যের প্রধান শিক্ষা এখানেই নিহিত।"
+      },
+      {
+        section: "২. সূরা আল-ইখলাস: তাওহীদের হৃদপিণ্ড",
+        content: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'সুরা ইখলাস কুরআনের এক-তৃতীয়াংশের সমান।' এতে স্রষ্টার একত্ব ও তুলনাহীনতার এমন এক বিশুদ্ধ বর্ণনা রয়েছে যা মানুষের অন্তরে স্থিরতা আনে। যখন আমরা আল্লাহর অনন্যতায় বিশ্বাস স্থাপন করি, তখন আমাদের পারিবারিক জীবনেও ধৈর্য্য, একনিষ্ঠতা ও গভীর প্রশান্তি নেমে আসে।"
+      },
+      {
+        section: "৩. পরিবার ও সম্পর্কের আলোয় শিক্ষা",
+        content: "দম্পতি হিসেবে যখন আপনারা একসাথে বসে এ সূরাগুলোর মর্মার্থ উপলব্ধি করবেন, তখন আপনাদের ঘরের শান্তি বহুগুণ বৃদ্ধি পাবে। যখনই আপনারা সালাতে দাঁড়াবেন, অনুভব করবেন আপনারা কেবল একটি প্রথা পালন করছেন না, বরং সৃষ্টিকর্তার দয়ার চাদরে আবৃত হয়ে আছেন।"
+      }
+    ]
+  },
+  {
+    title: "হাদিস পাঠ (Hadith Reading)",
+    subtitle: "মুমিনদের পারস্পরিক ভালোবাসা ও উত্তম দাম্পত্য চরিত্র",
+    desc: "রিয়াদুস সালেহীন বা বুখারী শরীফ থেকে অন্তত একটি হাদিস পড়া।",
+    quote: "“মুমিনদের পারস্পরিক ভালোবাসা, দয়া ও সহানুভূতি একটি শরীরের মতো। যখন শরীরের কোনো অংশ ব্যথিত হয়, পুরো শরীর জ্বরে আক্রান্ত হয়।” — সহীহ বুখারী",
+    details: [
+      {
+        section: "১. সর্বোত্তম জীবনসঙ্গীর মাপকাঠি",
+        content: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'তোমাদের মধ্যে সর্বোত্তম সেই ব্যক্তি, যে তার স্ত্রীর নিকট সর্বোত্তম। আর আমি তোমাদের মধ্যে আমার স্ত্রীদের নিকট সর্বোত্তম।' (সুনানে তিরমিযী)। ইসলামে একজন মানুষের ভালো চরিত্রের প্রধান সার্টিফিকেট দেওয়া হয়েছে তার জীবনসঙ্গীর মাধ্যমে। ঘরই হলো সুন্দর ব্যবহারের প্রথম বিদ্যাপীঠ।"
+      },
+      {
+        section: "২. ছোটখাট অপূর্ণতা এড়িয়ে ইতিবাচক দৃষ্টি",
+        content: "নবী করীম (ﷺ) আমাদের শিখীদের কাছে শিখিয়েছেন: 'কোনো মুমিন পুরুষ যেন কোনো মুমিন নারীকে (নিজের স্ত্রীকে) সম্পূর্ণ অপছন্দ বা ঘৃণা না করে। তার একটি আচরণ অপছন্দ হলে অন্য আরেকটি আচরণ অবশ্যই তাকে মুগ্ধ করবে।' (সহীহ মুসলিম)। সম্পর্ককে টিকিয়ে রাখার মূলমন্ত্র হলো ইতিবাচক দিকগুলো দেখা ও কৃতজ্ঞ থাকা।"
+      },
+      {
+        section: "৩. ক্ষুদ্রতম ত্যাগের মহৎ সওয়াব",
+        content: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'কেউ যদি সওয়াবের আশায় তার পরিবারের জন্য কিছু ব্যয় করে, তবে তাও তার জন্য সদকা হিসেবে গণ্য হয়।' এমনকি ঘরের সুখে স্ত্রীর মুখে ভালোবেসে এক লোকমা খাবার তুলে দেওয়ার মধ্যেও রয়েছে পরম সওয়াব।"
+      }
+    ]
+  },
+  {
+    title: "রাসূলুল্লাহর (ﷺ) জীবনী (Seerah Study)",
+    subtitle: "নবীজির দাম্পত্য আদর্শ ও রসিকতা",
+    desc: "নবীজির (ﷺ) মধুর বৈবাহিক আচরণের বাস্তব ও হৃদয়স্পর্শী গল্পসমূহ।",
+    quote: "“রাসূলুল্লাহ (ﷺ) ঘরে ঢুকলেই তাঁর মুখমণ্ডল হাসিতে উজ্জ্বল থাকতো এবং তিনি আমাদের সাথে হাসিমুখে কথা বলতেন ও সাহায্য করতেন।” — সুনানে ইবনে মাজাহ",
+    details: [
+      {
+        section: "১. প্রেমময় মরুভূমির দৌড় প্রতিযোগিতা",
+        content: "মা আয়েশা (রা.) বর্ণনা করেন: 'নবীজি (ﷺ) মরুভূমির সফরে আমার সাথে পায়ে হেঁটে দৌড়াদৌড়ি কৌতুক করেছিলেন। আমি জিতে গেলাম। কয়েক বছর পরে আমি একটু ভারী হয়ে যাওয়ার পর আবার দৌড় প্রতিযোগিতা হলো, এবার উনি জিতে গেলেন এবং হাসতে হাসতে পিঠে চাপড় মেরে বললেন—এটি আগের পরাজয়ের মধুর বদলা!' (সুনানে আবু দাউদ)। তাঁরা চমৎকার খুনসুটি করতেন যা ভালোবাসাকে সজীব রাখত।"
+      },
+      {
+        section: "২. একই স্থান হতে ভালোবাসার চুমুক",
+        content: "আয়েশা (রা.) বলেন: 'আমি যখন কোনো পাত্রে পানি পান করতাম, রাসূলুল্লাহ (ﷺ) পাত্রটি নিজের হাতে নিয়ে আমি যেখানে মুখ লাগিয়ে পান করেছিলাম ঠিক সেই স্থানে ঠোঁট লাগিয়ে অবশিষ্ট পানি পান করতেন।' (সহীহ মুসলিম)। পরস্পরের প্রতি ভালোবাসার এমন সূক্ষ্ম প্রকাশই হৃদয়কে বেঁধে রাখে।"
+      },
+      {
+        section: "৩. ঘরের কাজে অসাধারণ সহমর্মিতা",
+        content: "মা আয়েশাকে জিজ্ঞেস করা হয়েছিল, নবীজি (ﷺ) ঘরের ভেতর কেমন ছিলেন? তিনি উত্তর দিলেন, 'তিনি ঘরের কাজে তাঁর স্ত্রীদের সাহায্য করতেন এবং সেলাই করতেন, ঝাড়ু দিতেন, নিজের কাপড় ধুতেন ও ছাগলের দুধ দোয়াতেন। আর আযানের আওয়াজ শুনলে তিনি সালাতের জন্য প্রস্থান করতেন।' আল্লাহর রাসূল হওয়া সত্ত্বেও তিনি ঘরে ছিলেন একজন সেরা দায়িত্বশীল ও নম্র জীবনসঙ্গী।"
+      }
+    ]
+  },
+  {
+    title: "...মায়াবী মাসনুন দোয়া শিক্ষা (Masnoon Duas)",
+    subtitle: "সুখী দম্পতি ও কলহমুক্ত শান্তিময় পরিবারের জন্য অত্যন্ত শক্তিশালী দোয়া ও আমল",
+    desc: "দৈনন্দিন আমল ও মাসনুন দোয়াসমূহ মুখস্থ বা চর্চা করা।",
+    quote: "“দোয়াই হলো ইবাদতের মূল ভিত্তি।” — সুনানে তিরমিযী",
+    details: [
+      {
+        section: "১. নয়নজুড়ানো সুখী জুটির শ্রেষ্ঠ দোয়া (কুরআনি দোয়া)",
+        content: "পবিত্র কুরআনের অত্যন্ত চমৎকার একটি দোয়া যা প্রতিদিন একসাথে পড়া উচিত:\n`রব্বানা হাব লানা মিন আজওয়াজিনা ওয়া যুররিয়্যাতিনা কুররাতা আ'ইউনিন ওয়াজ'আলনা লিল মুত্তাকীনা ইমামা` \n\n*অনুবাদ:* 'হে আমাদের প্রতিপালক! আমাদের স্ত্রী ও সন্তানদের আমাদের জন্য নয়নপ্রীতিকর ও চোখের প্রশান্তি করো এবং আমাদেরকে মুত্তাকীদের আদর্শ বা নেতা বানাও।' (সূরা আল-ফুরকান: ৭৪)"
+      },
+      {
+        section: "২. ঘরে প্রবেশের মাসনুন দোয়া ও সালাম",
+        content: "রাসূলুল্লাহ (ﷺ) বলেছেন, যখন তোমরা ঘরে প্রবেশ করবে, তোমরা সালাম দাও। এটি শয়তানকে ঘর থেকে তাড়িয়ে দেয়। ঘরে ঢোকার দোয়া:\n`اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلَجِ وَخَيْرَ الْمَخْرَجِ، بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا` \n\n*উচ্চারণ:* 'আল্লাহুম্মা ইন্নি আসআলুকা খাইরাল মাওলাজি ওয়া খাইরাল মাখরাজি, বিসমিল্লাহি ওয়ালাজনা ওয়া বিসমিল্লাহি খারাজনা, ওয়া আলাল্লাহি রাব্বিনা তাওয়াক্কালনা।'\n\n*অনুবাদ:* 'হে আল্লাহ! আমি উত্তম প্রবেশ ও উত্তম প্রস্থান প্রার্থনা করছি। আল্লাহর নামেই আমরা প্রবেশ করি ও বের হই, এবং আমাদের প্রতিপালক আল্লাহর ওপরই আমাদের ভরসা।' (আবু দাউদ)"
+      },
+      {
+        section: "৩. ক্রোধ ও অশান্তিমুক্ত ঘরের আমল",
+        content: "পারিবারিক জীবনে শয়তান অনেক সময় ভুল বোঝাবুঝি বা রাগ সৃষ্টি করে। রাগ বা ঝগড়ার আগমন ঘটলে সাথে সাথে এই দোয়াটি পড়ুন:\n`أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ` \n\n*উচ্চারণ:* 'আউযু বিল্লাহি মিনাশ শায়তানির রাজীম।'\n\n*অনুবাদ:* 'আমি বিতাড়িত শয়তান থেকে আল্লাহর কাছে আশ্রয় প্রার্থনা করছি।' (বুখারী ও মুসলিম)। এছাড়া দিনে অন্তত ৩ বার সুরা নাস ও সুরা ফালাক পড়ে ফুঁ দিলে ঘরের শান্তি আল্লাহর হেফাজতে থাকে।"
+      }
+    ]
+  }
+];
+
 export default function Journey() {
   const { profile, couple, partner } = useCouple();
   const [viewMode, setViewMode] = useState<"me" | "partner">("me");
@@ -302,6 +385,7 @@ export default function Journey() {
   const [showTahajjudModal, setShowTahajjudModal] = useState(false);
   const [showDuhaModal, setShowDuhaModal] = useState(false);
   const [showLearningModal, setShowLearningModal] = useState(false);
+  const [selectedLearningTopic, setSelectedLearningTopic] = useState<number | null>(null);
 
   const getInitialDhikrTab = () => {
     const hour = new Date().getHours();
@@ -1698,7 +1782,13 @@ export default function Journey() {
             >
               <GlassCard className="p-6 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
                 <div className="absolute top-4 right-4 z-10">
-                  <button onClick={() => setShowLearningModal(false)} className="text-slate-gray hover:text-gold transition-colors p-2 bg-midnight/40 rounded-full">
+                  <button 
+                    onClick={() => {
+                      setShowLearningModal(false);
+                      setSelectedLearningTopic(null);
+                    }} 
+                    className="text-slate-gray hover:text-gold transition-colors p-2 bg-midnight/40 rounded-full"
+                  >
                     <X size={20} />
                   </button>
                 </div>
@@ -1721,59 +1811,100 @@ export default function Journey() {
                     <p className="text-[8px] text-right text-slate-gray">— সহীহ মুসলিম: ২৬৯৯</p>
                   </div>
 
-                  <div className="space-y-5 max-h-[40vh] overflow-y-auto pr-1">
-                    <div>
-                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
-                        আজকের দ্বীনি শিক্ষা বিষয়সমূহ (Topics to Study)
-                      </h3>
-                      <p className="text-xs text-slate-gray leading-relaxed pl-3 mb-3">
-                        দুজন একসাথে বসে বা আলাদাভাবে দিনে অন্তত ৫-১০ মিনিট দ্বীনি আলোচনা করুন বা পড়ুন। নিচের যেকোনো একটি বিষয় বেছে নিন:
-                      </p>
-                      
-                      <div className="grid grid-cols-1 gap-2 pl-3">
-                        {[
-                          { title: "তাফসির অধ্যায়ন (Tafsir Study)", desc: "কুরআনের যেকোনো একটি সূরার তাফসির আলোচনা করা।" },
-                          { title: "হাদিস পাঠ (Hadith Reading)", desc: "রিয়াদুস সালেহীন বা বুখারী থেকে অন্তত একটি হাদিস পড়া।" },
-                          { title: "রাসূলুল্লাহর (ﷺ) জীবনী (Seerah Study)", desc: "নবীজির মহিমান্বিত জীবনের যেকোনো একটি পর্ব অধ্যয়ন।" },
-                          { title: "মাসনুন দোয়া শিক্ষা (Masnoon Duas)", desc: "দৈনন্দিন আমল ও মাসনুন দোয়াসমূহ মুখস্থ বা চর্চা করা।" },
-                        ].map((topic, i) => (
-                          <div key={i} className="p-3.5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-gold/20 transition-all">
-                            <h4 className="text-xs font-bold text-champagne mb-0.5">{topic.title}</h4>
-                            <p className="text-[10px] text-slate-gray leading-relaxed">{topic.desc}</p>
-                          </div>
-                        ))}
+                  {selectedLearningTopic === null ? (
+                    <div className="space-y-5 max-h-[48vh] overflow-y-auto pr-1">
+                      <div>
+                        <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                          আজকের দ্বীনি শিক্ষা বিষয়সমূহ (Topics to Study)
+                        </h3>
+                        <p className="text-xs text-slate-gray leading-relaxed pl-3 mb-3">
+                          দুজন একসাথে বসে বা আলাদাভাবে দিনে অন্তত ৫-১০ মিনিট দ্বীনি আলোচনা করুন বা পড়ুন। পড়তে যেকোনো একটি বিষয়ে ক্লিক করুন:
+                        </p>
+                        
+                        <div className="grid grid-cols-1 gap-2.5 pl-3">
+                          {learningTopics.map((topic, i) => (
+                            <button
+                              type="button"
+                              key={i}
+                              onClick={() => setSelectedLearningTopic(i)}
+                              className="text-left p-4 bg-white/[0.02] border border-white/5 hover:border-gold/30 rounded-2xl hover:bg-gold/5 transition-all w-full flex items-center justify-between group"
+                            >
+                              <div className="space-y-1 pr-4">
+                                <h4 className="text-xs font-bold text-champagne group-hover:text-gold transition-colors">{topic.title}</h4>
+                                <p className="text-[10px] text-slate-gray leading-relaxed">{topic.desc}</p>
+                              </div>
+                              <ChevronRight size={16} className="text-slate-gray group-hover:text-gold group-hover:translate-x-1 transition-all shrink-0" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                          জ্ঞানের ফযিলত (Virtues of Knowledge Study)
+                        </h3>
+                        <ul className="space-y-2.5 pl-3 text-xs text-ivory/95">
+                          <li className="flex items-start gap-1.5">
+                            <span className="text-gold mt-1">✦</span>
+                            <div>
+                              <strong className="text-champagne block">ফেরেশতাদের ডানা মেলানো:</strong>
+                              দ্বীনি জ্ঞান অন্বেষণকারীর সন্তুষ্টির জন্য আল্লাহর সম্মানিত ফেরেশতাগণ তাদের ডানা বিছিয়ে দেন।
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-1.5">
+                            <span className="text-gold mt-1">✦</span>
+                            <div>
+                              <strong className="text-champagne block">সবার দোয়া লাভ:</strong>
+                              জ্ঞানের অনুসন্ধানকারীর জন্য আসমান ও জমিনের সকল মাখলুক এমনকি পানির নিচের মাছ পর্যন্ত ক্ষমা প্রার্থনা করে।
+                            </div>
+                          </li>
+                        </ul>
                       </div>
                     </div>
+                  ) : (
+                    <div className="space-y-5 max-h-[48vh] overflow-y-auto pr-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedLearningTopic(null)}
+                          className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gold text-[10px] uppercase tracking-widest font-bold rounded-lg transition-all flex items-center gap-1"
+                        >
+                          ← ফিরে যান (Back)
+                        </button>
+                        <span className="text-[10px] text-slate-gray">দ্বীনি শিক্ষা কক্ষ</span>
+                      </div>
 
-                    <div>
-                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
-                        জ্ঞানের ফযিলত (Virtues of Knowledge Study)
-                      </h3>
-                      <ul className="space-y-2.5 pl-3 text-xs text-ivory/95">
-                        <li className="flex items-start gap-1.5">
-                          <span className="text-gold mt-1">✦</span>
-                          <div>
-                            <strong className="text-champagne block">ফেরেশতাদের ডানা মেলানো:</strong>
-                            দ্বীনি জ্ঞান অন্বেষণকারীর সন্তুষ্টির জন্য আল্লাহর সম্মানিত ফেরেশতাগণ তাদের ডানা বিছিয়ে দেন।
+                      <div className="space-y-4">
+                        <div className="border-b border-white/5 pb-3">
+                          <h3 className="text-sm font-bold text-gold">{learningTopics[selectedLearningTopic].title}</h3>
+                          <p className="text-[11px] text-slate-gray italic">{learningTopics[selectedLearningTopic].subtitle}</p>
+                        </div>
+
+                        {learningTopics[selectedLearningTopic].quote && (
+                          <div className="bg-gold/5 border border-gold/15 p-4 rounded-xl text-[11px] text-ivory/90 italic leading-relaxed font-serif">
+                            {learningTopics[selectedLearningTopic].quote}
                           </div>
-                        </li>
-                        <li className="flex items-start gap-1.5">
-                          <span className="text-gold mt-1">✦</span>
-                          <div>
-                            <strong className="text-champagne block">সবার দোয়া লাভ:</strong>
-                            জ্ঞানের অনুসন্ধানকারীর জন্য আসমান ও জমিনের সকল মাখলুক এমনকি পানির নিচের মাছ পর্যন্ত ক্ষমা প্রার্থনা করে।
-                          </div>
-                        </li>
-                      </ul>
+                        )}
+
+                        <div className="space-y-3.5 mt-3">
+                          {learningTopics[selectedLearningTopic].details.map((detail, idx) => (
+                            <div key={idx} className="p-4 bg-white/[0.01] border border-white/5 rounded-xl space-y-1">
+                              <h4 className="text-xs font-bold text-champagne">{detail.section}</h4>
+                              <p className="text-[11px] text-slate-gray leading-relaxed whitespace-pre-line">{detail.content}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <button 
                     onClick={() => {
                       if (viewMode === "me") toggleItem("extra", "learning");
                       setShowLearningModal(false);
+                      setSelectedLearningTopic(null);
                     }}
                     className={cn(
                       "w-full py-4 rounded-[20px] text-xs uppercase tracking-widest font-bold shadow-2xl transition-all hover:scale-[1.02] active:scale-95 mt-4",

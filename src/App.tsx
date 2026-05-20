@@ -21,6 +21,7 @@ export const useCouple = () => useContext(CoupleContext);
 import { ParticleBackground } from "@/src/components/ui/ParticleBackground";
 import { MobileNav } from "@/src/components/layout/MobileNav";
 import { ScrollToTop } from "@/src/components/layout/ScrollToTop";
+import { PWAInstallPrompt } from "@/src/components/layout/PWAInstallPrompt";
 
 // Pages (to be created)
 const Dashboard = React.lazy(() => import("@/src/pages/Dashboard"));
@@ -161,6 +162,7 @@ export default function App() {
     <Providers>
       <BrowserRouter>
         <ScrollToTop />
+        <PWAInstallPrompt />
         <div className="min-h-screen flex flex-col">
           <ParticleBackground />
           
