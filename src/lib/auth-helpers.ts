@@ -8,7 +8,8 @@ import {
   getRedirectResult,
   GoogleAuthProvider,
   FacebookAuthProvider,
-  TwitterAuthProvider
+  TwitterAuthProvider,
+  sendPasswordResetEmail
 } from "firebase/auth";
 import { doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 
@@ -45,6 +46,11 @@ export const login = async (email: string, password: string) => {
 export const logout = async () => {
   if (!auth) throw new Error("Auth not initialized");
   return await firebaseSignOut(auth);
+};
+
+export const sendPasswordReset = async (email: string) => {
+  if (!auth) throw new Error("Auth not initialized");
+  return await sendPasswordResetEmail(auth, email.toLowerCase().trim());
 };
 
 export const handleSuccessfulSocialAuth = async (user: any, pendingData: any = null) => {

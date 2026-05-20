@@ -38,6 +38,9 @@ const Journal = React.lazy(() => import("@/src/pages/Journal"));
 const Privacy = React.lazy(() => import("@/src/pages/Privacy"));
 const Terms = React.lazy(() => import("@/src/pages/Terms"));
 
+// Module scope safeguard to prevent double-invocation of getRedirectResult in React 18 Strict Mode
+let redirectChecked = false;
+
 // Providers
 function Providers({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -56,6 +59,8 @@ function Providers({ children }: { children: React.ReactNode }) {
     }
 
     const checkRedirectResult = async () => {
+      if (redirectChecked) return;
+      redirectChecked = true;
       try {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
