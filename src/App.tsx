@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged, User, getRedirectResult } from "firebase/auth";
+import { handleSuccessfulSocialAuth } from "@/src/lib/auth-helpers";
 import { doc, getDoc, collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
 import { auth, db } from "@/src/lib/firebase";
 import { Couple, UserProfile } from "@/src/types";
@@ -53,6 +54,31 @@ function Providers({ children }: { children: React.ReactNode }) {
       setAuthLoading(false);
       return;
     }
+
+    const checkRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          console.log("Social Redirect login successful:", result.user);
+          const pendingStr = localStorage.getItem("pending_social_signup");
+          let pendingData = null;
+          if (pendingStr) {
+            try {
+              pendingData = JSON.parse(pendingStr);
+            } catch (e) {
+              console.error("Failed to parse pending social signup:", e);
+            }
+          }
+          await handleSuccessfulSocialAuth(result.user, pendingData);
+          localStorage.removeItem("pending_social_signup");
+        }
+      } catch (err) {
+        console.error("Firebase redirect resolution failed:", err);
+      }
+    };
+
+    checkRedirectResult();
+
     return onAuthStateChanged(auth, (u) => {
       setUser(u);
       setAuthLoading(false);

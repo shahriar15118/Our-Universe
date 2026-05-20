@@ -4,11 +4,19 @@ import {
   signInWithEmailAndPassword as firebaseSignIn,
   signOut as firebaseSignOut,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   FacebookAuthProvider,
   TwitterAuthProvider
 } from "firebase/auth";
 import { doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+
+// Detect if running on a mobile device or tablet
+const isMobileDevice = () => {
+  const ua = navigator.userAgent;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+};
 
 export const signup = async ({ email, password, name, role }: any) => {
   if (!auth) throw new Error("Auth not initialized");
@@ -39,34 +47,76 @@ export const logout = async () => {
   return await firebaseSignOut(auth);
 };
 
-export const signInWithSocial = async (providerName: 'google' | 'facebook' | 'x') => {
-  if (!auth || !db) throw new Error("Auth/DB not initialized");
+export const handleSuccessfulSocialAuth = async (user: any, pendingData: any = null) => {
+  if (!db) return;
   
-  let provider;
-  if (providerName === 'google') provider = new GoogleAuthProvider();
-  else if (providerName === 'facebook') provider = new FacebookAuthProvider();
-  else if (providerName === 'x') provider = new TwitterAuthProvider();
-  else throw new Error("Provider not supported");
-
-  const result = await signInWithPopup(auth, provider);
-  const user = result.user;
-
-  // Check if user document exists, if not create basic one
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
+
+  const finalName = pendingData?.name || user.displayName || "Soulmate";
+  const finalSpouseEmail = pendingData?.spouseEmail || null;
+  const finalRole = pendingData?.role || "husband";
 
   if (!userSnap.exists()) {
     await setDoc(userRef, {
       userId: user.uid,
-      name: user.displayName || "Soulmate",
+      name: finalName,
       email: user.email?.toLowerCase().trim() || "",
       photoUrl: user.photoURL,
       coupleId: null,
+      role: finalRole,
+      spouseEmail: finalSpouseEmail,
       createdAt: new Date().toISOString()
     });
+  } else {
+    // If the record exists, merge role and spouse email if they were filled out
+    const existing = userSnap.data();
+    await setDoc(userRef, {
+      name: existing.name || finalName,
+      spouseEmail: existing.spouseEmail || finalSpouseEmail,
+      role: existing.role || finalRole
+    }, { merge: true });
   }
 
-  return user;
+  // If user completed a spouseEmail, create/join couple
+  if (finalSpouseEmail) {
+    await createOrJoinCouple(user.uid, user.email || "", finalSpouseEmail);
+  }
+};
+
+export const signInWithSocial = async (providerName: 'google' | 'facebook' | 'x', pendingData: any = null) => {
+  if (!auth || !db) throw new Error("Auth/DB not initialized");
+  
+  let provider;
+  if (providerName === 'google') {
+    provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+  }
+  else if (providerName === 'facebook') provider = new FacebookAuthProvider();
+  else if (providerName === 'x') provider = new TwitterAuthProvider();
+  else throw new Error("Provider not supported");
+
+  // Save registration inputs in localStorage so we can resume coupling upon landing back
+  if (pendingData) {
+    localStorage.setItem("pending_social_signup", JSON.stringify(pendingData));
+  }
+
+  const isMobile = isMobileDevice();
+
+  if (isMobile) {
+    // Mobile Redirect - standard for modern mobile and standalone PWAs
+    await signInWithRedirect(auth, provider);
+    return null;
+  } else {
+    // Desktop Popup - standard, interactive, same-page flow
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    await handleSuccessfulSocialAuth(user, pendingData);
+    if (pendingData) {
+      localStorage.removeItem("pending_social_signup");
+    }
+    return user;
+  }
 };
 
 export const createOrJoinCouple = async (userId: string, userEmail: string, spouseEmail: string) => {

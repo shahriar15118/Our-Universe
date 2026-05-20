@@ -26,24 +26,12 @@ export default function Signup() {
     setLoading(true);
     setError("");
     try {
-      const user = await signInWithSocial(provider);
-      
-      // If user is new and we have spouse info, link them now
-      if (user && formData.spouseEmail) {
-        await createOrJoinCouple(user.uid, user.email || "", formData.spouseEmail);
-        
-        // Also ensure role and name are updated if they were set in form
-        const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, {
-          role: formData.role,
-          name: formData.name || user.displayName || "Soulmate"
-        });
+      const user = await signInWithSocial(provider, formData);
+      if (user) {
+        navigate("/dashboard");
       }
-      
-      navigate("/dashboard");
     } catch (err: any) {
       setError(err.message || "Failed to sign up with social provider");
-    } finally {
       setLoading(false);
     }
   };

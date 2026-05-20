@@ -21,10 +21,11 @@ export default function Login() {
       
       // If it's a first time login via Social, we might not have a couple yet.
       // The Dashboard will handle redirecting to Profile to complete setup.
-      navigate("/dashboard");
+      if (user) {
+        navigate("/dashboard");
+      }
     } catch (err: any) {
       setError(err.message || "Failed to sign in with social provider");
-    } finally {
       setLoading(false);
     }
   };
