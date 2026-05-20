@@ -170,30 +170,6 @@ export default function Login() {
               {error && (
                 <div className="space-y-3">
                   <p className="text-red-400 text-[10px] uppercase tracking-widest text-center leading-relaxed">{error}</p>
-                  
-                  {/* Google OAuth Help Banner */}
-                  {(error.toLowerCase().includes("google") || error.toLowerCase().includes("social") || error.toLowerCase().includes("redirect") || error.toLowerCase().includes("popup") || error.toLowerCase().includes("permission") || error.toLowerCase().includes("action")) && (
-                    <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 text-[11px] text-slate-gray leading-relaxed space-y-2">
-                      <div className="flex items-center gap-2 text-gold font-bold uppercase text-[9px] tracking-wider mb-1">
-                        <HelpCircle size={12} className="text-gold" />
-                        Google Sign-In Troubleshooting
-                      </div>
-                      <p>
-                        We detected an issue processing the external login. This usually occurs if:
-                      </p>
-                      <ul className="list-disc pl-4 space-y-1 text-[10px]">
-                        <li>
-                          <span className="text-ivory font-medium">Domain Unapproved:</span> The domain <code className="text-gold/90 bg-white/5 px-1 py-0.5 rounded">{window.location.hostname}</code> might not be authorized under <span className="italic">Authorized Domains</span> in your Firebase Console Settings.
-                        </li>
-                        <li>
-                          <span className="text-ivory font-medium">Cookie Isolation:</span> Mobile iOS Safari blocks cross-site assets by default, preventing redirect result synchronization.
-                        </li>
-                        <li>
-                          <span className="text-gold font-semibold">Instant Fallback:</span> You can sign in smoothly using the <span className="text-ivory font-semibold">Email & Secret Key</span> option with zero restrictions!
-                        </li>
-                      </ul>
-                    </div>
-                  )}
                 </div>
               )}
 
