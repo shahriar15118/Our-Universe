@@ -48,15 +48,21 @@ service cloud.firestore {
       allow create: if isOwner(userId) && 
                       incomingData().userId == userId &&
                       incomingData().keys().hasAll(['userId', 'name']);
-      allow update: if isOwner(userId) && 
-                      incomingData().userId == userId;
+      allow update: if isOwner(userId) || 
+                      (isSignedIn() && 
+                       hasCouple(request.auth.uid) && 
+                       getProfile(request.auth.uid).coupleId == existingData().get('coupleId', null) &&
+                       request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photoUrl']));
       allow delete: if false;
     }
 
     match /couples/{coupleId} {
-      allow read: if isSignedIn() && (request.auth.uid in existingData().spouseIds);
+      allow read: if isSignedIn() && (request.auth.uid in existingData().get('spouseIds', []));
       allow create: if isSignedIn();
-      allow update: if isSignedIn() && (request.auth.uid in existingData().spouseIds);
+      allow update: if isSignedIn() && (
+                      (request.auth.uid in existingData().get('spouseIds', [])) ||
+                      (request.auth.token.email.lower() in existingData().get('emails', []))
+                    );
       
       match /letters/{letterId} {
         allow read, write: if isMemberOf(request.auth.uid, coupleId);

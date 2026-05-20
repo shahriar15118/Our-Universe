@@ -68,7 +68,7 @@ export function MobileNav() {
             onClick={() => setIsOpen(false)}
             className={({ isActive }) => 
               cn(
-                "flex items-center gap-2 px-5 py-3 rounded-full transition-all duration-500",
+                "flex items-center gap-1.5 sm:gap-2 px-3 py-2.5 sm:px-5 sm:py-3 rounded-full transition-all duration-500",
                 isActive 
                   ? "bg-gold text-midnight shadow-[0_0_20px_rgba(197,160,89,0.3)] scale-105" 
                   : "text-slate-gray hover:text-ivory"
@@ -83,7 +83,7 @@ export function MobileNav() {
         <button 
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            "w-12 h-12 ml-2 rounded-full flex items-center justify-center shadow-lg transition-all duration-500 text-midnight font-bold",
+            "w-12 h-12 ml-0.5 sm:ml-2 rounded-full flex items-center justify-center shadow-lg transition-all duration-500 text-midnight font-bold shrink-0",
             isOpen 
               ? "bg-ivory scale-90 rotate-45" 
               : "bg-gradient-to-tr from-gold to-champagne shadow-gold/20 hover:scale-110 active:scale-95"

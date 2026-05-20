@@ -6,6 +6,7 @@ export interface Couple {
   emails?: string[];
   weddingDate?: any; // Firestore Timestamp
   anniversary?: any;
+  partnerPhotoUrl?: string;
   theme: 'Moonlit Night' | 'Desert Rose' | 'Ocean Calm' | 'Golden Dusk';
   createdAt: any;
   deenStreak?: number;

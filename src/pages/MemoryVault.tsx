@@ -47,7 +47,7 @@ export default function MemoryVault() {
         <p className="text-ivory/60 italic font-serif">Our visual archive of love.</p>
       </header>
 
-      <div className="flex items-center gap-2 mb-8 overflow-x-auto no-scrollbar pb-2">
+      <div className="flex items-center justify-start sm:justify-center gap-2 mb-8 overflow-x-auto no-scrollbar pb-2 w-full">
         {categories.map((cat) => (
           <button
             key={cat}

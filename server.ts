@@ -26,10 +26,18 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+// Simple in-memory cache for Quran verses
+const quranCache = new Map<string, any>();
+
 // Quran Verses Fetching Endpoint
 app.get("/api/quran/verses", async (req, res) => {
   const start = parseInt(req.query.start as string) || 1;
   const count = parseInt(req.query.count as string) || 42;
+  const cacheKey = `${start}-${count}`;
+
+  if (quranCache.has(cacheKey)) {
+    return res.json({ ayahs: quranCache.get(cacheKey) });
+  }
 
   try {
     // 1. Get info about the start ayah to find out which surah it belongs to
@@ -102,6 +110,7 @@ app.get("/api/quran/verses", async (req, res) => {
       }
     }
 
+    quranCache.set(cacheKey, combined);
     res.json({ ayahs: combined });
   } catch (error: any) {
     console.error("Quran Fetch Error:", error);

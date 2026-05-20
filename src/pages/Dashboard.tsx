@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth, useCouple } from "@/src/App";
 import { GlassCard } from "@/src/components/ui/GlassCard";
-import { Heart, Moon, Star, MessageCircle, Book, Gift as GiftIcon, Sparkles, ChevronRight, Clock, X, Send, Lock, Unlock, Gift } from "lucide-react";
-import { differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds } from "date-fns";
+import { Heart, Moon, Star, MessageCircle, Book, Gift as GiftIcon, Sparkles, ChevronRight, Clock, X, Send, Lock, Unlock, Gift, Copy } from "lucide-react";
+import { differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds, format } from "date-fns";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/src/lib/utils";
 import { db } from "@/src/lib/firebase";
@@ -30,9 +30,10 @@ const getDailySurprise = (dateStr: string) => {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { couple, profile, partner } = useCouple();
+  const { couple, profile, partner, loading: coupleLoading } = useCouple();
   const navigate = useNavigate();
   const location = useLocation();
+  const [copied, setCopied] = useState(false);
   const [timeTogether, setTimeTogether] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
   const [dailySecret, setDailySecret] = useState<DailySecret | null>(null);
   const [showSecretModal, setShowSecretModal] = useState(false);
@@ -41,6 +42,110 @@ export default function Dashboard() {
   const [showSurpriseModal, setShowSurpriseModal] = useState(false);
   const [partnerMood, setPartnerMood] = useState<Mood | null>(null);
   const [memoryCount, setMemoryCount] = useState(0);
+
+  const getSimulatedHijriDeed = () => {
+    const now = new Date();
+    const baseDate = new Date("2026-05-17T00:00:00");
+    const date1 = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const date2 = Date.UTC(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+    const diffDays = Math.floor((date1 - date2) / (1000 * 60 * 60 * 24));
+
+    let hijriDay = 1 + diffDays;
+    let hijriMonth = "Dhul-Hijjah (জিলহজ)";
+    let year = 1447;
+    let specialDeedTitle = "General Deed";
+    let specialDeedText = "";
+    let specialDeedBangla = "";
+    let checklist: string[] = [];
+
+    if (hijriDay <= 0) {
+      hijriDay = 30 + hijriDay;
+      hijriMonth = "Dhul-Qi'dah (জিলকদ)";
+      specialDeedTitle = "Daa'wah & Kindness (দাওয়াহ ও ইহসান)";
+      specialDeedText = "Keep your relationships pure. Exchange a warm compliment with your spouse today to spread happiness!";
+      specialDeedBangla = "আপনার দাম্পত্য জীবনকে আরও মধুর করে তুলুন। আজ আপনার জীবনসঙ্গীকে একটি সুন্দর ও অনুপ্রেরণামূলক প্রশংসা বাক্য বলুন!";
+      checklist = [
+        "স্মিতহাস্যে সঙ্গীকে সালাম বিনিময় করা",
+        "সুন্দর এবং নম্রভাবে একে অপরের সাথে কথা বলা",
+        "দিনের যে কোনো এক সময় ১০টি দরূদ শরীফ একসাথে পড়া"
+      ];
+    } else if (hijriDay >= 1 && hijriDay <= 9) {
+      specialDeedTitle = "Sacred Days of Dhul-Hijjah (জিলহজের মহিমান্বিত প্রথম দশক)";
+      if (hijriDay === 9) {
+        specialDeedText = "Today is the Day of Arafah. Fasting on this day expiates the sins of the previous and the coming year. Fast together and make extensive Du'a.";
+        specialDeedBangla = "আজ ‘ইয়াওমুল আরাফাহ’ (আরাফাহর দিন)। এই দিনের রোজা বিগত ও आगामी বছরের গুনাহ মাফ করে দেয়। চলুন আজ দুজনে রোজা রাখি ও ইফতারের পূর্বে বিশেষ দোয়া করি।";
+        checklist = [
+          "আরাফাহর রোজা রাখা (ফজরের আগে সেহরি)",
+          "আরাফাহর দুপুরের পর থেকে সূর্যাস্ত পর্যন্ত বেশি বেশি তওবা ও ইস্তিগফার করা",
+          "তাকবীরে তাশরীক পড়া: আল্লাহু আকবার, আল্লাহু আকবার, লা ইলাহা ইল্লাল্লাহু..."
+        ];
+      } else {
+        specialDeedText = "These are highly beloved days to Allah! Fasting and reciting Dhikr are extremely recommended. Recite Takbeer al-Tashreeq together.";
+        specialDeedBangla = "জিলহজের প্রথম দশক বছরের সবচেয়ে প্রিয় ১০টি দিন! আল্লাহর নৈকট্য লাভের জন্য আজ রোজা রাখতে পারেন। দুজনে মিলে তাকবীরে তাশরীক বেশি বেশি পাঠ করুন।";
+        checklist = [
+          "তাকবীরে তাশরীক পড়া: আল্লাহু আকবার, আল্লাহু আকবার...",
+          "সম্ভব হলে নফল রোজা রাখা",
+          "সঙ্গী বা সঙ্গিনীর সাথে সুন্নাহ মোতাবিক দ্বীনী আলোচনা করা"
+        ];
+      }
+    } else if (hijriDay === 10) {
+      specialDeedTitle = "Eid-ul-Adha Celebration (পবিত্র ঈদুল আজহা)";
+      specialDeedText = "Eid Mubarak! Celebrate this special day with immense gratitude, beautiful clothing, family bonding, and charity.";
+      specialDeedBangla = "ঈদ মোবারক! আজকের বিশেষ দিনটি মহান আল্লাহ্‌র কৃতজ্ঞতা, সুন্দর পোশাক পরিধান, আত্মীয়দের খোঁজ নেওয়া এবং কুরবানীর মাধ্যমে আনন্দময় করে তুলুন।";
+      checklist = [
+        "ঈদের সালাতে একে অপরের জন্য দোয়া করা",
+        "একে অপরকে ঈদের উপহার দেওয়া",
+        "ঈদের নফল দান ও কুরবানীর কাজগুলোর অংশ নেওয়া"
+      ];
+    } else {
+      const dayOfHijri = hijriDay;
+      if (dayOfHijri === 13 || dayOfHijri === 14 || dayOfHijri === 15) {
+        specialDeedTitle = "Ayyam al-Beed - The White Days (আইয়ামুল বিজের রোজা)";
+        specialDeedText = "It is highly recommended (Sunnah) to fast the 13th, 14th, and 15th of every lunar month. Fasting these 3 days is like fasting the entire lifetime.";
+        specialDeedBangla = "আরবি মাসের ১৩, ১৪ ও ১৫ তারিখ আইয়ামুল বিজের রোজা রাখা অত্যন্ত সওয়াবের কাজ। চলুন দুজনে মিলে এই তিন দিন নফল রোজা রাখার নিয়ত করি।";
+        checklist = [
+          "আইয়ামুল বিজের নফল রোজার নিয়ত ও প্রস্তুতি",
+          "সঙ্গীকে সেহরি ও ইফতারের কাজে সাহায্য করা",
+          "ইবলিস ও গুনাহ থেকে নিজেদের হেফাযত করা"
+        ];
+      } else {
+        specialDeedTitle = "Reflecting on Quran & Sunnah (কুরআন ও সুন্নাহর আলো)";
+        specialDeedText = "Knowledge increases faith. Read a small portion of Tafsir or Islamic history together today.";
+        specialDeedBangla = "আজকে দুজনে একসাথে বসে কুরআনের একটি আয়াতের অর্থ বা তাফসীর পাঠ করুন। দ্বীনী জ্ঞান একে অপরের প্রতি ভালোবাসা ও সম্মান বৃদ্ধি করে।";
+        checklist = [
+          "আজ অন্তত ১০ মিনিট কিতাব তিলাওয়াত বা তাফসীর পড়া",
+          "সঙ্গীর মুখে কোনো একটি হাদিস বা সুন্নাহর গল্প শোনা",
+          "রাতের বেলা একসাথে অন্তত ২ রাকাত নফল নামাজ আদায় করা"
+        ];
+      }
+    }
+
+    return {
+      day: hijriDay,
+      month: hijriMonth,
+      year,
+      title: specialDeedTitle,
+      text: specialDeedText,
+      bangla: specialDeedBangla,
+      checklist
+    };
+  };
+
+  const getTodayDeedCompletedKey = () => `moon_deed_${format(new Date(), "yyyy-MM-dd")}`;
+  const [deedCompletedStatus, setDeedCompletedStatus] = useState<boolean>(() => {
+    return localStorage.getItem(getTodayDeedCompletedKey()) === "completed";
+  });
+
+  const toggleDeedStatus = () => {
+    const key = getTodayDeedCompletedKey();
+    const nextVal = !deedCompletedStatus;
+    setDeedCompletedStatus(nextVal);
+    if (nextVal) {
+      localStorage.setItem(key, "completed");
+    } else {
+      localStorage.removeItem(key);
+    }
+  };
 
   const today = new Date().toISOString().split('T')[0];
   const surprise = getDailySurprise(today);
@@ -182,6 +287,15 @@ export default function Dashboard() {
 
   const anniProgress = getAnniversaryProgress();
 
+  if (coupleLoading) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center">
+        <Heart className="text-gold animate-pulse mb-4" size={32} />
+        <p className="text-[10px] uppercase tracking-[0.3em] text-gold/60 font-black animate-pulse">Aligning universes...</p>
+      </div>
+    );
+  }
+
   if (!couple) {
     return (
       <div className="p-8 max-w-lg mx-auto mt-20">
@@ -190,8 +304,26 @@ export default function Dashboard() {
           <h1 className="text-3xl font-serif text-champagne mb-4">Welcome to Our Whisper</h1>
           <p className="mb-8 text-slate-gray leading-relaxed uppercase tracking-widest text-[10px] font-bold">It looks like you aren't part of a couple space yet. Use your spouse's code or create a new one.</p>
           <div className="bg-white/5 border border-white/10 p-6 rounded-3xl mb-8">
-            <p className="text-[10px] uppercase tracking-widest text-gold font-bold mb-2">Your Invite Code</p>
-            <p className="text-4xl font-serif tracking-[0.2em] text-champagne">{profile?.userId?.substring(0, 6).toUpperCase() || "UNIVERSE"}</p>
+            <p className="text-[10px] uppercase tracking-widest text-gold font-bold mb-3">Your Invite Code</p>
+            <button 
+              type="button"
+              onClick={() => {
+                const code = profile?.userId?.substring(0, 6).toUpperCase() || "UNIVERSE";
+                navigator.clipboard.writeText(code);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+              className="w-full py-4 bg-white/5 border border-white/10 hover:border-gold/30 rounded-2xl flex items-center justify-center gap-3 text-2xl font-serif tracking-[0.2em] text-champagne transition-all hover:scale-[1.01] active:scale-95 group relative overflow-hidden"
+              title="Click to copy invite code"
+            >
+              <span>{profile?.userId?.substring(0, 6).toUpperCase() || "UNIVERSE"}</span>
+              <Copy size={16} className="text-gold/60 group-hover:text-gold transition-colors" />
+              {copied && (
+                <div className="absolute inset-0 bg-gold text-midnight flex items-center justify-center font-bold text-[10px] uppercase tracking-widest transition-all">
+                  Copied to Clipboard!
+                </div>
+              )}
+            </button>
           </div>
           <button 
             onClick={() => navigate('/profile')}
@@ -278,6 +410,90 @@ export default function Dashboard() {
 
       {/* Grid of Content */}
       <div className="grid grid-cols-12 gap-8">
+        {/* Dynamic Moon Notice / Today's Special Deed */}
+        {(() => {
+          const deed = getSimulatedHijriDeed();
+          return (
+            <div className="col-span-12">
+              <GlassCard className="p-8 md:p-10 border-gold/20 shadow-2xl relative overflow-hidden bg-gradient-to-br from-white/[0.03] to-white/[0.01]">
+                <div className="absolute top-0 right-0 w-44 h-44 bg-gold/5 rounded-full blur-3xl"></div>
+                
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 pb-6 border-b border-white/5 relative z-10">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3.5 bg-gradient-to-br from-gold/10 to-transparent text-gold rounded-2xl border border-gold/20 flex items-center justify-center relative shadow-lg">
+                      <Moon size={24} className="relative z-10 animate-pulse text-gold" />
+                      <Star size={10} className="absolute top-1.5 right-1.5 text-gold/60 animate-bounce" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold uppercase tracking-widest text-gold">Today's Special Deed (আজকের বিশেষ আমল)</h3>
+                      <p className="text-[11px] text-slate-gray flex items-center gap-1.5 mt-0.5">
+                        <Clock size={11} />
+                        <span>চন্দ্র দিনপঞ্জিকা: <strong>{deed.day} {deed.month} {deed.year} AH</strong></span>
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex md:self-center">
+                    <button 
+                      onClick={toggleDeedStatus}
+                      className={cn(
+                        "px-6 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold shadow-md transition-all flex items-center gap-2",
+                        deedCompletedStatus 
+                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" 
+                          : "bg-gold text-midnight hover:scale-105 active:scale-95 shadow-lg shadow-gold/20"
+                      )}
+                    >
+                      <Sparkles size={11} />
+                      <span>{deedCompletedStatus ? "Deed Completed!" : "Mark Completed"}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-12 gap-8 relative z-10">
+                  {/* Left Side: Text Details */}
+                  <div className="col-span-12 lg:col-span-7 space-y-4 text-left">
+                    <div className="space-y-1">
+                      <span className="text-[10px] uppercase tracking-[0.2em] font-extrabold text-gold/60">Hot Topic</span>
+                      <h4 className="text-xl md:text-2xl font-serif text-champagne">{deed.title}</h4>
+                    </div>
+                    <p className="text-sm font-medium text-ivory leading-relaxed font-bangla text-emerald-100/90">
+                      {deed.bangla}
+                    </p>
+                    <p className="text-xs text-slate-gray/90 leading-relaxed italic">
+                      "{deed.text}"
+                    </p>
+                  </div>
+
+                  {/* Right Side: Checklist Points */}
+                  <div className="col-span-12 lg:col-span-5 bg-white/5 border border-white/5 p-6 rounded-[28px] text-left space-y-4">
+                    <h5 className="text-[10px] uppercase tracking-widest font-bold text-gold flex items-center gap-1.5">
+                      <span>✦</span>
+                      আজকের বিশেষ আমলসমূহ (Today's Checklist)
+                    </h5>
+                    <ul className="space-y-3.5">
+                      {deed.checklist.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5">
+                          <div className={cn(
+                            "w-4.5 h-4.5 rounded-full border flex items-center justify-center text-[10px] mt-0.5 shrink-0 transition-colors",
+                            deedCompletedStatus 
+                              ? "bg-emerald-500/20 border-emerald-500 text-emerald-300" 
+                              : "border-gold/30 text-gold bg-gold/5"
+                          )}>
+                            {deedCompletedStatus ? "✓" : idx + 1}
+                          </div>
+                          <span className="text-xs md:text-sm text-ivory/90 font-bangla leading-relaxed font-medium">
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </GlassCard>
+            </div>
+          );
+        })()}
+
         {/* Left Column */}
         <div className="col-span-12 md:col-span-4 flex flex-col gap-8">
            <GlassCard 

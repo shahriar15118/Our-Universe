@@ -17,7 +17,10 @@ export default function Login() {
     setLoading(true);
     setError("");
     try {
-      await signInWithSocial(provider);
+      const user = await signInWithSocial(provider);
+      
+      // If it's a first time login via Social, we might not have a couple yet.
+      // The Dashboard will handle redirecting to Profile to complete setup.
       navigate("/dashboard");
     } catch (err: any) {
       setError(err.message || "Failed to sign in with social provider");

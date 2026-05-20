@@ -66,48 +66,72 @@ function Providers({ children }: { children: React.ReactNode }) {
 
     setCoupleData(prev => ({ ...prev, loading: true }));
 
-    // Fetch Profile
-    const userDocRef = doc(db, "users", user.uid);
-    const unsubProfile = onSnapshot(userDocRef, async (docSnap) => {
-        if (docSnap.exists()) {
-          const profile = { userId: docSnap.id, ...docSnap.data() } as UserProfile;
-          
-          if (profile.coupleId) {
-            // Fetch Couple
-            const coupleDocRef = doc(db, "couples", profile.coupleId);
-            const unsubCouple = onSnapshot(coupleDocRef, async (coupleSnap) => {
-              if (coupleSnap.exists()) {
-                const couple = { id: coupleSnap.id, ...coupleSnap.data() } as Couple;
-                
-                // Fetch Partner
-                const partnerId = couple.spouseIds.find(id => id !== user.uid);
-                let partner: UserProfile | null = null;
-                if (partnerId) {
-                  const partnerSnap = await getDoc(doc(db, "users", partnerId));
-                  if (partnerSnap.exists()) {
-                    partner = { userId: partnerSnap.id, ...partnerSnap.data() } as UserProfile;
-                  }
-                }
+    let unsubCouple: (() => void) | null = null;
+    let unsubPartner: (() => void) | null = null;
 
-              setCoupleData({ couple, profile, partner, loading: false });
+    // 1. Listen to Profile
+    const unsubProfile = onSnapshot(doc(db, "users", user.uid), (profileSnap) => {
+      if (!profileSnap.exists()) {
+        setCoupleData({ couple: null, profile: null, partner: null, loading: false });
+        return;
+      }
+
+      const profile = { userId: profileSnap.id, ...profileSnap.data() } as UserProfile;
+
+      if (profile.coupleId) {
+        // 2. Listen to Couple (only if not already listening or coupleId changed)
+        if (!unsubCouple) {
+          unsubCouple = onSnapshot(doc(db, "couples", profile.coupleId), (coupleSnap) => {
+            if (!coupleSnap.exists()) {
+              setCoupleData(prev => ({ ...prev, couple: null, loading: false }));
+              return;
             }
-          }, (error) => {
-            console.error("Couple Snapshot Error:", error);
-            setCoupleData(prev => ({ ...prev, loading: false }));
+
+            const couple = { id: coupleSnap.id, ...coupleSnap.data() } as Couple;
+            const partnerId = couple.spouseIds.find(id => id !== user.uid);
+
+            if (partnerId) {
+              // 3. Listen to Partner
+              if (!unsubPartner) {
+                unsubPartner = onSnapshot(doc(db, "users", partnerId), (partnerSnap) => {
+                  const partner = partnerSnap.exists()
+                    ? { userId: partnerSnap.id, ...partnerSnap.data() } as UserProfile
+                    : null;
+                  
+                  // This is a bit of a state nightmare, but let's update everything
+                  setCoupleData(prev => ({
+                    ...prev,
+                    profile,
+                    couple,
+                    partner,
+                    loading: false
+                  }));
+                });
+              } else {
+                // Partner ID hasn't changed, but couple data might have
+                setCoupleData(prev => ({ ...prev, profile, couple, loading: false }));
+              }
+            } else {
+              if (unsubPartner) { unsubPartner(); unsubPartner = null; }
+              setCoupleData(prev => ({ ...prev, profile, couple, partner: null, loading: false }));
+            }
           });
-          return () => unsubCouple();
         } else {
-          setCoupleData({ couple: null, profile, partner: null, loading: false });
+          // Couple ID hasn't changed, but profile might have
+          setCoupleData(prev => ({ ...prev, profile, loading: false }));
         }
       } else {
-        setCoupleData({ couple: null, profile: null, partner: null, loading: false });
+        if (unsubCouple) { unsubCouple(); unsubCouple = null; }
+        if (unsubPartner) { unsubPartner(); unsubPartner = null; }
+        setCoupleData({ couple: null, profile, partner: null, loading: false });
       }
-    }, (error) => {
-      console.error("Profile Snapshot Error:", error);
-      setCoupleData(prev => ({ ...prev, loading: false }));
     });
 
-    return () => unsubProfile();
+    return () => {
+      unsubProfile();
+      if (unsubCouple) unsubCouple();
+      if (unsubPartner) unsubPartner();
+    };
   }, [user]);
 
   return (

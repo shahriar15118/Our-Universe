@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { GlassCard } from "@/src/components/ui/GlassCard";
 import { useAuth, useCouple } from "@/src/App";
 import { Settings, LogOut, Heart, Calendar, User as UserIcon, Camera, Save, Upload, Trash2 } from "lucide-react";
@@ -10,6 +11,8 @@ export default function Profile() {
   const { profile, couple, partner } = useCouple();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [spouseEmail, setSpouseEmail] = useState("");
+  const [linkingLoading, setLinkingLoading] = useState(false);
   const userFileRef = useRef<HTMLInputElement>(null);
   const partnerFileRef = useRef<HTMLInputElement>(null);
 
@@ -29,38 +32,97 @@ export default function Profile() {
     photoUrl: profile?.photoUrl || "",
     weddingDate: formatForInput(couple?.weddingDate || ""),
     anniversary: couple?.anniversary || "",
-    partnerPhotoUrl: partner?.photoUrl || "",
+    partnerPhotoUrl: partner?.photoUrl || couple?.partnerPhotoUrl || "",
   });
 
-  // Sync formData when data loads
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  // Sync formData when data loads for the first time
   React.useEffect(() => {
-    if (profile || couple || partner) {
-      setFormData(prev => ({
-        ...prev,
-        name: prev.name || profile?.name || "",
-        role: prev.role || profile?.role || "husband",
-        photoUrl: prev.photoUrl || profile?.photoUrl || "",
-        weddingDate: prev.weddingDate || formatForInput(couple?.weddingDate || ""),
-        anniversary: prev.anniversary || couple?.anniversary || "",
-        partnerPhotoUrl: prev.partnerPhotoUrl || partner?.photoUrl || "",
-      }));
+    if ((profile || couple || partner) && !hasInitialized) {
+      setFormData({
+        name: profile?.name || "",
+        role: profile?.role || "husband",
+        photoUrl: profile?.photoUrl || "",
+        weddingDate: formatForInput(couple?.weddingDate || ""),
+        anniversary: couple?.anniversary || "",
+        partnerPhotoUrl: partner?.photoUrl || couple?.partnerPhotoUrl || "",
+      });
+      if (profile && couple) {
+        setHasInitialized(true);
+      }
     }
-  }, [profile, couple, partner]);
+  }, [profile, couple, partner, hasInitialized]);
+
+  const handleLinkSpouse = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!spouseEmail.trim() || !profile || !auth?.currentUser) return;
+
+    setLinkingLoading(true);
+    try {
+      const { createOrJoinCouple } = await import("@/src/lib/auth-helpers");
+      await createOrJoinCouple(profile.userId, profile.email, spouseEmail);
+      // Data will refresh via App.tsx snapshots
+      setSuccess(true);
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Failed to link with spouse");
+    } finally {
+      setLinkingLoading(false);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'user' | 'partner') => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        alert("Image size is too large (max 5MB). Please use a smaller file.");
+      if (file.size > 10 * 1024 * 1024) { // Increased to 10MB
+        alert("Image size is too large (max 10MB). Please use a smaller file.");
         return;
       }
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setFormData(prev => ({
-          ...prev,
-          [type === 'user' ? 'photoUrl' : 'partnerPhotoUrl']: base64String
-        }));
+        const img = new Image();
+        img.onload = () => {
+          // Resize and compress
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Max dimension 500px (Plenty for profile pics)
+          const MAX_SIZE = 500;
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Compress quality 0.6 for smaller footprint
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+          
+          // Check if still too large for Firestore (1MB limit)
+          if (compressedBase64.length > 1000000) {
+            alert("Even after compression, this image is too large. Please try a different one.");
+            return;
+          }
+
+          setFormData(prev => ({
+            ...prev,
+            [type === 'user' ? 'photoUrl' : 'partnerPhotoUrl']: compressedBase64
+          }));
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
@@ -118,7 +180,23 @@ export default function Profile() {
         photoUrl: formData.photoUrl
       });
 
-      // Update partner profile image if changed
+      // Update couple data
+      if (couple?.id) {
+        const coupleRef = doc(db, "couples", couple.id);
+        const coupleUpdate: any = {
+          weddingDate: formData.weddingDate,
+          anniversary: formData.anniversary
+        };
+
+        // If partner hasn't joined yet, or we want to save a placeholder
+        if (!partner || formData.partnerPhotoUrl !== (partner?.photoUrl || couple?.partnerPhotoUrl)) {
+          coupleUpdate.partnerPhotoUrl = formData.partnerPhotoUrl;
+        }
+
+        await updateDoc(coupleRef, coupleUpdate);
+      }
+
+      // Update partner profile image if they exist and it changed
       if (partner?.userId && formData.partnerPhotoUrl !== partner.photoUrl) {
         const partnerRef = doc(db, "users", partner.userId);
         await updateDoc(partnerRef, {
@@ -126,19 +204,11 @@ export default function Profile() {
         });
       }
 
-      // Update couple data
-      if (couple?.id) {
-        const coupleRef = doc(db, "couples", couple.id);
-        await updateDoc(coupleRef, {
-          weddingDate: formData.weddingDate,
-          anniversary: formData.anniversary
-        });
-      }
-
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to update profile:", err);
+      alert(`Failed to save changes: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -175,6 +245,39 @@ export default function Profile() {
       </header>
 
       <form onSubmit={handleUpdate} className="space-y-6">
+        {!couple && (
+          <GlassCard className="p-8 border-gold/30 bg-gold/5 mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <Heart className="text-gold" size={20} />
+              <h3 className="heading-accent m-0 text-ivory">Connect your Universe</h3>
+            </div>
+            <p className="text-[10px] uppercase tracking-widest text-slate-gray mb-6 font-bold leading-relaxed">
+              To unlock full features, enter your spouse's email. If they haven't joined yet, we'll create a space and wait for them. If they have, you'll join their space.
+            </p>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase tracking-widest text-slate-gray font-bold">Spouse's Email</label>
+                <input 
+                  type="email" 
+                  value={spouseEmail}
+                  onChange={(e) => setSpouseEmail(e.target.value)}
+                  placeholder="partner@email.com"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-ivory outline-none focus:ring-2 focus:ring-gold/30"
+                  required
+                />
+              </div>
+              <button 
+                type="button"
+                onClick={handleLinkSpouse}
+                disabled={linkingLoading || !spouseEmail.trim()}
+                className="w-full py-4 bg-gold text-midnight rounded-2xl font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-gold/20 hover:scale-105 transition-all disabled:opacity-50"
+              >
+                {linkingLoading ? "Connecting..." : "Initiate Connection"}
+              </button>
+            </div>
+          </GlassCard>
+        )}
+
         <div className="space-y-4">
           <h3 className="heading-accent">Personal Essence</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -244,7 +347,7 @@ export default function Profile() {
             <div className="flex items-center gap-6 p-6 bg-white/5 border border-white/10 rounded-[32px]">
               <div className="relative w-20 h-20 shrink-0">
                 <img 
-                  src={formData.partnerPhotoUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${partner?.name}`} 
+                  src={formData.partnerPhotoUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${partner?.name || partner?.email || 'Partner'}`} 
                   alt="Partner Preview" 
                   className="w-full h-full rounded-full object-cover border-2 border-gold/40 shadow-xl bg-indigo-deep"
                 />
@@ -277,20 +380,6 @@ export default function Profile() {
                 </div>
               </div>
             </div>
-            
-            <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-widest text-slate-gray font-bold">Or Paste Image URL</label>
-              <div className="relative">
-                <Camera className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/50" size={18} />
-                <input 
-                  type="text" 
-                  placeholder="Paste external image URL here"
-                  value={formData.partnerPhotoUrl}
-                  onChange={(e) => setFormData({...formData, partnerPhotoUrl: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-ivory outline-none focus:ring-2 focus:ring-gold/30"
-                />
-              </div>
-            </div>
           </div>
         </div>
 
@@ -312,7 +401,7 @@ export default function Profile() {
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full border border-gold/30 p-0.5 overflow-hidden">
                 <img 
-                  src={formData.partnerPhotoUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${partner?.name}`} 
+                  src={formData.partnerPhotoUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${partner?.name || partner?.email || 'Partner'}`} 
                   alt={partner?.name} 
                   className="w-full h-full rounded-full object-cover bg-indigo-deep"
                 />
@@ -337,8 +426,8 @@ export default function Profile() {
 
           <div className="flex flex-col gap-2 mt-4">
             <div className="flex justify-center gap-6">
-              <a href="/privacy" className="text-[9px] uppercase tracking-widest text-slate-gray hover:text-gold transition-colors font-bold">Privacy Policy</a>
-              <a href="/terms" className="text-[9px] uppercase tracking-widest text-slate-gray hover:text-gold transition-colors font-bold">Terms of Service</a>
+              <Link to="/privacy" className="text-[9px] uppercase tracking-widest text-slate-gray hover:text-gold transition-colors font-bold">Privacy Policy</Link>
+              <Link to="/terms" className="text-[9px] uppercase tracking-widest text-slate-gray hover:text-gold transition-colors font-bold">Terms of Service</Link>
             </div>
             <p className="text-center text-[8px] uppercase tracking-[0.4em] text-slate-gray/30 font-black mt-2">Our Whisper • v1.0.0</p>
           </div>

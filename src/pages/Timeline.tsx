@@ -271,7 +271,7 @@ export default function Timeline() {
         </GlassCard>
       </motion.div>
 
-      <div className="mb-12 flex items-center gap-3 overflow-x-auto pb-4 no-scrollbar">
+      <div className="mb-12 flex items-center justify-start sm:justify-center gap-3 overflow-x-auto pb-4 no-scrollbar w-full">
         {["All", "Soul-stirring", "Destined", "Sacred Union", "Peaceful", "Infinite"].map((emo) => (
           <button
             key={emo}

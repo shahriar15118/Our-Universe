@@ -105,6 +105,153 @@ const eveningAdhkar = [
   }
 ];
 
+const dhikrCollections: Record<string, {
+  title: string;
+  banglaTitle: string;
+  icon: any;
+  items: Array<{
+    arabic: string;
+    transliteration: string;
+    banglaUccharon: string;
+    translation: string;
+    repeat: number;
+  }>;
+}> = {
+  preFajr: {
+    title: "Pre-Fajr Salah (Tahajjud & Sahur)",
+    banglaTitle: "তাহাজ্জুদ ও সাহরি সময়",
+    icon: Moon,
+    items: [
+      {
+        arabic: "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ",
+        transliteration: "Astaghfirullahal 'Adheem...",
+        banglaUccharon: "আস্তাগফিরুল্লাহাল আজিমাল্লাজি লা ইলাহা ইল্লা হুয়াল হাইয়ুল কাইয়ুমু ওয়া আতুবু ইলাইহি",
+        translation: "আমি মহান আল্লাহর নিকট ক্ষমা প্রার্থনা করছি, যিনি ব্যতীত কোন উপাস্য নেই, যিনি চিরঞ্জীব, চিরস্থায়ী এবং আমি তাঁর দিকেই প্রত্যাবর্তন করছি।",
+        repeat: 3
+      },
+      {
+        arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ، سُبْحَانَ اللَّهِ الْعَظِيمِ",
+        transliteration: "Subhanallahi wa bihamdihi, Subhanallahal 'Adheem",
+        banglaUccharon: "সুবহানাল্লাহি ওয়া বিহামদিহি, সুবহানাল্লাহিল আজিম",
+        translation: "আল্লাহর পবিত্রতা ঘোষণা করছি তাঁর প্রশংসার সাথে, মহিমান্বিত আল্লাহর পবিত্রতা বর্ণনা করছি।",
+        repeat: 100
+      },
+      {
+        arabic: "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+        transliteration: "La ilaha illallah wahdahu...",
+        banglaUccharon: "লা ইলাহা ইল্লাল্লাহু ওয়াহদাহু লা শারিকা লাহু, লাহুল মুলকু ওয়া লাহুল হামদু ওয়া হুয়া আলা কুলি শাইয়িন কাদির",
+        translation: "আল্লাহ ব্যতীত কোন সত্য উপাস্য নেই, তিনি একক, তাঁর অংশীদার নেই, রাজত্ব ও প্রশংসা তাঁরই এবং তিনি সবকিছুর ওপর ক্ষমতাবান।",
+        repeat: 100
+      }
+    ]
+  },
+  postFajr: {
+    title: "Post-Fajr Salah (Morning Adhkar)",
+    banglaTitle: "ফজর পরবর্তী ও সকালের আজকার",
+    icon: Sun,
+    items: [
+      { 
+        arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ", 
+        transliteration: "Sayyidul Istighfar",
+        banglaUccharon: "আল্লাহুম্মা আন্তা রাব্বি লা ইলাহা ইল্লা আন্তা খালাকতানি ওয়া আনা আবদুকা ওয়া আনা আলা আহদিকা ওয়া ওয়াদিকা মাস্তাতাতু...",
+        translation: "হে আল্লাহ! আপনি আমার রব, আপনি ছাড়া কোন সত্য মাবুদ নেই। আপনি আমাকে সৃষ্টি করেছেন এবং আমি আপনার বান্দা...",
+        repeat: 1 
+      },
+      {
+        arabic: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+        transliteration: "Asbahna wa asbahal-mulku lillah...",
+        banglaUccharon: "আসবাহনা ওয়া আসবাহাল মুলকু লিল্লাহি ওয়ালহামদু লিল্লাহ, লা ইলাহা ইল্লাল্লাহু ওয়াহদাহু লা শারিকা লাহু",
+        translation: "আমরা সকালে উপনীত হয়েছি এবং রাজত্ব আল্লাহর হয়ে সকালে উপনীত হয়েছে...",
+        repeat: 1
+      },
+      { 
+        arabic: "سُبْحَانَ اللهِ", 
+        transliteration: "SubhanAllah", 
+        banglaUccharon: "সুবহানআল্লাহ",
+        translation: "আল্লাহ অতি পবিত্র", 
+        repeat: 33 
+      },
+      { 
+        arabic: "الْحَمْدُ لِلَّهِ", 
+        transliteration: "Alhamdulillah", 
+        banglaUccharon: "আলহামদুলিল্লাহ",
+        translation: "সমস্ত প্রশংসা আল্লাহর জন্য", 
+        repeat: 33 
+      },
+      { 
+        arabic: "اللهُ أَكْبَرُ", 
+        transliteration: "Allahu Akbar", 
+        banglaUccharon: "আল্লাহু আকবার",
+        translation: "আল্লাহ সবচেয়ে মহান", 
+        repeat: 34 
+      }
+    ]
+  },
+  postDhuhr: {
+    title: "Post-Dhuhr Salah Adhkar",
+    banglaTitle: "যোহর পরবর্তী আজকার",
+    icon: Sun,
+    items: postSalahAdhkar
+  },
+  postAsr: {
+    title: "Post-Asr Salah Adhkar",
+    banglaTitle: "আসর পরবর্তী আজকার",
+    icon: Sun,
+    items: [
+      ...postSalahAdhkar,
+      {
+        arabic: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ",
+        transliteration: "Allahumma bika amsayna...",
+        banglaUccharon: "আল্লাহুম্মা বিকা আমসাইনা, ওয়া বিকা আসবাহনা, ওয়া বিকা নাহইয়া, ওয়া বিকা নামূতু, ওয়া ইলাইকাল মাসীর",
+        translation: "হে আল্লাহ! আপনার সাহায্যেই আমরা সন্ধ্যা করেছি, আপনার সাহায্যেই ভোর করেছি...",
+        repeat: 1
+      }
+    ]
+  },
+  postMaghrib: {
+    title: "Post-Maghrib Salah (Evening Adhkar)",
+    banglaTitle: "মাগরিব পরবর্তী ও সন্ধ্যার আজকার",
+    icon: Moon,
+    items: [
+      {
+        arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+        transliteration: "Amsayna wa amsal-mulku lillah...",
+        banglaUccharon: "আমসাইনা ওয়া আমসাল মুলকু লিল্লাহি ওয়ালহামদু লিল্লাহ, লা ইলাহা ইল্লাল্লাহু ওয়াহদাহু লা শারিকা লাহু",
+        translation: "আমরা সন্ধ্যায় উপনীত হয়েছি এবং রাজত্ব আল্লাহর হয়ে সন্ধ্যায় উপনীত হয়েছে...",
+        repeat: 1
+      },
+      ...postSalahAdhkar
+    ]
+  },
+  postIsha: {
+    title: "Post-Isha Salah Adhkar",
+    banglaTitle: "এশা পরবর্তী আজকার",
+    icon: Moon,
+    items: postSalahAdhkar
+  },
+  beforeSleep: {
+    title: "Before Sleep Adhkar",
+    banglaTitle: "ঘুমানোর পূর্বের আমল ও দোয়া",
+    icon: Moon,
+    items: [
+      {
+        arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+        transliteration: "Bismika Allahumma amootu wa ahya",
+        banglaUccharon: "বিসমিকা আল্লাহুম্মা আমুতু ওয়া আহয়া",
+        translation: "হে আল্লাহ, আপনার নামেই আমি মৃত্যুবরণ (শয়ন) করি এবং জীবিত (জাগ্রত) হই।",
+        repeat: 1
+      },
+      {
+        arabic: "سُبْحَانَ اللهِ (৩৩ বার) | الْحَمْدُ لِلَّهِ (৩৩ বার) | اللهُ أَكْبَرُ (৩৪ বার)",
+        transliteration: "SubhanAllah (33x), Alhamdulillah (33x), Allahu Akbar (34x)",
+        banglaUccharon: "সুবহানআল্লাহ (৩৩ বার), আলহামদুলিল্লাহ (৩৩ বার), আল্লাহু আকবার (৩৪ বার)",
+        translation: "আল্লাহ অতি পবিত্র, সমস্ত প্রশংসা আল্লাহর এবং আল্লাহ অতি মহান।",
+        repeat: 1
+      }
+    ]
+  }
+};
+
 interface DeenData {
   prayers: Record<string, boolean>;
   quran: boolean;
@@ -152,12 +299,34 @@ export default function Journey() {
   const [prayerTimes, setPrayerTimes] = useState<Record<string, string>>({});
   const [showQuranModal, setShowQuranModal] = useState(false);
   const [showDhikrModal, setShowDhikrModal] = useState(false);
+  const [showTahajjudModal, setShowTahajjudModal] = useState(false);
+  const [showDuhaModal, setShowDuhaModal] = useState(false);
+  const [showLearningModal, setShowLearningModal] = useState(false);
+
+  const getInitialDhikrTab = () => {
+    const hour = new Date().getHours();
+    if (hour >= 2 && hour < 5) return "preFajr";
+    if (hour >= 5 && hour < 11) return "postFajr";
+    if (hour >= 11 && hour < 15) return "postDhuhr";
+    if (hour >= 15 && hour < 18) return "postAsr";
+    if (hour >= 18 && hour < 20) return "postMaghrib";
+    if (hour >= 20 && hour < 23) return "postIsha";
+    return "beforeSleep";
+  };
   const [ayahs, setAyahs] = useState<any[]>([]);
+  const [ayahCache, setAyahCache] = useState<Record<number, any[]>>({});
   const [ayahLoading, setAyahLoading] = useState(false);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
   const [activeReminder, setActiveReminder] = useState<string | null>(null);
   const [dismissedReminders, setDismissedReminders] = useState<Record<string, string>>({}); // { prayerId: dateString }
   const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Pre-fetch ayahs when profile is available
+    if (profile && ayahs.length === 0 && !ayahLoading) {
+      fetchAyahs();
+    }
+  }, [profile?.quranProgress]);
 
   useEffect(() => {
     if (!prayerTimes || Object.keys(prayerTimes).length === 0 || !profile) return;
@@ -237,8 +406,15 @@ export default function Journey() {
 
   const fetchAyahs = async () => {
     if (!profile) return;
-    setAyahLoading(true);
     const start = (profile.quranProgress || 0) + 1;
+    
+    // Check cache first
+    if (ayahCache[start]) {
+      setAyahs(ayahCache[start]);
+      return;
+    }
+
+    setAyahLoading(true);
     
     try {
       const res = await fetch(`/api/quran/verses?start=${start}&count=${AYAH_PER_PRAYER}`);
@@ -246,6 +422,7 @@ export default function Journey() {
       
       if (data.ayahs) {
         setAyahs(data.ayahs);
+        setAyahCache(prev => ({ ...prev, [start]: data.ayahs }));
       } else {
         throw new Error((data.error as string) || "Failed to fetch ayahs");
       }
@@ -541,14 +718,21 @@ export default function Journey() {
   }
 
   return (
-    <div className="container mx-auto px-6 pt-12 max-w-2xl pb-40">
+    <div className="container mx-auto px-4 sm:px-6 pt-8 sm:pt-12 max-w-2xl pb-40 relative">
+      {/* Dynamic Ambient Decorative Background Glows wrapped safely to prevent horizontal overflow */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-100px] left-1/4 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px]" />
+        <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-emerald-500/[0.03] rounded-full blur-[100px]" />
+        <div className="absolute bottom-1/4 left-1/3 w-[450px] h-[450px] bg-indigo-500/[0.02] rounded-full blur-[110px]" />
+      </div>
+
       <AnimatePresence>
         {activeReminder && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md"
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md"
           >
             <GlassCard className="p-4 bg-gold border-gold text-midnight shadow-2xl flex items-center gap-4">
               <div className="bg-midnight/20 p-2 rounded-xl">
@@ -567,92 +751,150 @@ export default function Journey() {
         )}
       </AnimatePresence>
 
-      <header className="mb-12">
-        {/* Top Verse - An-Naba */}
-        <p className="text-center italic text-gold/60 font-serif mb-12 max-w-lg mx-auto text-lg">
-          "And We created you in pairs" — Surah An-Naba 78:8
+      <header className="mb-10 sm:mb-12 relative z-10 text-center">
+        {/* Poetic & Polished Divine Quote */}
+        <div className="inline-block py-1 px-4 sm:px-4.5 rounded-full bg-gold/5 border border-gold/15 backdrop-blur-md mb-5">
+          <span className="text-[9px] tracking-[0.25em] uppercase text-gold font-bold">Divine Wisdom</span>
+        </div>
+        <p className="italic text-champagne/90 font-serif text-xl sm:text-2xl md:text-3xl tracking-wide max-w-xl mx-auto leading-relaxed mb-3 px-2">
+          "And We created you in pairs"
         </p>
+        <p className="text-[10px] uppercase tracking-[0.35em] text-gold/50 font-bold mb-10 sm:mb-12 font-mono">Surah An-Naba · 78:8</p>
 
-        <div className="flex justify-between items-start flex-wrap gap-6 mb-12">
-          <div className="space-y-8 w-full md:w-auto">
-            <div>
-              <h1 className="text-4xl font-serif text-champagne mb-2">Our Journey</h1>
-              <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">Scaling the heights of Iman</p>
+        <div className="flex flex-col gap-6 mb-10 sm:mb-12 text-left">
+          <div className="space-y-6 sm:space-y-8 w-full">
+            <div className="space-y-1 text-center md:text-left">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-champagne">Our Deen Journey</h1>
+              <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.25em] sm:tracking-[0.3em] text-gold font-bold">Scaling the heights of Iman together</p>
             </div>
             
-            <div className="flex items-center gap-10 bg-gold/10 px-12 py-9 rounded-[48px] border-2 border-gold/30 backdrop-blur-3xl group hover:border-gold/50 transition-all shadow-[0_30px_70px_rgba(197,160,89,0.3)]">
-              <div className="p-6 bg-gold text-midnight rounded-[28px] shadow-2xl group-hover:scale-110 transition-transform">
-                <TrendingUp size={48} strokeWidth={2.5} />
+            {/* Exquisite Metallic Streak Showcase Card */}
+            <div className="flex items-center justify-center md:justify-start gap-4 sm:gap-6 bg-gradient-to-br from-gold/[0.15] via-gold/[0.03] to-white/[0.01] px-5 py-5 sm:px-6 sm:py-6 md:px-8 md:py-6.5 rounded-[24px] sm:rounded-[32px] border border-gold/25 backdrop-blur-3xl group hover:border-gold/35 transition-all shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl"></div>
+              <div className="p-3.5 bg-gold text-midnight rounded-[18px] sm:rounded-[22px] shadow-lg group-hover:scale-105 transition-all duration-300 flex items-center justify-center relative shrink-0">
+                <TrendingUp size={24} className="sm:size-[28px]" strokeWidth={2.5} />
+                <span className="absolute -top-0.5 -right-0.5 w-2 w-2 sm:w-2.5 sm:h-2.5 bg-emerald-500 rounded-full animate-ping" />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-emerald-500 rounded-full" />
               </div>
-              <div>
-                <p className="text-5xl font-serif text-champagne leading-none mb-3">{streak} Days</p>
-                <p className="text-[14px] uppercase tracking-[0.4em] text-gold font-bold">Sacred Streak</p>
+              <div className="text-left">
+                <p className="text-2xl sm:text-3xl md:text-4xl font-serif text-champagne leading-none mb-1 sm:mb-1.5 font-bold">{streak} Days</p>
+                <p className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-gold font-bold">Iman Progress Streak</p>
               </div>
             </div>
 
-            {/* Spiritual Verse - Multilingual (Under Streak) */}
+            {/* Spiritual Verse Card - Multilingual under streak */}
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="relative overflow-hidden group w-full"
             >
-              <GlassCard className="p-10 md:p-12 text-center bg-gradient-to-br from-midnight via-transparent to-gold/5 border-gold/20 shadow-2xl relative">
-                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
-                 <div className="space-y-10">
+              <GlassCard className="p-5 sm:p-8 md:p-10 text-center bg-gradient-to-br from-midnight via-transparent to-gold/5 border-gold/15 shadow-xl relative rounded-[24px] sm:rounded-[32px]">
+                 <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gold/45 to-transparent" />
+                 <div className="space-y-6 sm:space-y-8">
                     <div className="flex justify-center">
-                       <h3 className="arabic-text text-5xl md:text-6xl text-champagne leading-[1.8] text-center w-full">
+                       <h3 className="arabic-text text-3xl sm:text-4xl md:text-5xl text-champagne leading-[1.8] text-center w-full">
                           فَإِنَّ مَعَ الْعُسْرِ يُسْرًا
                        </h3>
                     </div>
-                    <div className="space-y-6">
-                       <p className="text-2xl font-serif italic text-ivory/90 tracking-tight leading-relaxed max-w-sm mx-auto">
+                    <div className="space-y-4 sm:space-y-5">
+                       <p className="text-base sm:text-lg md:text-xl font-serif italic text-ivory/80 tracking-tight leading-relaxed max-w-sm mx-auto">
                          "For indeed, with hardship [will be] ease."
                        </p>
-                       <div className="w-16 h-[2px] bg-gold/30 mx-auto"></div>
-                       <p className="text-2xl font-bangla text-gold/80 leading-relaxed max-w-sm mx-auto">
+                       <div className="w-10 sm:w-12 h-[1px] bg-gold/25 mx-auto"></div>
+                       <p className="text-base sm:text-lg font-bangla text-gold/75 leading-relaxed max-w-sm mx-auto">
                          "নিশ্চয় কষ্টের সাথেই স্বস্তি রয়েছে।"
                        </p>
                     </div>
-                    <p className="text-[11px] uppercase tracking-[0.6em] text-slate-gray font-bold pt-10 border-t border-white/5 inline-block">Surah Ash-Sharh · 94:6</p>
+                    <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.45em] sm:tracking-[0.55em] text-slate-gray font-bold pt-6 sm:pt-8 border-t border-white/5 inline-block">Surah Ash-Sharh · 94:6</p>
                  </div>
               </GlassCard>
             </motion.div>
           </div>
 
-          <div className="flex flex-col items-end gap-6 ml-auto">
-             <div className="flex bg-midnight/50 p-2 rounded-[24px] border border-white/10 backdrop-blur-md">
+          {/* Premium Fluid Segmented Switcher */}
+          <div className="flex justify-center md:justify-end w-full mt-2 sm:mt-4 md:mt-0">
+             <div className="flex bg-midnight/60 p-1 rounded-full border border-white/5 backdrop-blur-md">
                 <button 
                   onClick={() => setViewMode("me")}
                   className={cn(
-                    "flex items-center gap-2 px-8 py-4 rounded-[16px] text-[11px] uppercase tracking-widest font-bold transition-all",
-                    viewMode === "me" ? "bg-gold text-midnight shadow-lg" : "text-slate-gray hover:text-ivory"
+                    "flex items-center gap-1.5 px-4.5 py-2 sm:px-5 sm:py-2.5 rounded-full text-[9px] sm:text-[10px] uppercase tracking-widest font-black transition-all",
+                    viewMode === "me" 
+                      ? "bg-gold text-midnight shadow-md shadow-gold/20 font-bold" 
+                      : "text-slate-gray hover:text-ivory"
                   )}
                 >
-                  <User size={16} /> You
+                  <User size={12} /> You
                 </button>
                 <button 
                   onClick={() => setViewMode("partner")}
                   className={cn(
-                    "flex items-center gap-2 px-8 py-4 rounded-[16px] text-[11px] uppercase tracking-widest font-bold transition-all",
-                    viewMode === "partner" ? "bg-gold text-midnight shadow-lg" : "text-slate-gray hover:text-ivory"
+                    "flex items-center gap-1.5 px-4.5 py-2 sm:px-5 sm:py-2.5 rounded-full text-[9px] sm:text-[10px] uppercase tracking-widest font-black transition-all",
+                    viewMode === "partner" 
+                      ? "bg-gold text-midnight shadow-md shadow-gold/20 font-bold" 
+                      : "text-slate-gray hover:text-ivory"
                   )}
                 >
-                  <Users size={16} /> Spouse
+                  <Users size={12} /> Spouse
                 </button>
              </div>
           </div>
         </div>
       </header>
 
-      <div className="space-y-12">
+      <div className="space-y-10 sm:space-y-12 relative z-10">
         {/* Prayers Section */}
-        <section>
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="heading-accent m-0">Daily Prayers (Salah)</h3>
-            <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gold font-bold bg-gold/10 px-4 py-2 rounded-full border border-gold/20">
-              <Clock size={12} /> {format(new Date(), "HH:mm")}
+        <section className="space-y-5 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left">
+            <div className="space-y-0.5 sm:space-y-1">
+              <h3 className="heading-accent m-0 text-xl sm:text-2xl">Daily Prayers (Salah)</h3>
+              <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-slate-gray font-bold">Offer together to multiply rewards</p>
+            </div>
+            <div className="flex items-center gap-2 text-[9px] sm:text-[10px] uppercase tracking-widest text-gold font-bold bg-gold/5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-gold/15 self-start sm:self-center">
+              <Clock size={11} className="animate-pulse" /> {format(new Date(), "HH:mm")}
             </div>
           </div>
+          {/* Elegant Circular Salah Progress Bar */}
+          {(() => {
+            const completedPrayersCount = Object.values(currentViewData.prayers || {}).filter(Boolean).length;
+            return (
+              <div className="bg-white/[0.01] border border-white/5 rounded-3xl p-4 sm:p-5 flex items-center justify-between backdrop-blur-sm text-left relative overflow-hidden">
+                <div className="flex items-center gap-3 sm:gap-4 w-full">
+                  <div className="relative flex items-center justify-center shrink-0">
+                    <svg className="w-10 h-10 transform -rotate-90">
+                      <circle
+                        cx="20"
+                        cy="20"
+                        r="17"
+                        stroke="rgba(255,255,255,0.05)"
+                        strokeWidth="3"
+                        fill="transparent"
+                      />
+                      <motion.circle
+                        cx="20"
+                        cy="20"
+                        r="17"
+                        stroke="#C5A059"
+                        strokeWidth="3"
+                        fill="transparent"
+                        strokeDasharray={2 * Math.PI * 17}
+                        animate={{ strokeDashoffset: 2 * Math.PI * 17 * (1 - completedPrayersCount / 5) }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                      />
+                    </svg>
+                    <span className="absolute text-[9px] font-bold text-champagne font-mono">{completedPrayersCount}/5</span>
+                  </div>
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-semibold text-champagne font-serif">Today's Salah Progress</h4>
+                    <p className="text-[8px] sm:text-[9.5px] uppercase tracking-wider text-slate-gray font-bold mt-0.5">
+                      {completedPrayersCount === 5 
+                        ? "Incredible, complete devotion! (মাশাআল্লাহ)" 
+                        : "Every prayer is a divine connection"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
           <div className="grid grid-cols-1 gap-4">
             {prayersConfig.map((prayer) => {
@@ -662,94 +904,100 @@ export default function Journey() {
               const reminderEnabled = profile?.reminderSettings?.[prayer.id];
               
               return (
-                <div key={prayer.id} className="space-y-2">
-                  <GlassCard 
-                    onClick={() => viewMode === "me" && toggleItem("prayer", prayer.id)}
-                    whileTap={viewMode === "me" ? { scale: 0.98 } : {}}
-                    className={cn(
-                      "p-7 flex items-center justify-between transition-all duration-500 cursor-pointer group",
-                      isDone ? "bg-gold/[0.08] border-gold/40" : "hover:bg-white/[0.07] border-white/10"
-                    )}
-                  >
-                    <div className="flex items-center gap-8">
-                      <div className={cn(
-                        "p-5 rounded-2xl transition-all duration-500",
-                        isDone ? "bg-gold text-midnight shadow-[0_0_30px_rgba(197,160,89,0.4)] scale-110" : "bg-white/5 text-slate-gray group-hover:text-gold/50"
-                      )}>
-                        <prayer.icon size={28} />
-                      </div>
-                      <div>
-                        <h4 className={cn("text-2xl font-serif mb-1", isDone ? "text-champagne" : "text-ivory/60 group-hover:text-ivory")}>
-                          {prayer.id}
-                        </h4>
-                        <p className="text-[11px] uppercase tracking-widest text-slate-gray font-bold flex items-center gap-2">
-                          <Clock size={12} className="text-gold/50" /> {time}
-                        </p>
+                <GlassCard 
+                  key={prayer.id}
+                  onClick={() => viewMode === "me" && toggleItem("prayer", prayer.id)}
+                  whileTap={viewMode === "me" ? { scale: 0.99 } : {}}
+                  className={cn(
+                    "p-3.5 sm:p-5 flex items-center justify-between transition-all duration-300 cursor-pointer group border relative overflow-hidden rounded-[20px] sm:rounded-[24px]",
+                    isDone 
+                      ? "bg-gold/[0.05] border-gold/40 shadow-md ring-1 ring-gold/10" 
+                      : "bg-white/[0.01] border-white/5 hover:border-white/10 hover:bg-white/[0.03]"
+                  )}
+                >
+                  <div className="flex items-center gap-3 sm:gap-5 text-left">
+                    <div className={cn(
+                      "p-2.5 sm:p-3 rounded-xl transition-all duration-300 flex items-center justify-center shrink-0",
+                      isDone 
+                        ? "bg-gold text-midnight shadow-lg scale-105" 
+                        : "bg-white/5 text-slate-gray group-hover:text-gold group-hover:bg-gold/10"
+                    )}>
+                      <prayer.icon size={18} className="sm:size-[20px]" />
+                    </div>
+                    <div>
+                      <h4 className={cn("text-base sm:text-lg font-serif mb-0.5", isDone ? "text-champagne font-semibold text-shadow-sm" : "text-ivory/60 group-hover:text-ivory")}>
+                        {prayer.id}
+                      </h4>
+                      <div className="flex items-center gap-1 sm:gap-1.5">
+                        <Clock size={10} className="text-gold/60" />
+                        <span className="text-[9px] sm:text-[10px] font-mono tracking-wider text-slate-gray font-bold">{time}</span>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center gap-6">
-                      {/* Visual feedback for spouse status in "me" mode */}
-                      {viewMode === "me" && spouseDone && (
-                        <div className="flex flex-col items-center gap-1 opacity-60">
-                            <CheckCircle2 size={12} className="text-gold" />
-                            <span className="text-[7px] uppercase tracking-widest text-gold font-bold">Spouse</span>
-                        </div>
-                      )}
-
-                      <div className={cn(
-                        "w-12 h-12 rounded-[18px] border-2 flex items-center justify-center transition-all duration-300",
-                        isDone ? "bg-gold border-gold text-midnight scale-110 shadow-lg" : "border-white/10 hover:border-gold/30 text-transparent"
-                      )}>
-                        {isDone ? "✓" : ""}
-                      </div>
-                    </div>
-                  </GlassCard>
+                  </div>
                   
-                  {viewMode === "me" && (
-                    <div className="flex justify-end pr-4">
+                  <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+                    {/* Integrated Remind Me Option Inside Prayer Box */}
+                    {viewMode === "me" && (
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleReminder(prayer.id);
                         }}
+                        title={reminderEnabled ? "Disable Reminder" : "Enable Reminder"}
                         className={cn(
-                          "flex items-center gap-2 text-[8px] uppercase tracking-[0.2em] font-bold px-3 py-1.5 rounded-full transition-all border",
+                          "p-1.5 sm:p-2 rounded-lg border transition-all duration-200 outline-none shrink-0",
                           reminderEnabled 
-                            ? "bg-gold/20 border-gold/40 text-gold" 
-                            : "bg-white/5 border-white/10 text-slate-gray hover:border-gold/30"
+                            ? "bg-gold/15 border-gold/30 text-gold hover:bg-gold/25" 
+                            : "bg-white/5 border-white/5 text-slate-gray/45 hover:text-slate-gray hover:bg-white/10"
                         )}
                       >
-                        <Bell size={10} className={reminderEnabled ? "fill-gold" : ""} />
-                        {reminderEnabled ? "Reminder Active" : "Remind Me"}
+                        <Bell size={12} className={cn(reminderEnabled ? "fill-gold text-gold scale-105" : "", "transition-all")} />
                       </button>
+                    )}
+
+                    {/* Spouse completion badge */}
+                    {viewMode === "me" && spouseDone && (
+                      <div className="flex flex-col items-center gap-0.5 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-gold/5 border border-gold/15 shrink-0">
+                          <CheckCircle2 size={9} className="text-gold" />
+                          <span className="text-[5px] sm:text-[6px] uppercase tracking-wider text-gold font-bold whitespace-nowrap">Spouse Done</span>
+                      </div>
+                    )}
+
+                    {/* Primary checkbox target */}
+                    <div className={cn(
+                      "w-8 sm:w-9 h-8 sm:h-9 rounded-xl border flex items-center justify-center transition-all duration-300 shrink-0 text-sm font-semibold",
+                      isDone 
+                        ? "bg-gold border-gold text-midnight scale-105 shadow-md shadow-gold/10 font-bold" 
+                        : "border-white/10 group-hover:border-gold/30 text-transparent"
+                    )}>
+                      {isDone ? "✓" : ""}
                     </div>
-                  )}
-                </div>
+                  </div>
+                </GlassCard>
               );
             })}
           </div>
         </section>
 
         {/* Extra Deen Activities */}
-        <section>
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <section className="space-y-5 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
              <div className="space-y-1">
-                <h3 className="heading-accent m-0">Sacred Sunnahs</h3>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-slate-gray font-bold">Voluntary acts of devotion</p>
+                <h3 className="heading-accent m-0 text-xl sm:text-2xl">Sacred Sunnahs</h3>
+                <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-slate-gray font-bold">Voluntary acts of devotion</p>
              </div>
-             <p className="text-[10px] uppercase tracking-[0.2em] text-gold font-bold bg-gold/10 px-4 py-2 rounded-full border border-gold/20">
-                Elevate Your Connection
+             <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gold font-bold bg-gold/5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-gold/15 self-start sm:self-center">
+                Elevate Companion Connection
              </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-4 md:gap-5">
             {[
-              { id: "quran", label: "Quran", icon: Book, desc: "Recitation Plan", color: "gold" },
-              { id: "dhikr", label: "Dhikr", icon: Star, desc: "Morning/Evening/Salah", color: "emerald-400" },
-              { id: "tahajjud", label: "Tahajjud", icon: Star, desc: "Night Vigil", color: "blue-400" },
-              { id: "duha", label: "Duha", icon: Sun, desc: "Forenoon Salah", color: "amber-400" },
-              { id: "learning", label: "Learning", icon: Compass, desc: "Deen Knowledge", color: "rose-400" },
+              { id: "quran", label: "Quran", icon: Book, desc: "Recitation Plan", theme: "gold" },
+              { id: "dhikr", label: "Dhikr", icon: Star, desc: "Time-based Adhkar", theme: "emerald" },
+              { id: "tahajjud", label: "Tahajjud", icon: Moon, desc: "Guide & Log", theme: "indigo" },
+              { id: "duha", label: "Duha", icon: Sun, desc: "Forenoon Salah", theme: "amber" },
+              { id: "learning", label: "Learning", icon: Compass, desc: "Deen Knowledge", theme: "purple" },
             ].map((item) => {
               const isDone = currentViewData[item.id as keyof DeenData];
               const spouseDone = partnerData?.[item.id as keyof DeenData];
@@ -760,58 +1008,96 @@ export default function Journey() {
                   setShowQuranModal(true);
                   fetchAyahs();
                 } else if (item.id === "dhikr") {
-                   setShowDhikrModal(true);
+                  setShowDhikrModal(true);
+                } else if (item.id === "tahajjud") {
+                  setShowTahajjudModal(true);
+                } else if (item.id === "duha") {
+                  setShowDuhaModal(true);
+                } else if (item.id === "learning") {
+                  setShowLearningModal(true);
                 } else {
-                   toggleItem("extra", item.id);
+                  toggleItem("extra", item.id);
                 }
               };
+
+              const themesConfig = {
+                gold: {
+                  core: isDone ? "bg-gold/[0.04] border-gold/35 shadow-sm" : "border-white/5 hover:border-gold/25 hover:bg-gold/[0.01]",
+                  iconDone: "bg-gold text-midnight shadow-[0_0_20px_rgba(197,160,89,0.35)]",
+                  iconIdle: "bg-white/5 text-slate-gray group-hover:text-gold group-hover:bg-gold/10",
+                  text: isDone ? "text-gold font-bold" : "text-champagne/80 group-hover:text-gold",
+                },
+                emerald: {
+                  core: isDone ? "bg-emerald-500/[0.04] border-emerald-500/35 shadow-sm" : "border-white/5 hover:border-emerald-500/25 hover:bg-emerald-500/[0.01]",
+                  iconDone: "bg-emerald-500 text-midnight shadow-[0_0_20px_rgba(16,185,129,0.35)]",
+                  iconIdle: "bg-white/5 text-slate-gray group-hover:text-emerald-400 group-hover:bg-emerald-500/10",
+                  text: isDone ? "text-emerald-400 font-bold" : "text-champagne/80 group-hover:text-emerald-400",
+                },
+                indigo: {
+                  core: isDone ? "bg-indigo-500/[0.04] border-indigo-500/35 shadow-sm" : "border-white/5 hover:border-indigo-500/25 hover:bg-indigo-500/[0.01]",
+                  iconDone: "bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.35)]",
+                  iconIdle: "bg-white/5 text-slate-gray group-hover:text-indigo-400 group-hover:bg-indigo-500/10",
+                  text: isDone ? "text-indigo-400 font-bold" : "text-champagne/80 group-hover:text-indigo-400",
+                },
+                amber: {
+                  core: isDone ? "bg-amber-500/[0.04] border-amber-500/35 shadow-sm" : "border-white/5 hover:border-amber-500/25 hover:bg-amber-500/[0.01]",
+                  iconDone: "bg-amber-500 text-midnight shadow-[0_0_20px_rgba(245,158,11,0.35)]",
+                  iconIdle: "bg-white/5 text-slate-gray group-hover:text-amber-400 group-hover:bg-amber-500/10",
+                  text: isDone ? "text-amber-400 font-bold" : "text-champagne/80 group-hover:text-amber-400",
+                },
+                purple: {
+                  core: isDone ? "bg-purple-500/[0.04] border-purple-500/35 shadow-sm" : "border-white/5 hover:border-purple-500/25 hover:bg-purple-500/[0.01]",
+                  iconDone: "bg-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.35)]",
+                  iconIdle: "bg-white/5 text-slate-gray group-hover:text-purple-400 group-hover:bg-purple-500/10",
+                  text: isDone ? "text-purple-400 font-bold" : "text-champagne/80 group-hover:text-purple-400",
+                }
+              };
+
+              const themeStyles = themesConfig[item.theme as "gold" | "emerald" | "indigo" | "amber" | "purple"] || themesConfig.gold;
 
               return (
                 <GlassCard
                   key={item.id}
                   onClick={handleClick}
-                  whileTap={viewMode === "me" ? { scale: 0.96 } : {}}
+                  whileTap={viewMode === "me" ? { scale: 0.97 } : {}}
                   className={cn(
-                    "relative group h-[180px] md:h-[240px] p-0 flex flex-col justify-center items-center overflow-hidden transition-all duration-700 cursor-pointer border-2",
-                    isDone
-                      ? "bg-gold/[0.03] border-gold/40 shadow-[0_20px_50px_rgba(197,160,89,0.15)] ring-1 ring-gold/20"
-                      : "bg-white/[0.02] border-white/10 hover:border-gold/30 hover:bg-gold/[0.02]"
+                    "relative group h-[140px] sm:h-[160px] md:h-[195px] p-0 flex flex-col justify-center items-center overflow-hidden transition-all duration-300 cursor-pointer border rounded-[24px] sm:rounded-[28px] text-left",
+                    themeStyles.core,
+                    item.id === "learning" ? "col-span-2 md:col-span-1" : ""
                   )}
                 >
-                  <div className="relative z-10 w-full flex flex-col items-center px-4">
+                  <div className="relative z-10 w-full flex flex-col items-center px-3 sm:px-4">
                     {/* Icon Container */}
-                    <div className="relative mb-4">
+                    <div className="relative mb-2 sm:mb-3">
                       <motion.div 
-                        animate={isDone ? { scale: [1, 1.05, 1] } : {}}
-                        transition={{ duration: 2, repeat: Infinity }}
+                        animate={isDone ? { scale: [1, 1.03, 1] } : {}}
+                        transition={{ duration: 3, repeat: Infinity }}
                         className={cn(
-                          "p-4 rounded-2xl transition-all duration-700 relative",
-                          isDone 
-                            ? "bg-gold text-midnight shadow-[0_0_40px_rgba(197,160,89,0.5)] scale-110" 
-                            : "bg-white/5 text-slate-gray group-hover:bg-gold/10 group-hover:text-gold"
+                          "p-2.5 sm:p-3 rounded-2xl transition-all duration-300 relative flex items-center justify-center",
+                          isDone ? themeStyles.iconDone : themeStyles.iconIdle
                         )}
                       >
-                        <item.icon size={28} strokeWidth={1.5} />
+                        <item.icon size={20} className="sm:size-[22px]" strokeWidth={1.5} />
                       </motion.div>
                     </div>
 
-                    <div className="text-center w-full space-y-1">
+                    <div className="text-center w-full space-y-0.5">
                       <h4 className={cn(
-                        "text-lg md:text-xl font-serif tracking-tight transition-colors duration-500",
-                        isDone ? "text-gold" : "text-champagne/80 group-hover:text-gold/80"
+                        "text-sm sm:text-base md:text-lg font-serif tracking-tight transition-all duration-300",
+                        themeStyles.text
                       )}>
                         {item.label}
                       </h4>
-                      <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-slate-gray font-bold opacity-60">
+                      <p className="text-[7.5px] sm:text-[8px] uppercase tracking-[0.2em] text-slate-gray font-bold opacity-60">
                         {item.desc}
                       </p>
                     </div>
 
                     {/* Partner Status Badge */}
                     {viewMode === "me" && spouseDone && (
-                      <div className="mt-3 flex items-center justify-center gap-1.5 opacity-60">
+                      <div className="mt-2 sm:mt-2.5 flex items-center justify-center gap-1 px-1.5 py-0.5 rounded-full bg-gold/5 border border-gold/15 shrink-0">
                         <Heart size={8} className="text-gold fill-gold" />
-                        <span className="text-[7px] uppercase tracking-widest text-gold font-black">Partner Done</span>
+                        <span className="text-[5.5px] sm:text-[6px] uppercase tracking-widest text-gold font-black">Partner Done</span>
                       </div>
                     )}
                   </div>
@@ -822,80 +1108,82 @@ export default function Journey() {
         </section>
 
         {/* Partner Notes & Polls */}
-        <section>
-          <div className="flex items-center gap-3 mb-6">
-            <MessageSquare className="text-gold" size={20} />
+        <section className="space-y-6">
+          <div className="flex items-center gap-3 text-left">
+            <MessageSquare className="text-gold" size={18} />
             <h3 className="heading-accent m-0">Sacred Reminders</h3>
           </div>
 
-          <GlassCard className="p-0 border-white/10 overflow-hidden mb-8">
-            <div className="p-6 bg-white/5 flex gap-4 items-center">
+          <GlassCard className="p-0 border-white/5 overflow-hidden shadow-lg bg-white/[0.01]">
+            <div className="p-3 flex gap-3 items-center">
               <input 
                 type="text"
                 placeholder="Leave a spiritual nudge..."
                 value={newNote}
                 onChange={(e) => setNewNote(e.target.value)}
-                className="flex-1 bg-transparent border-none outline-none text-ivory placeholder:text-slate-gray/50 font-serif p-2"
+                className="flex-1 bg-transparent border-none outline-none text-ivory placeholder:text-slate-gray/40 font-serif px-3 py-2 text-sm text-left"
               />
               <button 
                 onClick={sendNote}
-                className="p-4 bg-gold text-midnight rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg"
+                className="p-3 bg-gold hover:bg-gold/95 text-midnight rounded-[16px] hover:scale-105 active:scale-95 transition-all shadow-md shadow-gold/15 shrink-0"
               >
-                <Send size={20} />
+                <Send size={16} />
               </button>
             </div>
           </GlassCard>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
              <AnimatePresence>
               {notes.length === 0 ? (
-                <p className="text-center text-[10px] uppercase tracking-widest text-slate-gray py-12 border border-dashed border-white/5 rounded-[32px]">No echoes to share yet</p>
+                <p className="text-center text-[10px] uppercase tracking-widest text-slate-gray/60 py-10 border border-dashed border-white/5 rounded-[24px]">No echoes to share yet</p>
               ) : (
                 [...notes].reverse().map((note) => {
                   const isFromMe = note.from === profile?.userId;
                   return (
                     <motion.div
                       key={note.id}
-                      initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
                       className={cn(
-                        "p-8 rounded-[40px] border flex flex-col gap-6 transition-all",
-                        isFromMe ? "bg-white/[0.03] border-white/10" : "bg-gold/[0.05] border-gold/20"
+                        "p-6 rounded-[28px] border flex flex-col gap-4 transition-all text-left relative overflow-hidden",
+                        isFromMe 
+                          ? "bg-white/[0.01] border-white/5" 
+                          : "bg-gold/[0.03] border-gold/15 shadow-sm"
                       )}
                     >
-                      <div className="flex justify-between items-start">
-                        <div className="flex gap-4">
-                          <div className={cn("p-3 rounded-2xl", isFromMe ? "bg-white/5 text-slate-gray" : "bg-gold text-midnight")}>
-                             <Heart size={18} />
+                      <div className="flex justify-between items-start gap-4">
+                        <div className="flex gap-3 text-left">
+                          <div className={cn("p-2.5 rounded-xl shrink-0 flex items-center justify-center h-10 w-10", isFromMe ? "bg-white/5 text-slate-gray" : "bg-gold text-midnight")}>
+                             <Heart size={14} />
                           </div>
                           <div>
-                            <p className="text-lg font-serif text-champagne leading-relaxed">{note.text}</p>
-                            <p className="text-[10px] uppercase tracking-[0.2em] text-slate-gray mt-2 font-bold opacity-60">
-                              {isFromMe ? "Sent by you" : `From ${partner?.name?.split(' ')[0]}`}
+                            <p className="text-base font-serif text-champagne leading-relaxed">{note.text}</p>
+                            <p className="text-[9px] uppercase tracking-[0.2em] text-slate-gray mt-1.5 font-bold opacity-60">
+                              {isFromMe ? "Sent by you" : `From ${partner?.name?.split(' ')[0] || 'Spouse'}`}
                             </p>
                           </div>
                         </div>
-                        {!isFromMe && !note.seen && <AlertCircle size={16} className="text-gold animate-pulse" />}
+                        {!isFromMe && !note.seen && <AlertCircle size={14} className="text-gold animate-pulse shrink-0 mt-1" />}
                       </div>
 
                       {!isFromMe && !note.seen && (
                          <button 
                            onClick={() => acknowledgeNote(note.id, "seen")}
-                           className="w-full py-4 bg-gold text-midnight rounded-[20px] text-[10px] uppercase tracking-widest font-bold shadow-lg"
+                           className="w-full py-3 bg-gold text-midnight rounded-xl text-[10px] uppercase tracking-widest font-bold shadow-md hover:bg-gold/90 transition-all shadow-gold/10"
                          >
                            Read Reminder
                          </button>
                       )}
 
                       {!isFromMe && note.seen && (
-                         <div className="space-y-4 pt-4 border-t border-white/5">
-                            <p className="text-[9px] uppercase tracking-widest text-gold font-bold text-center">Followed this reminder?</p>
+                         <div className="space-y-3 pt-3 border-t border-white/5">
+                            <p className="text-[8px] uppercase tracking-widest text-gold/80 font-bold text-center">Followed this reminder?</p>
                             <div className="flex gap-2">
                                <button 
                                  onClick={() => acknowledgeNote(note.id, "followed")}
                                  className={cn(
-                                   "flex-1 py-3 rounded-2xl text-[9px] uppercase tracking-widest font-bold border transition-all",
-                                   note.followed === true ? "bg-emerald-500 border-emerald-500 text-white" : "bg-white/5 border-white/10 text-slate-gray"
+                                   "flex-1 py-2.5 rounded-xl text-[9px] uppercase tracking-widest font-bold border transition-all",
+                                   note.followed === true ? "bg-emerald-500 text-white border-emerald-500" : "bg-white/5 border-white/10 text-slate-gray/70 hover:bg-white/10"
                                  )}
                                >
                                  Yes
@@ -903,8 +1191,8 @@ export default function Journey() {
                                <button 
                                  onClick={() => acknowledgeNote(note.id, "ignored")}
                                  className={cn(
-                                   "flex-1 py-3 rounded-2xl text-[9px] uppercase tracking-widest font-bold border transition-all",
-                                   note.followed === false ? "bg-red-500/20 border-red-500/30 text-red-400" : "bg-white/5 border-white/10 text-slate-gray"
+                                   "flex-1 py-2.5 rounded-xl text-[9px] uppercase tracking-widest font-bold border transition-all",
+                                   note.followed === false ? "bg-red-500/20 border-red-500/30 text-red-300" : "bg-white/5 border-white/10 text-slate-gray/70 hover:bg-white/10"
                                  )}
                                >
                                  No
@@ -914,11 +1202,11 @@ export default function Journey() {
                       )}
 
                       {isFromMe && note.seen && (
-                         <div className="flex justify-between items-center text-[9px] uppercase tracking-widest font-bold border-t border-white/5 pt-4">
-                            <span className="text-gold/60">Seen by spouse</span>
+                         <div className="flex justify-between items-center text-[7px] uppercase tracking-widest font-black border-t border-white/5 pt-3 mt-1">
+                            <span className="text-gold/50">Seen by spouse</span>
                             {note.followed !== null && (
-                               <span className={note.followed ? "text-emerald-400" : "text-red-400"}>
-                                 {note.followed ? "Success" : "Pending"}
+                               <span className={note.followed ? "text-emerald-400" : "text-amber-500/75"}>
+                                 {note.followed ? "Followed successfully" : "Not yet followed"}
                                </span>
                             )}
                          </div>
@@ -1090,102 +1378,65 @@ export default function Journey() {
       {/* Dhikr Modal */}
       <AnimatePresence>
         {showDhikrModal && (() => {
-          const now = new Date();
-          const hour = now.getHours();
-          const current = getCurrentPrayer();
-          let dhikrSet = postSalahAdhkar;
-          let modalTitle = `Post-${current} Adhkar`;
-          let modalIcon = Moon;
-
-          if (current === "Fajr" || (hour >= 4 && hour < 11)) {
-            dhikrSet = morningAdhkar;
-            modalTitle = "Morning Adhkar (সকালের আজকার)";
-            modalIcon = Sun;
-          } else if (current === "Asr" || (hour >= 15 && hour < 19)) {
-            dhikrSet = eveningAdhkar;
-            modalTitle = "Evening Adhkar (সন্ধ্যার আজকার)";
-            modalIcon = Moon;
-          }
+          const activeKey = getInitialDhikrTab();
+          const activeCollection = dhikrCollections[activeKey] || dhikrCollections.postFajr;
+          const modalIcon = activeCollection.icon;
 
           return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-midnight/80 backdrop-blur-xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-midnight/80 backdrop-blur-xl">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="w-full max-w-xl"
             >
-              <GlassCard className="p-8 md:p-12 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
-                <div className="absolute top-0 right-0 p-6 sticky">
-                  <button onClick={() => setShowDhikrModal(false)} className="text-slate-gray hover:text-gold transition-colors">
-                    <X size={24} />
+              <GlassCard className="p-6 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
+                <div className="absolute top-4 right-4 z-10">
+                  <button onClick={() => setShowDhikrModal(false)} className="text-slate-gray hover:text-gold transition-colors p-2 bg-midnight/40 rounded-full">
+                    <X size={20} />
                   </button>
                 </div>
 
-                <div className="space-y-10">
-                  <div className="text-center space-y-6">
-                    <div className="p-5 bg-gold text-midnight rounded-full inline-block shadow-lg">
-                      {React.createElement(modalIcon, { size: 32 })}
+                <div className="space-y-6">
+                  <div className="text-center space-y-4">
+                    <div className="p-4 bg-gold/10 text-gold rounded-full inline-block border border-gold/20">
+                      {React.createElement(modalIcon, { size: 24 })}
                     </div>
                     <div>
-                      <h2 className="text-3xl font-serif text-champagne mb-2">{modalTitle}</h2>
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">According to Sunnah</p>
+                      <h2 className="text-2xl font-serif text-champagne mb-1">{activeCollection.title}</h2>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">{activeCollection.banglaTitle}</p>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    {dhikrSet.map((dhikr, idx) => {
+                  <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-1 scrollbar-thin">
+                    {activeCollection.items.map((dhikr, idx) => {
                        return (
-                        <div key={idx} className="bg-white/5 border border-white/5 p-6 rounded-[28px] space-y-4 group hover:bg-white/[0.08] transition-all text-left">
-                          <div className="flex justify-between items-start gap-4">
-                            <h4 className="arabic-text text-3xl text-right text-champagne leading-relaxed flex-1">
+                        <div key={idx} className="bg-white/5 border border-white/5 p-5 rounded-[24px] space-y-3 group hover:bg-white/[0.08] transition-all text-left">
+                          <div className="flex justify-between items-start gap-3">
+                            <h4 className="arabic-text text-2xl text-right text-champagne leading-relaxed flex-1">
                               {dhikr.arabic}
                             </h4>
                             {dhikr.repeat > 1 && (
-                              <div className="bg-gold text-midnight px-4 py-1 rounded-full text-[10px] font-bold shadow-md">
+                              <div className="bg-gold text-midnight px-3 py-0.5 rounded-full text-[9px] font-bold shadow-md whitespace-nowrap">
                                 {dhikr.repeat}x
                               </div>
                             )}
                           </div>
-                          <div className="space-y-2">
-                             <div className="flex flex-col gap-1">
-                                <span className="text-[8px] uppercase tracking-widest text-gold/40 font-bold">Bangla Uccharon</span>
-                                <p className="text-sm font-bangla text-ivory/90 leading-relaxed font-bold">
+                          <div className="space-y-2 pt-1 border-t border-white/5">
+                             <div className="flex flex-col gap-0.5">
+                                <span className="text-[8px] uppercase tracking-widest text-gold/40 font-bold">উচ্চারণ (Pronunciation)</span>
+                                <p className="text-xs font-bangla text-ivory/95 leading-relaxed font-semibold">
                                    {dhikr.banglaUccharon}
                                 </p>
                              </div>
-                             <div className="flex flex-col gap-1">
-                                <span className="text-[8px] uppercase tracking-widest text-white/20 font-bold">Translation</span>
-                                <p className="text-xs font-serif italic text-slate-gray leading-relaxed">"{dhikr.translation}"</p>
+                             <div className="flex flex-col gap-0.5">
+                                <span className="text-[8px] uppercase tracking-widest text-white/20 font-bold">অনুবাদ (Translation)</span>
+                                <p className="text-[11px] font-serif italic text-slate-gray leading-relaxed">"{dhikr.translation}"</p>
                              </div>
                           </div>
                         </div>
                       );
                     })}
-
-                    {(current === "Fajr" || current === "Maghrib") && dhikrSet === postSalahAdhkar && (
-                      <div className="bg-gold/10 border border-gold/20 p-6 rounded-[28px] space-y-4 text-left">
-                         <div className="flex justify-between items-center">
-                            <span className="text-[10px] uppercase tracking-widest text-gold font-bold">Sunnah for {getCurrentPrayer()}</span>
-                            <div className="bg-gold text-midnight px-4 py-1 rounded-full text-[10px] font-bold">10x</div>
-                         </div>
-                         <h4 className="arabic-text text-2xl text-right text-champagne leading-relaxed">
-                            لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ
-                         </h4>
-                         <div className="space-y-2">
-                            <div className="flex flex-col gap-1">
-                               <span className="text-[8px] uppercase tracking-widest text-gold/40 font-bold">Bangla Uccharon</span>
-                               <p className="text-sm font-bangla text-gold leading-relaxed font-bold">
-                                  লা ইলাহা ইল্লাল্লাহু ওয়াহদাহু লা শারিকা লাহু, লাহুল মুলকু ওয়া লাহুল হামদু ইউহয়ী ওয়া ইউমীতু ওয়া হুয়া আলা কুলি শাইয়িন কাদির
-                               </p>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                               <span className="text-[8px] uppercase tracking-widest text-white/20 font-bold">Translation</span>
-                               <p className="text-xs font-serif italic text-slate-gray/80">"None has the right to be worshipped but Allah alone... He gives life and causes death..."</p>
-                            </div>
-                         </div>
-                      </div>
-                    )}
                   </div>
 
                   <button 
@@ -1193,9 +1444,9 @@ export default function Journey() {
                       if (viewMode === "me" && !myData.dhikr) toggleItem("extra", "dhikr");
                       setShowDhikrModal(false);
                     }}
-                    className="w-full py-5 bg-midnight border-2 border-gold/40 text-gold rounded-[24px] text-[10px] uppercase tracking-widest font-bold hover:bg-gold hover:text-midnight transition-all shadow-xl"
+                    className="w-full py-4.5 bg-midnight border-2 border-gold/40 text-gold rounded-[20px] text-[10px] uppercase tracking-widest font-bold hover:bg-gold hover:text-midnight transition-all shadow-xl"
                   >
-                    I have completed my Dhikr
+                    Mark Daily Dhikr as Done (আজকার সম্পন্ন করেছি)
                   </button>
                 </div>
               </GlassCard>
@@ -1203,6 +1454,341 @@ export default function Journey() {
           </div>
           );
         })()}
+      </AnimatePresence>
+
+      {/* Tahajjud Modal */}
+      <AnimatePresence>
+        {showTahajjudModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-midnight/80 backdrop-blur-xl">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-xl"
+            >
+              <GlassCard className="p-6 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
+                <div className="absolute top-4 right-4 z-10">
+                  <button onClick={() => setShowTahajjudModal(false)} className="text-slate-gray hover:text-gold transition-colors p-2 bg-midnight/40 rounded-full">
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="space-y-6 text-left">
+                  <div className="text-center space-y-3">
+                    <div className="p-4 bg-gold/10 text-gold rounded-full inline-block shadow-lg border border-gold/20">
+                      <Moon size={28} />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-serif text-champagne mb-1">Tahajjud Guide & Sunnah</h2>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">তাহাজ্জুদ সালাতের নিয়ম ও সুন্নাহ</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gold/5 border border-gold/10 rounded-[24px] p-5 space-y-1">
+                    <p className="text-[11px] text-gold/80 italic font-serif leading-relaxed text-center">
+                      “আমাদের প্রতিপালক প্রতি রাতের শেষ তৃতীয়াংশে নিম্ন আকাশে অবতরণ করেন এবং বলেন: কে আমাকে ডাকবে আমি তার ডাকে সাড়া দেব? কে আমার কাছে চাইবে আমি তাকে দান করব?”
+                    </p>
+                    <p className="text-[8px] text-right text-slate-gray">— সহীহ বুখারী: ১১৪৫</p>
+                  </div>
+
+                  <div className="space-y-5 max-h-[40vh] overflow-y-auto pr-1">
+                    <div>
+                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                        তাহাজ্জুদের সময় (Time of Prayer)
+                      </h3>
+                      <p className="text-xs text-slate-gray leading-relaxed pl-3">
+                        রাতের শেষ তৃতীয়াংশ হচ্ছে সবচেয়ে উত্তম সময়। এশার নামাজের পর থেকে সুবহে সাদেক বা ফজরের ওয়াক্ত হওয়ার পূর্ব পর্যন্ত যেকোনো সময় আদায় করা যায়। ঘুমানোর পর জেগে উঠে এই নামাজ পড়া সুন্নাত।
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                        রাকত সংখ্যা (Number of Rak'ahs)
+                      </h3>
+                      <p className="text-xs text-slate-gray leading-relaxed pl-3">
+                        নূন্যতম ২ রাকাত থেকে সর্বোচ্চ ১২ রাকাত পর্যন্ত পড়া যায়। প্রিয় নবী (ﷺ) সাধারণত ৮ রাকাত পড়তেন এবং এরপর ৩ রাকাত বিতর সালাত আদায় করতে ভালোবাসতেন। ২ রাকাত করে প্রতি সালামে শেষ করা নিয়ম।
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                        পড়া ও আমলের সুন্নাহ নিয়মসমূহ
+                      </h3>
+                      <ul className="space-y-2.5 pl-3 text-xs text-ivory/95">
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">ঘুমানোর আগে নিয়ত (Firm Intention):</strong>
+                            ঘুমানোর পূর্বে মনে মনে তাহাজ্জুদের মজবুত নিয়ত করা। যদি না-ও উঠতে পারে, তবুও বোনাস সাওয়াব পাওয়া যাবে।
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">মেসওয়াক করা (Using Siwak/Miswak):</strong>
+                            ঘুম থেকে উঠে মেসওয়াক বা দাঁত ব্রাশ করা খুবই গুরুত্বসহকারে সুন্নাত।
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">আকাশের দিকে তাকিয়ে সূরা আল-ইমরান পাঠ:</strong>
+                            রাসূলুল্লাহ (ﷺ) ঘুম থেকে জেগেই আকাশের দিকে তাকাতেন এবং সূরা আলে-ইমরানের শেষ ১০ আয়াত (১৯০-২০০) তিলাওয়াত করতেন।
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">দীর্ঘ সেজদা ও রুকু (Long Sujood & Ruku):</strong>
+                            তাহাজ্জুদ সালাতের রুকু ও সেজদা দীর্ঘ করা উত্তম। সেজদায় গিয়ে নিজের ভাষায় আল্লাহর দরবারে প্রচুর ক্রন্দন ও সাহায্য প্রার্থনা করুন।
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">সালাতের প্রারম্ভিক রাকাত (Beginning):</strong>
+                            প্রথমে হালকা বা ছোট সূরা দিয়ে সংক্ষিপ্ত দুই রাকাত সালাত আদায় করার পর দীর্ঘ সূরা দিয়ে নামাজ পড়া সুন্নাত।
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => {
+                      if (viewMode === "me") toggleItem("extra", "tahajjud");
+                      setShowTahajjudModal(false);
+                    }}
+                    className={cn(
+                      "w-full py-4 rounded-[20px] text-xs uppercase tracking-widest font-bold shadow-2xl transition-all hover:scale-[1.02] active:scale-95 mt-4",
+                      myData.tahajjud 
+                        ? "bg-white/10 text-ivory hover:bg-white/15" 
+                        : "bg-gold text-midnight shadow-gold/30"
+                    )}
+                  >
+                    {myData.tahajjud ? "Mark Tahajjud as Undone (তাহাজ্জুদ সালাত বাতিল করুন)" : "Mark Tahajjud as Done (তাহাজ্জুদ সম্পন্ন করেছি)"}
+                  </button>
+                </div>
+              </GlassCard>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Duha Modal */}
+      <AnimatePresence>
+        {showDuhaModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-midnight/80 backdrop-blur-xl">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-xl"
+            >
+              <GlassCard className="p-6 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
+                <div className="absolute top-4 right-4 z-10">
+                  <button onClick={() => setShowDuhaModal(false)} className="text-slate-gray hover:text-gold transition-colors p-2 bg-midnight/40 rounded-full">
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="space-y-6 text-left">
+                  <div className="text-center space-y-3">
+                    <div className="p-4 bg-gold/10 text-gold rounded-full inline-block shadow-lg border border-gold/20">
+                      <Sun size={28} />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-serif text-champagne mb-1">Duha Salah Guide & Virtues</h2>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">দ্বোহা/চাশত সালাত গাইড ও ফজিলত</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gold/5 border border-gold/10 rounded-[24px] p-5 space-y-1">
+                    <p className="text-[11px] text-gold/80 italic font-serif leading-relaxed text-center">
+                      “প্রতিদিন সকালে আপনাদের শরীরের প্রতিটি জোড়ার (৩৬০টি জোড়া) সদকা আদায় করা আবশ্যক... তবে চাশতের (দ্বোহা) দুই রাকাত সালাত আদায় করা এই সবকিছুর পক্ষ থেকে যথেষ্ট হয়।”
+                    </p>
+                    <p className="text-[8px] text-right text-slate-gray">— সহীহ মুসলিম: ৭২০</p>
+                  </div>
+
+                  <div className="space-y-5 max-h-[40vh] overflow-y-auto pr-1">
+                    <div>
+                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                        নামাজের সময় (Time of Prayer)
+                      </h3>
+                      <p className="text-xs text-slate-gray leading-relaxed pl-3">
+                        সূর্য উদয়ের আনুমানিক ১৫-২০ মিনিট পর থেকে শুরু করে দ্বিপ্রহরের (ঠিক দুপুরের) প্রায় ২০-২৫ মিনিট পূর্ব পর্যন্ত। রাসুলুল্লাহ (ﷺ) সূর্য ভালোমত উত্তপ্ত হওয়ার পর অর্থাৎ সকাল ৯টা থেকে ১১টার মধ্যবর্তী সময়ে চাশত পড়তে বেশি ভালোবাসতেন।
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                        রাকত সংখ্যা (Number of Rak'ahs)
+                      </h3>
+                      <p className="text-xs text-slate-gray leading-relaxed pl-3">
+                        নূন্যতম ২ রাকাত থেকে সর্বোচ্চ ৮ রাকাত পর্যন্ত আজ করা যায়। ২ রাকাত করে প্রতি সালামে শেষ করা নিয়ম। রাসুলুল্লাহ (ﷺ) সাধারণত ৪ রাকাত করে পড়তেন এবং কখনও ইচ্ছে করলে বেশিও পড়তেন।
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                        পরম ফজিলত ও সুন্নাহসমূহ (Virtues & Blessings)
+                      </h3>
+                      <ul className="space-y-2.5 pl-3 text-xs text-ivory/95">
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">৩৬০টি সদকার সাওয়াব:</strong>
+                             can- মানবদেহে অবস্থিত ৩৬০টি জয়েন্টের প্রত্যেকটির জন্য প্রতিদিন সকালে সদকা করা আবশ্যক। দুই রাকাত চাশতের সালাত এই সব জয়েন্টের সদকার সমান সাওয়াব এনে দেয়।
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">সারাদিনের কাজ আল্লাহর দায়িত্বে:</strong>
+                            যে ব্যক্তি দিনের শুরুতে চার রাকাত চাশতের সালাত আদায় করে, আল্লাহ তায়ালা তার পুরো দিনের দায়িত্ব গ্রহণ করে নেন।
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">আউয়াবিনের সালাত (Salah of Awabeen):</strong>
+                            রাসুলুল্লাহ (ﷺ) বলেছেন, "নিষ্ঠাবান তাওবাকারীগণই কেবল চাশতের নামাজের চমৎকার নিয়মিত যত্ন নেন এবং এটিই আল-আউয়াবীন (তাওবাকারী)-দের সালাত।"
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => {
+                      if (viewMode === "me") toggleItem("extra", "duha");
+                      setShowDuhaModal(false);
+                    }}
+                    className={cn(
+                      "w-full py-4 rounded-[20px] text-xs uppercase tracking-widest font-bold shadow-2xl transition-all hover:scale-[1.02] active:scale-95 mt-4",
+                      myData.duha 
+                        ? "bg-white/10 text-ivory hover:bg-white/15" 
+                        : "bg-amber-500 text-midnight shadow-amber-500/30"
+                    )}
+                  >
+                    {myData.duha ? "Mark Duha as Undone (দ্বোহা সালাত বাতিল করুন)" : "Mark Duha as Done (দ্বোহা সালাত সম্পন্ন করেছি)"}
+                  </button>
+                </div>
+              </GlassCard>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Learning Modal */}
+      <AnimatePresence>
+        {showLearningModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-midnight/80 backdrop-blur-xl">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-xl"
+            >
+              <GlassCard className="p-6 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
+                <div className="absolute top-4 right-4 z-10">
+                  <button onClick={() => setShowLearningModal(false)} className="text-slate-gray hover:text-gold transition-colors p-2 bg-midnight/40 rounded-full">
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="space-y-6 text-left">
+                  <div className="text-center space-y-3">
+                    <div className="p-4 bg-gold/10 text-gold rounded-full inline-block shadow-lg border border-gold/20">
+                      <Compass size={28} />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-serif text-champagne mb-1">Seek Sacred Knowledge</h2>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">দ্বীনি ইলম অর্জন ও অধ্যয়ন</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gold/5 border border-gold/10 rounded-[24px] p-5 space-y-1">
+                    <p className="text-[11px] text-gold/80 italic font-serif leading-relaxed text-center">
+                      “যে ব্যক্তি ইলম (দ্বীনি জ্ঞান) অর্জনের জন্য কোনো পথ ধারণ করে, আল্লাহ তার জন্য জান্নাতের পথ সহজ করে দেন।”
+                    </p>
+                    <p className="text-[8px] text-right text-slate-gray">— সহীহ মুসলিম: ২৬৯৯</p>
+                  </div>
+
+                  <div className="space-y-5 max-h-[40vh] overflow-y-auto pr-1">
+                    <div>
+                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                        আজকের দ্বীনি শিক্ষা বিষয়সমূহ (Topics to Study)
+                      </h3>
+                      <p className="text-xs text-slate-gray leading-relaxed pl-3 mb-3">
+                        দুজন একসাথে বসে বা আলাদাভাবে দিনে অন্তত ৫-১০ মিনিট দ্বীনি আলোচনা করুন বা পড়ুন। নিচের যেকোনো একটি বিষয় বেছে নিন:
+                      </p>
+                      
+                      <div className="grid grid-cols-1 gap-2 pl-3">
+                        {[
+                          { title: "তাফসির অধ্যায়ন (Tafsir Study)", desc: "কুরআনের যেকোনো একটি সূরার তাফসির আলোচনা করা।" },
+                          { title: "হাদিস পাঠ (Hadith Reading)", desc: "রিয়াদুস সালেহীন বা বুখারী থেকে অন্তত একটি হাদিস পড়া।" },
+                          { title: "রাসূলুল্লাহর (ﷺ) জীবনী (Seerah Study)", desc: "নবীজির মহিমান্বিত জীবনের যেকোনো একটি পর্ব অধ্যয়ন।" },
+                          { title: "মাসনুন দোয়া শিক্ষা (Masnoon Duas)", desc: "দৈনন্দিন আমল ও মাসনুন দোয়াসমূহ মুখস্থ বা চর্চা করা।" },
+                        ].map((topic, i) => (
+                          <div key={i} className="p-3.5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-gold/20 transition-all">
+                            <h4 className="text-xs font-bold text-champagne mb-0.5">{topic.title}</h4>
+                            <p className="text-[10px] text-slate-gray leading-relaxed">{topic.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs uppercase tracking-widest text-gold mb-2 font-bold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                        জ্ঞানের ফযিলত (Virtues of Knowledge Study)
+                      </h3>
+                      <ul className="space-y-2.5 pl-3 text-xs text-ivory/95">
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">ফেরেশতাদের ডানা মেলানো:</strong>
+                            দ্বীনি জ্ঞান অন্বেষণকারীর সন্তুষ্টির জন্য আল্লাহর সম্মানিত ফেরেশতাগণ তাদের ডানা বিছিয়ে দেন।
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-gold mt-1">✦</span>
+                          <div>
+                            <strong className="text-champagne block">সবার দোয়া লাভ:</strong>
+                            জ্ঞানের অনুসন্ধানকারীর জন্য আসমান ও জমিনের সকল মাখলুক এমনকি পানির নিচের মাছ পর্যন্ত ক্ষমা প্রার্থনা করে।
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => {
+                      if (viewMode === "me") toggleItem("extra", "learning");
+                      setShowLearningModal(false);
+                    }}
+                    className={cn(
+                      "w-full py-4 rounded-[20px] text-xs uppercase tracking-widest font-bold shadow-2xl transition-all hover:scale-[1.02] active:scale-95 mt-4",
+                      myData.learning 
+                        ? "bg-white/10 text-ivory hover:bg-white/15" 
+                        : "bg-purple-500 text-white shadow-purple-500/30"
+                    )}
+                  >
+                    {myData.learning ? "Mark Learning as Undone (জ্ঞান অর্জন বাতিল করুন)" : "Mark Learning as Done (জ্ঞান অর্জন সম্পন্ন করেছি)"}
+                  </button>
+                </div>
+              </GlassCard>
+            </motion.div>
+          </div>
+        )}
       </AnimatePresence>
     </div>
   );
