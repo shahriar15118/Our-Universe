@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signup, createOrJoinCouple, signInWithSocial } from "@/src/lib/auth-helpers";
 import { db } from "@/src/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
@@ -8,6 +8,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Heart, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import { cn } from "@/src/lib/utils";
+import { useAuth } from "@/src/App";
 
 export default function Signup() {
   const [step, setStep] = useState(1);
@@ -21,6 +22,13 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleSocialSignup = async (provider: 'google') => {
     setLoading(true);

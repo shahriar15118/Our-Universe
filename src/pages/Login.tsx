@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { login, signInWithSocial } from "@/src/lib/auth-helpers"; 
 import { AnimatedButton } from "@/src/components/ui/AnimatedButton";
 import { GlassCard } from "@/src/components/ui/GlassCard";
 import { useNavigate, Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { motion } from "motion/react";
+import { useAuth } from "@/src/App";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,6 +13,13 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleSocialLogin = async (provider: 'google') => {
     setLoading(true);

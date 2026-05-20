@@ -101,14 +101,9 @@ export const signInWithSocial = async (providerName: 'google' | 'facebook' | 'x'
     localStorage.setItem("pending_social_signup", JSON.stringify(pendingData));
   }
 
-  const isMobile = isMobileDevice();
-
-  if (isMobile) {
-    // Mobile Redirect - standard for modern mobile and standalone PWAs
-    await signInWithRedirect(auth, provider);
-    return null;
-  } else {
-    // Desktop Popup - standard, interactive, same-page flow
+  try {
+    // Try signInWithPopup first. This behaves perfectly on Desktop, Mobile tabs, and inside PWA standalone apps
+    // because PWAs open an in-app secure sheet that returns seamlessly without losing standalone state.
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     await handleSuccessfulSocialAuth(user, pendingData);
@@ -116,6 +111,19 @@ export const signInWithSocial = async (providerName: 'google' | 'facebook' | 'x'
       localStorage.removeItem("pending_social_signup");
     }
     return user;
+  } catch (popupError: any) {
+    console.warn("signInWithPopup failed or was blocked, falling back to redirect:", popupError);
+    
+    // Fallback to signInWithRedirect if popup gets blocked or is unsupported
+    try {
+      await signInWithRedirect(auth, provider);
+      return null;
+    } catch (redirectError: any) {
+      console.error("signInWithRedirect fallback failed as well:", redirectError);
+      throw new Error(
+        "Sign in failed. Please enable third-party cookies or pop-ups in your browser settings to sign in with Google, or use the email/secret-key option."
+      );
+    }
   }
 };
 
