@@ -5,6 +5,7 @@ import { handleSuccessfulSocialAuth } from "@/src/lib/auth-helpers";
 import { doc, getDoc, collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
 import { auth, db } from "@/src/lib/firebase";
 import { Couple, UserProfile } from "@/src/types";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Contexts
 const AuthContext = createContext<{ user: User | null; loading: boolean }>({ user: null, loading: true });
@@ -221,6 +222,7 @@ export default function App() {
 
           <AuthWrapperForNav />
         </div>
+        <SpeedInsights />
       </BrowserRouter>
     </Providers>
   );
