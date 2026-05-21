@@ -122,7 +122,7 @@ export default function RuhChat() {
               )}
             >
               <div className={cn(
-                "px-4 py-3 rounded-2xl text-sm leading-relaxed",
+                "px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap",
                 msg.sender === 'user' 
                   ? "bg-rose-gold text-white rounded-tr-none" 
                   : "bg-white/5 border border-white/10 text-ivory/90 rounded-tl-none font-serif text-base"

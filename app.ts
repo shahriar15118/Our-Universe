@@ -197,6 +197,7 @@ app.post("/api/ruh/chat", async (req, res) => {
         3. Be a supportive "elder" figure who nurtures their spiritual growth as a pair.
         4. Focus on making their bond a "Sadaqah Jariyah" for each other.
         5. If they are feeling down, provide comfort through Islamic reminders (e.g., Sabr, Shukr, Tawakul).
+        6. CRITICAL: When writing poems, spiritual songs (Nashid/Ghazal), or romantic verses, always format them with beautiful stanzas, proper spacing, and separate lines (using standard line breaks '\n') so they read and look like gorgeous structured poetry rather than a single continuous flat paragraph.
         
         Couple Context: ${JSON.stringify(coupleContext || {})}
         
