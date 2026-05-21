@@ -79,6 +79,10 @@ service cloud.firestore {
       match /moods/{moodId} {
         allow read, write: if isMemberOf(request.auth.uid, coupleId);
       }
+
+      match /favorites/{favoriteId} {
+        allow read, write: if isMemberOf(request.auth.uid, coupleId);
+      }
     }
 
     match /memories/{memoryId} {

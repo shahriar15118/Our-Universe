@@ -85,6 +85,36 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["coupleId", "authorId", "text", "date", "createdAt"]
+    },
+    "Favorite": {
+      "title": "Favorite",
+      "description": "A comforting Quranic verse saved as a spiritual anchor.",
+      "type": "object",
+      "properties": {
+        "ayah": { "type": "string" },
+        "ref": { "type": "string" },
+        "trans": { "type": "string" },
+        "tafsir": { "type": "string" },
+        "dua": { "type": "object" },
+        "emotion": { "type": "string" },
+        "savedBy": { "type": "string" },
+        "savedByName": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ayah", "ref", "trans", "emotion", "savedBy"]
+    },
+    "Mood": {
+      "title": "Mood",
+      "description": "A shared mood status from a spouse.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "emotion": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "emotion", "text"]
     }
   },
   "firestore": {
@@ -111,6 +141,14 @@
     "/couples/{coupleId}/deen_daily/{date}": {
       "schema": "DeenDaily",
       "description": "Daily deen tracking data for the couple."
+    },
+    "/couples/{coupleId}/moods/{moodId}": {
+      "schema": "Mood",
+      "description": "Shared emotional moods."
+    },
+    "/couples/{coupleId}/favorites/{favoriteId}": {
+      "schema": "Favorite",
+      "description": "Spiritual anchors saved by the couple."
     }
   }
 }
