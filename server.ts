@@ -86,8 +86,8 @@ app.get("/api/quran/verses", async (req, res) => {
     if (genAI && combined.length > 0) {
       try {
         const textToTransliterate = combined.map((c, i) => `${i}|${c.text}`).join("\n");
-        const response: any = await (genAI as any).models.generateContent({
-          model: "gemini-3-flash-preview",
+        const response: any = await genAI.models.generateContent({
+          model: "gemini-3.5-flash",
           contents: [{ parts: [{ text: `Transliterate these Quranic verses into Bengali (Bangla Uccharon). 
             Format: JSON array of strings only. Length: ${combined.length}.
             
@@ -107,6 +107,12 @@ app.get("/api/quran/verses", async (req, res) => {
         }
       } catch (geminiError) {
         console.error("Transliteration Error:", geminiError);
+        // Fallback: Provide default arabic text lookup indicator
+        combined.forEach((c: any) => {
+          if (!c.transliteration) {
+            c.transliteration = "আরবি তিলাওয়াত দেখুন";
+          }
+        });
       }
     }
 
@@ -125,14 +131,15 @@ app.post("/api/journal/identify-mood", async (req, res) => {
   try {
     const { text } = req.body;
     const response = await genAI.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: [{ parts: [{ text: `Identify the primary mood from this journal entry: "${text}". Choose exactly one word from this list: Radiant, Loved, Peaceful, Quiet, Restless, Energetic. Return ONLY the word.` }] }],
     });
 
     const identifiedMood = response.text?.trim() || "Peaceful";
     res.json({ mood: identifiedMood });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    console.warn("Journal identify-mood failed, using fallback:", error);
+    res.json({ mood: "Peaceful", fallback: true });
   }
 });
 
@@ -154,7 +161,7 @@ app.post("/api/quran/transliterate", async (req, res) => {
     ${ayahs.map((a: any, i: number) => `${i + 1}. ${a.text}`).join("\n")}`;
 
     const response = await genAI.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: [{ parts: [{ text: prompt }] }],
       config: {
         responseMimeType: "application/json"
@@ -165,7 +172,9 @@ app.post("/api/quran/transliterate", async (req, res) => {
     res.json({ transliterations: result });
   } catch (error: any) {
     console.error("Transliteration Error:", error);
-    res.status(500).json({ error: error.message });
+    const { ayahs } = req.body;
+    const fallbackList = Array.isArray(ayahs) ? ayahs.map(() => "আরবি তিলাওয়াত দেখুন") : [];
+    res.json({ transliterations: fallbackList, fallback: true });
   }
 });
 
@@ -179,7 +188,7 @@ app.post("/api/ruh/chat", async (req, res) => {
     const { message, coupleContext } = req.body;
     
     const response = await genAI.models.generateContent({ 
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: [{ parts: [{ text: message }] }],
       config: {
         systemInstruction: `You are Ruh (روح), a deeply spiritual, wise, and Islamically inspiring AI companion for a married couple. 
@@ -201,7 +210,7 @@ app.post("/api/ruh/chat", async (req, res) => {
     res.json({ text: response.text });
   } catch (error: any) {
     console.error("Gemini Error:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "The spiritual AI engine is experiencing a gentle wave of temporary high demand. Please repeat your message in a few moments, as indeed with hardship there is ease." });
   }
 });
 
@@ -215,7 +224,7 @@ app.post("/api/emotion/guidance", async (req, res) => {
     const { emotion } = req.body;
     
     const response = await genAI.models.generateContent({ 
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: [{ parts: [{ text: `Provide spiritual guidance from the Quran and Sunnah for someone feeling "${emotion}". 
       Return the response in a structured JSON format with the following fields:
       - ayah: The Arabic text of a relevant Quranic verse.
@@ -235,7 +244,18 @@ app.post("/api/emotion/guidance", async (req, res) => {
     res.json(JSON.parse(response.text || "{}"));
   } catch (error: any) {
     console.error("Gemini Error:", error);
-    res.status(500).json({ error: error.message });
+    // Elegant fallback during times of high load or 503 to maintain fully functional app
+    res.json({
+      ayah: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+      ref: "94:6",
+      trans: "Indeed, with hardship [will be] ease.",
+      tafsir: "During busy spiritual moments when request lines are congested, this beautiful Quranic assurance reminds us that ease is forever near and divine tranquility resides in patience.",
+      dua: {
+        arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ_وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",
+        trans: "Our Lord, grant us from among our spouses and offspring comfort to our eyes and make us an example for the righteous.",
+        bangla: "রব্বানা হাবলানা মিন আজওয়াজিনা ওয়া জুররিয়্যাতিনা কুররাতা আ’ইউনিন ওয়া জা’আলনা লিলমুত্তাক্বীনা ইমামা"
+      }
+    });
   }
 });
 

@@ -40,15 +40,27 @@ export default function Journal() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: entry }),
       });
+      if (!response.ok) {
+        throw new Error(`API returned HTTP ${response.status}`);
+      }
       const data = await response.json();
       if (data.mood && VerseBank[data.mood]) {
         const verses = VerseBank[data.mood];
         const randomIndex = Math.floor(Math.random() * verses.length);
         setActiveVerse(verses[randomIndex]);
         setSelectedMoodLabel(data.mood);
+      } else {
+        throw new Error("Invalid mood returned");
       }
     } catch (error) {
-      console.error("Failed to identify mood:", error);
+      console.warn("Express backend API for mood identification failed, executing local fallback:", error);
+      // Client-side fallback: randomly select one of the moods from our pre-defined VerseBank categories
+      const moodKeys = Object.keys(VerseBank);
+      const randomMood = moodKeys[Math.floor(Math.random() * moodKeys.length)];
+      const verses = VerseBank[randomMood];
+      const randomIndex = Math.floor(Math.random() * verses.length);
+      setActiveVerse(verses[randomIndex]);
+      setSelectedMoodLabel(randomMood);
     } finally {
       setIsAnalyzing(false);
     }

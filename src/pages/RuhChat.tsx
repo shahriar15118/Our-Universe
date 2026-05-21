@@ -61,6 +61,10 @@ export default function RuhChat() {
         })
       });
 
+      if (!response.ok) {
+        throw new Error(`API returned HTTP ${response.status}`);
+      }
+
       const data = await response.json();
       
       const ruhMessage: Message = {
@@ -73,6 +77,13 @@ export default function RuhChat() {
       setMessages(prev => [...prev, ruhMessage]);
     } catch (error) {
       console.error("Chat error:", error);
+      const ruhErrorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I couldn't establish an AI connection to my soul core. If you are running the app on a static hosting platform (like Vercel), server-side APIs (relying on Node.js/Express) are not available of because Vercel doesn't run the custom backend server. Please run the app on Google AI Studio's Cloud Run environment to enjoy the full AI-powered chat companion!",
+        sender: "ruh",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, ruhErrorMessage]);
     } finally {
       setIsTyping(false);
     }

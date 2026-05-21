@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { GlassCard } from "@/src/components/ui/GlassCard";
-import { Book, Heart, Moon, Star, Sun, Compass, Send, CheckCircle2, MessageSquare, AlertCircle, TrendingUp, Clock, User, Users, Bell, Settings, ChevronRight } from "lucide-react";
+import { Book, Heart, Moon, Star, Sun, Compass, Send, CheckCircle2, MessageSquare, AlertCircle, TrendingUp, Clock, User, Users, Bell, Settings, ChevronRight, ChevronLeft, RotateCcw } from "lucide-react";
 import { useAuth, useCouple } from "@/src/App";
 import { db } from "@/src/lib/firebase";
 import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, serverTimestamp, getDoc } from "firebase/firestore";
@@ -404,13 +404,20 @@ export default function Journey() {
   const [activeReminder, setActiveReminder] = useState<string | null>(null);
   const [dismissedReminders, setDismissedReminders] = useState<Record<string, string>>({}); // { prayerId: dateString }
   const scrollRef = React.useRef<HTMLDivElement>(null);
+  const lastFetchedProgressRef = React.useRef<number | null>(null);
 
   useEffect(() => {
-    // Pre-fetch ayahs when profile is available
-    if (profile && ayahs.length === 0 && !ayahLoading) {
-      fetchAyahs();
+    // Pre-fetch ayahs when profile is available or modal is open and progress changes
+    if (profile) {
+      const currentProg = profile.quranProgress || 0;
+      if (showQuranModal) {
+        if (lastFetchedProgressRef.current !== currentProg || ayahs.length === 0) {
+          lastFetchedProgressRef.current = currentProg;
+          fetchAyahs();
+        }
+      }
     }
-  }, [profile?.quranProgress]);
+  }, [profile?.quranProgress, showQuranModal]);
 
   useEffect(() => {
     if (!prayerTimes || Object.keys(prayerTimes).length === 0 || !profile) return;
@@ -495,6 +502,11 @@ export default function Journey() {
     // Check cache first
     if (ayahCache[start]) {
       setAyahs(ayahCache[start]);
+      setTimeout(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = 0;
+        }
+      }, 50);
       return;
     }
 
@@ -502,17 +514,87 @@ export default function Journey() {
     
     try {
       const res = await fetch(`/api/quran/verses?start=${start}&count=${AYAH_PER_PRAYER}`);
+      if (!res.ok) {
+        throw new Error(`API returned HTTP ${res.status}`);
+      }
       const data = await res.json();
       
       if (data.ayahs) {
         setAyahs(data.ayahs);
         setAyahCache(prev => ({ ...prev, [start]: data.ayahs }));
+        setTimeout(() => {
+          if (scrollRef.current) {
+            scrollRef.current.scrollTop = 0;
+          }
+        }, 50);
       } else {
         throw new Error((data.error as string) || "Failed to fetch ayahs");
       }
     } catch (e) {
-      console.error("Failed to fetch ayahs:", e);
-      setAyahs([]);
+      console.warn("Express backend API failed, executing client-side direct API fallback:", e);
+      
+      try {
+        // Fetch start ayah details to discover which surah it is in
+        const infoRes = await fetch(`https://api.alquran.cloud/v1/ayah/${start}`);
+        const infoData = await infoRes.json();
+        if (infoData.code !== 200) throw new Error(`Ayah ${start} info not found`);
+
+        const startSurahNum = infoData.data.surah.number;
+        const startAyahInSurah = infoData.data.numberInSurah;
+
+        // Fetch two consecutive surahs just in case we cross the boundary
+        const surahP1 = fetch(`https://api.alquran.cloud/v1/surah/${startSurahNum}/editions/quran-uthmani,bn.bengali,en.transliteration`).then(r => r.json());
+        const surahP2 = startSurahNum < 114 
+          ? fetch(`https://api.alquran.cloud/v1/surah/${startSurahNum + 1}/editions/quran-uthmani,bn.bengali,en.transliteration`).then(r => r.json())
+          : Promise.resolve(null);
+
+        const [s1, s2] = await Promise.all([surahP1, surahP2]);
+
+        let combined: any[] = [];
+
+        const processSurah = (surahData: any, isStart: boolean) => {
+          if (!surahData || surahData.code !== 200) return;
+          const arabicAyahs = surahData.data[0].ayahs;
+          const banglaAyahs = surahData.data[1].ayahs;
+          const englishTranslit = surahData.data[2]?.ayahs || [];
+          const currentStartIdx = isStart ? startAyahInSurah - 1 : 0;
+
+          const neededCount = AYAH_PER_PRAYER - combined.length;
+          if (neededCount <= 0) return;
+
+          const fetched = arabicAyahs.slice(currentStartIdx, currentStartIdx + neededCount).map((av: any, i: number) => {
+            const rawEngTrans = englishTranslit[currentStartIdx + i]?.text || "";
+            return {
+              number: av.number,
+              numInSurah: av.numberInSurah,
+              surah: surahData.data[0].name,
+              surahEn: surahData.data[0].englishName,
+              text: av.text,
+              translation: banglaAyahs[currentStartIdx + i]?.text || "অনুবাদ পাওয়া যায়নি",
+              transliteration: rawEngTrans || "আরবি তিলাওয়াত দেখুন"
+            };
+          });
+          combined = [...combined, ...fetched];
+        };
+
+        processSurah(s1, true);
+        if (combined.length < AYAH_PER_PRAYER && s2) processSurah(s2, false);
+
+        if (combined.length > 0) {
+          setAyahs(combined);
+          setAyahCache(prev => ({ ...prev, [start]: combined }));
+          setTimeout(() => {
+            if (scrollRef.current) {
+              scrollRef.current.scrollTop = 0;
+            }
+          }, 50);
+        } else {
+          setAyahs([]);
+        }
+      } catch (fallbackErr) {
+        console.error("Direct public Quran API fallback failed:", fallbackErr);
+        setAyahs([]);
+      }
     } finally {
       setAyahLoading(false);
     }
@@ -672,6 +754,19 @@ export default function Journey() {
       setShowQuranModal(false);
     } catch (e) {
       console.error("Failed to update Quran progress", e);
+    }
+  };
+
+  const handleSetQuranProgress = async (newProgress: number) => {
+    if (!profile?.userId || !db) return;
+    const target = Math.max(0, Math.min(newProgress, TOTAL_AYAHS));
+    try {
+      await updateDoc(doc(db, "users", profile.userId), {
+        quranProgress: target
+      });
+      setHasReachedBottom(false);
+    } catch (e) {
+      console.error("Failed to set Quran progress", e);
     }
   };
 
@@ -1332,13 +1427,13 @@ export default function Journey() {
                 </div>
 
                 {/* Progress Grid - Fixed/Very Compact */}
-                <div className="px-6 py-3 bg-white/5 border-b border-white/10 shrink-0">
+                <div className="px-6 py-4 bg-white/5 border-b border-white/10 shrink-0">
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <div className="flex justify-between items-center px-4 py-1.5 bg-midnight/40 rounded-lg border border-white/5">
+                    <div className="flex justify-between items-center px-4 py-1.5 bg-midnight/40 rounded-lg border border-white/5 w-full">
                       <span className="text-[8px] uppercase tracking-widest text-slate-gray font-bold">Start</span>
                       <span className="text-sm font-serif text-gold">Ayah {(profile?.quranProgress || 0) + 1}</span>
                     </div>
-                    <div className="flex justify-between items-center px-4 py-1.5 bg-midnight/40 rounded-lg border border-white/5">
+                    <div className="flex justify-between items-center px-4 py-1.5 bg-midnight/40 rounded-lg border border-white/5 w-full">
                       <span className="text-[8px] uppercase tracking-widest text-slate-gray font-bold">Goal</span>
                       <span className="text-sm font-serif text-ivory">Ayah {Math.min((profile?.quranProgress || 0) + AYAH_PER_PRAYER, TOTAL_AYAHS)}</span>
                     </div>
@@ -1355,6 +1450,41 @@ export default function Journey() {
                         animate={{ width: `${((profile?.quranProgress || 0) / TOTAL_AYAHS) * 100}%` }}
                         className="h-full bg-gold shadow-[0_0_10px_rgba(197,160,89,0.5)]"
                       />
+                    </div>
+                  </div>
+
+                  {/* Navigation & Reset Controls */}
+                  <div className="flex items-center justify-between flex-wrap gap-2 mt-4 pt-3 border-t border-white/5">
+                    <button
+                      onClick={() => {
+                        if (confirm("Are you sure you want to reset your Quran progression back to the very beginning?")) {
+                          handleSetQuranProgress(0);
+                        }
+                      }}
+                      disabled={ayahLoading || (profile?.quranProgress || 0) === 0}
+                      className="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 text-[9px] uppercase tracking-widest font-black transition-all disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <RotateCcw size={12} /> Reset to Start
+                    </button>
+                    
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleSetQuranProgress((profile?.quranProgress || 0) - AYAH_PER_PRAYER)}
+                        disabled={ayahLoading || (profile?.quranProgress || 0) === 0}
+                        className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-ivory text-[9px] uppercase tracking-widest font-black transition-all disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1.5 cursor-pointer"
+                        title="Go back 42 Ayahs"
+                      >
+                        <ChevronLeft size={12} /> Prev 42 Ayahs
+                      </button>
+
+                      <button
+                        onClick={() => handleSetQuranProgress((profile?.quranProgress || 0) + AYAH_PER_PRAYER)}
+                        disabled={ayahLoading || (profile?.quranProgress || 0) >= TOTAL_AYAHS}
+                        className="px-3 py-1.5 rounded-xl bg-gold/10 hover:bg-gold/20 border border-gold/20 hover:border-gold/30 text-gold text-[9px] uppercase tracking-widest font-black transition-all disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1.5 cursor-pointer"
+                        title="Go forward 42 Ayahs"
+                      >
+                        Next 42 Ayahs <ChevronRight size={12} />
+                      </button>
                     </div>
                   </div>
                 </div>
