@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { GlassCard } from "@/src/components/ui/GlassCard";
 import { useAuth, useCouple } from "@/src/App";
-import { Settings, LogOut, Heart, Calendar, User as UserIcon, Camera, Save, Upload, Trash2 } from "lucide-react";
+import { Settings, LogOut, Heart, Calendar, User as UserIcon, Camera, Save, Upload, Trash2, Copy, Check, Gift, Building2, Smartphone, HeartHandshake, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 import { auth, db } from "@/src/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { cn } from "@/src/lib/utils";
@@ -18,6 +18,16 @@ export default function Profile() {
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  // Voluntary Support states
+  const [supportCopiedText, setSupportCopiedText] = useState<string | null>(null);
+  const [selectedSupportTier, setSelectedSupportTier] = useState<number | null>(null);
+  const [customSupportAmount, setCustomSupportAmount] = useState("");
+  const [supportMethod, setSupportMethod] = useState<'bank' | 'rocket'>('bank');
+  const [showSupportSuccess, setShowSupportSuccess] = useState(false);
+  const [senderName, setSenderName] = useState("");
+  const [senderNote, setSenderNote] = useState("");
+  const [showSupportAccount, setShowSupportAccount] = useState(false);
 
   const formatForInput = (dateStr: string) => {
     if (!dateStr) return "";
@@ -395,6 +405,317 @@ export default function Profile() {
             </>
           )}
         </button>
+
+        {/* Support the Developer Section */}
+        <GlassCard className="p-8 border-gold/20 bg-midnight/35 relative overflow-hidden mt-10 transition-all duration-500">
+          <div className="absolute top-0 right-0 w-36 h-36 bg-gold/5 rounded-full blur-3xl z-0" />
+          
+          <div className="flex items-center gap-3 mb-4 relative z-10">
+            <HeartHandshake className="text-gold" size={24} />
+            <h3 className="heading-accent m-0 text-ivory font-serif text-xl">Support Our Whisper</h3>
+          </div>
+
+          <div className="space-y-4 mb-6 relative z-10">
+            <p className="text-xs text-slate-gray leading-relaxed">
+              <strong>Our Whisper</strong> is a voluntary, privacy-first Islamic digital space focused on nurturing beautiful love (<em>Mawaddah</em>) and mercy (<em>Rahmah</em>) in marriage. Setting up and hosting these continuous digital companions require active upkeep. If this spiritual app, daily companion, and couples' private sanctuary brought ease to your home, you are welcome to support its maintenance.
+            </p>
+
+            <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl space-y-2">
+              <p className="text-[11px] text-gold font-bold italic leading-relaxed text-center">
+                “The most beloved deed to Allah is the one which is continuous, even if it is small.” &mdash; Sahih Al-Bukhari
+              </p>
+              <p className="text-[11px] text-slate-gray italic leading-relaxed text-center">
+                “Indeed, charity extinguishes the Lord's anger and wards off an evil death.” &mdash; Sunan At-Tirmidhi
+              </p>
+            </div>
+          </div>
+
+          {/* Humble Toggle Button */}
+          <div className="flex justify-center mb-2 relative z-10">
+            <button
+              type="button"
+              onClick={() => {
+                setShowSupportAccount(!showSupportAccount);
+                setShowSupportSuccess(false);
+              }}
+              className={cn(
+                "py-3 px-6 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all flex items-center gap-2",
+                showSupportAccount 
+                  ? "bg-white/5 border border-white/10 text-slate-gray hover:text-ivory" 
+                  : "bg-gold/10 hover:bg-gold/20 border border-gold/35 text-champagne hover:scale-[1.01]"
+              )}
+            >
+              <Gift size={14} className="text-gold animate-pulse" />
+              {showSupportAccount ? "Hide Accounts & Options" : "Show Accounts & Support Options"}
+              {showSupportAccount ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+          </div>
+
+          {/* Conditionally Displayed Support Details */}
+          {showSupportAccount && (
+            <div className="mt-8 pt-6 border-t border-white/5 space-y-6 relative z-10 animate-in fade-in slide-in-from-top-4 duration-500">
+              {/* Flexible Sadaqah Input */}
+              <div className="space-y-4">
+                <label className="text-[10px] uppercase tracking-widest text-gold font-bold flex items-center gap-1.5">
+                  <Sparkles size={11} className="text-gold animate-pulse" />
+                  Voluntary Contribution Level
+                </label>
+                <p className="text-[11px] text-slate-gray leading-relaxed">
+                  There are no conditions or fixed rules here. Feel free to contribute whatever amount feels right to your heart and is easeful for you, solely for the pleasure of Allah.
+                </p>
+
+                {/* Custom Amount */}
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/60 text-sm font-serif">৳</span>
+                  <input
+                    type="number"
+                    placeholder="Enter support amount in BDT (৳)"
+                    value={customSupportAmount}
+                    onChange={(e) => {
+                      setCustomSupportAmount(e.target.value);
+                      setShowSupportSuccess(false);
+                    }}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-8 pr-4 py-3.5 text-ivory text-sm outline-none focus:ring-2 focus:ring-gold/30 placeholder-slate-gray/50"
+                  />
+                </div>
+              </div>
+
+              {/* Developer's Blessings based on input */}
+              {customSupportAmount && parseInt(customSupportAmount) > 0 && (
+                <div className="p-4 bg-gold/5 border border-gold/15 rounded-2xl animate-in fade-in duration-300">
+                  <p className="text-[10px] text-gold font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                    <Sparkles size={11} />
+                    Our Whisper Team's Du'a for You
+                  </p>
+                  <p className="text-xs text-ivory/80 italic leading-relaxed">
+                    “May Allah accept your beautiful contribution of ৳{customSupportAmount}, write it as a beautiful act of continuous Sadaqah Jariyah for your relationship, and bless you and your partner with Mawaddah, Rahmah, and barakah in this life and the next. Ameen.”
+                  </p>
+                </div>
+              )}
+
+              {/* Payment Method Tabs */}
+              <div className="space-y-4">
+                <label className="text-[10px] uppercase tracking-widest text-slate-gray font-bold">
+                  Select payment method
+                </label>
+                <div className="flex gap-2 p-1 bg-white/5 rounded-2xl border border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSupportMethod('bank');
+                      setShowSupportSuccess(false);
+                    }}
+                    className={cn(
+                      "flex-1 py-3 px-1 rounded-xl text-[10px] uppercase tracking-widest font-black flex items-center justify-center gap-2 transition-all",
+                      supportMethod === 'bank' ? "bg-gold text-midnight shadow-md shadow-gold/10" : "text-slate-gray hover:text-ivory"
+                    )}
+                  >
+                    <Building2 size={13} />
+                    DBBL Bank Acc
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSupportMethod('rocket');
+                      setShowSupportSuccess(false);
+                    }}
+                    className={cn(
+                      "flex-1 py-3 px-1 rounded-xl text-[10px] uppercase tracking-widest font-black flex items-center justify-center gap-2 transition-all",
+                      supportMethod === 'rocket' ? "bg-gold text-midnight shadow-md shadow-gold/10" : "text-slate-gray hover:text-ivory"
+                    )}
+                  >
+                    <Smartphone size={13} />
+                    Rocket Wallet
+                  </button>
+                </div>
+              </div>
+
+              {/* Details Card */}
+              <div className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-4">
+                {supportMethod === 'bank' ? (
+                  <div className="space-y-3.5">
+                    <div className="flex items-start justify-between border-b border-white/5 pb-2.5">
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider text-slate-gray font-bold">Bank Name</span>
+                        <p className="text-xs text-ivory font-semibold mt-0.5">Dutch-Bangla Bank PLC (DBBL)</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start justify-between border-b border-white/5 pb-2.5">
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider text-slate-gray font-bold">Account Name</span>
+                        <p className="text-xs text-ivory font-semibold mt-0.5">Md Shahriar Rahaman Ayon</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('Md Shahriar Rahaman Ayon');
+                          setSupportCopiedText('acc_name');
+                          setTimeout(() => setSupportCopiedText(null), 3000);
+                        }}
+                        className="text-[10px] text-gold hover:text-white flex items-center gap-1 transition-colors mt-1"
+                      >
+                        {supportCopiedText === 'acc_name' ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                        {supportCopiedText === 'acc_name' ? "Copied" : "Copy"}
+                      </button>
+                    </div>
+                    <div className="flex items-start justify-between border-b border-white/5 pb-2.5">
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider text-slate-gray font-bold">Account Number</span>
+                        <p className="text-sm text-gold font-mono font-bold tracking-wider mt-0.5">2771580424155</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('2771580424155');
+                          setSupportCopiedText('acc_num');
+                          setTimeout(() => setSupportCopiedText(null), 3000);
+                        }}
+                        className="text-[10px] text-gold hover:text-white flex items-center gap-1 transition-colors mt-1"
+                      >
+                        {supportCopiedText === 'acc_num' ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                        {supportCopiedText === 'acc_num' ? "Copied" : "Copy"}
+                      </button>
+                    </div>
+                    <div className="flex items-start justify-between border-b border-white/5 pb-2.5">
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider text-slate-gray font-bold">Branch Name</span>
+                        <p className="text-xs text-ivory font-semibold mt-0.5">Ashulia Bazar Branch, Dhaka, Bangladesh</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('Ashulia Bazar Branch');
+                          setSupportCopiedText('branch');
+                          setTimeout(() => setSupportCopiedText(null), 3000);
+                        }}
+                        className="text-[10px] text-gold hover:text-white flex items-center gap-1 transition-colors mt-1"
+                      >
+                        {supportCopiedText === 'branch' ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                        {supportCopiedText === 'branch' ? "Copied" : "Copy"}
+                      </button>
+                    </div>
+                    <div className="flex items-start justify-between border-b border-white/5 pb-2.5">
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider text-slate-gray font-bold">Routing Number</span>
+                        <p className="text-xs text-ivory font-mono font-semibold mt-0.5">090260275</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('090260275');
+                          setSupportCopiedText('routing');
+                          setTimeout(() => setSupportCopiedText(null), 3000);
+                        }}
+                        className="text-[10px] text-gold hover:text-white flex items-center gap-1 transition-colors mt-1"
+                      >
+                        {supportCopiedText === 'routing' ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                        {supportCopiedText === 'routing' ? "Copied" : "Copy"}
+                      </button>
+                    </div>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider text-slate-gray font-bold">SWIFT Code</span>
+                        <p className="text-xs text-ivory font-mono font-semibold mt-0.5">DBBLBDDH</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('DBBLBDDH');
+                          setSupportCopiedText('swift_code');
+                          setTimeout(() => setSupportCopiedText(null), 3000);
+                        }}
+                        className="text-[10px] text-gold hover:text-white flex items-center gap-1 transition-colors mt-1"
+                      >
+                        {supportCopiedText === 'swift_code' ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                        {supportCopiedText === 'swift_code' ? "Copied" : "Copy"}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3.5">
+                    <div className="flex items-start justify-between border-b border-white/5 pb-2.5">
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider text-slate-gray font-bold">Mobile Financial Service</span>
+                        <p className="text-xs text-ivory font-semibold mt-0.5">DBBL Rocket</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start justify-between border-b border-white/5 pb-2.5">
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider text-slate-gray font-bold">Rocket Wallet Number</span>
+                        <p className="text-sm text-gold font-mono font-bold tracking-wider mt-0.5">018334387294</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('018334387294');
+                          setSupportCopiedText('rocket_num');
+                          setTimeout(() => setSupportCopiedText(null), 3000);
+                        }}
+                        className="text-[10px] text-gold hover:text-white flex items-center gap-1 transition-colors mt-1"
+                      >
+                        {supportCopiedText === 'rocket_num' ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                        {supportCopiedText === 'rocket_num' ? "Copied" : "Copy"}
+                      </button>
+                    </div>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider text-slate-gray font-bold">Account Type</span>
+                        <p className="text-xs text-ivory font-semibold mt-0.5">Personal Wallet (Use "Send Money" / "Cash In")</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Sender Notification inputs */}
+              <div className="space-y-3 border-t border-white/5 pt-5 mb-5">
+                <h4 className="text-[10px] uppercase tracking-widest text-gold font-bold">Bless with dynamic notification</h4>
+                <p className="text-[10px] text-slate-gray leading-normal">
+                  If you wish to log your contribution, enter your sweet name and custom du'a or reflection below to register on our hearts.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                  <input
+                    type="text"
+                    placeholder="Spouse Name(s) e.g., Arif & Lamia"
+                    value={senderName}
+                    onChange={(e) => setSenderName(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-ivory text-xs outline-none focus:ring-1 focus:ring-gold/30 placeholder-slate-gray/50"
+                  />
+                  <input
+                    type="text"
+                    placeholder="A warm prayer or recommendation"
+                    value={senderNote}
+                    onChange={(e) => setSenderNote(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-ivory text-xs outline-none focus:ring-1 focus:ring-gold/30 placeholder-slate-gray/50"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSupportSuccess(true);
+                  }}
+                  className="w-full mt-2 py-3.5 bg-white/5 border border-white/10 hover:border-gold/35 hover:bg-gold/5 text-champagne rounded-xl font-bold uppercase tracking-widest text-[9px] transition-all flex items-center justify-center gap-2"
+                >
+                  <HeartHandshake size={14} className="text-gold" />
+                  I have sent support / Sadaqah
+                </button>
+              </div>
+
+              {/* Thank You Feedback */}
+              {showSupportSuccess && (
+                <div className="p-5 bg-gold/10 border border-gold rounded-[24px] text-center animate-in zoom-in duration-300 shadow-[0_0_20px_rgba(197,160,89,0.1)]">
+                  <h4 className="text-gold font-serif text-lg mb-1.5 flex items-center justify-center gap-2">
+                    <Sparkles size={18} className="text-gold animate-bounce" />
+                    Jazakallahu Khairan! (جَزَاكَ اللَّهُ خَيْرًا)
+                  </h4>
+                  <p className="text-xs text-ivory leading-relaxed">
+                    {senderName ? `Dearest ${senderName}, may` : "May"} Allah accept your noble contribution as a continuous Sadaqah Jariyah. Your voluntary gesture directly supports keeping these systems alive and comforting for Muslim couples worldwide. You will forever remain in our prayers and quiet devotions. Ameen.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </GlassCard>
 
         <div className="pt-8 border-t border-white/5 flex flex-col gap-4">
           <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
