@@ -56,7 +56,7 @@ export default function Dashboard() {
     let specialDeedTitle = "General Deed";
     let specialDeedText = "";
     let specialDeedBangla = "";
-    let checklist: string[] = [];
+    let checklist: { bn: string; en: string }[] = [];
 
     if (hijriDay <= 0) {
       hijriDay = 30 + hijriDay;
@@ -65,27 +65,54 @@ export default function Dashboard() {
       specialDeedText = "Keep your relationships pure. Exchange a warm compliment with your spouse today to spread happiness!";
       specialDeedBangla = "আপনার দাম্পত্য জীবনকে আরও মধুর করে তুলুন। আজ আপনার জীবনসঙ্গীকে একটি সুন্দর ও অনুপ্রেরণামূলক প্রশংসা বাক্য বলুন!";
       checklist = [
-        "স্মিতহাস্যে সঙ্গীকে সালাম বিনিময় করা",
-        "সুন্দর এবং নম্রভাবে একে অপরের সাথে কথা বলা",
-        "দিনের যে কোনো এক সময় ১০টি দরূদ শরীফ একসাথে পড়া"
+        {
+          bn: "স্মিতহাস্যে সঙ্গীকে সালাম বিনিময় করা",
+          en: "Greet your spouse with Salam and a warm smile"
+        },
+        {
+          bn: "সুন্দর এবং নম্রভাবে একে অপরের সাথে কথা বলা",
+          en: "Speak to one another gently and with beautiful manners"
+        },
+        {
+          bn: "দিনের যে কোনো এক সময় ১০টি দরূদ শরীফ একসাথে পড়া",
+          en: "Recite 10 Salawat (Darood) together at any point of the day"
+        }
       ];
     } else if (hijriDay >= 1 && hijriDay <= 9) {
       specialDeedTitle = "Sacred Days of Dhul-Hijjah (জিলহজের মহিমান্বিত প্রথম দশক)";
       if (hijriDay === 9) {
         specialDeedText = "Today is the Day of Arafah. Fasting on this day expiates the sins of the previous and the coming year. Fast together and make extensive Du'a.";
-        specialDeedBangla = "আজ ‘ইয়াওমুল আরাফাহ’ (আরাফাহর দিন)। এই দিনের রোজা বিগত ও आगामी বছরের গুনাহ মাফ করে দেয়। চলুন আজ দুজনে রোজা রাখি ও ইফতারের পূর্বে বিশেষ দোয়া করি।";
+        specialDeedBangla = "আজ ‘ইয়াওমুল আরাফাহ’ (আরাফাহর দিন)। এই দিনের রোজা বিগত ও আগামী বছরের গুনাহ মাফ করে দেয়। চলুন আজ দুজনে রোজা রাখি ও ইফতারের পূর্বে বিশেষ দোয়া করি।";
         checklist = [
-          "আরাফাহর রোজা রাখা (ফজরের আগে সেহরি)",
-          "আরাফাহর দুপুরের পর থেকে সূর্যাস্ত পর্যন্ত বেশি বেশি তওবা ও ইস্তিগফার করা",
-          "তাকবীরে তাশরীক পড়া: আল্লাহু আকবার, আল্লাহু আকবার, লা ইলাহা ইল্লাল্লাহু..."
+          {
+            bn: "আরাফাহর রোজা রাখা (ফজরের আগে সেহরি)",
+            en: "Observe the fast of Arafah (Suhoor before Fajr)"
+          },
+          {
+            bn: "আরাফাহর দুপুরের পর থেকে সূর্যাস্ত পর্যন্ত বেশি বেশি তওবা ও ইস্তিগফার করা",
+            en: "Engage heavily in repentance and remembrance from Dhuhr until sunset"
+          },
+          {
+            bn: "তাকবীরে তাশরীক পড়া: আল্লাহু আকবার, আল্লাহু আকবার, লা ইলাহা ইল্লাল্লাহু...",
+            en: "Recite Takbeer al-Tashreeq together repeatedly"
+          }
         ];
       } else {
         specialDeedText = "These are highly beloved days to Allah! Fasting and reciting Dhikr are extremely recommended. Recite Takbeer al-Tashreeq together.";
         specialDeedBangla = "জিলহজের প্রথম দশক বছরের সবচেয়ে প্রিয় ১০টি দিন! আল্লাহর নৈকট্য লাভের জন্য আজ রোজা রাখতে পারেন। দুজনে মিলে তাকবীরে তাশরীক বেশি বেশি পাঠ করুন।";
         checklist = [
-          "তাকবীরে তাশরীক পড়া: আল্লাহু আকবার, আল্লাহু আকবার...",
-          "সম্ভব হলে নফল রোজা রাখা",
-          "সঙ্গী বা সঙ্গিনীর সাথে সুন্নাহ মোতাবিক দ্বীনী আলোচনা করা"
+          {
+            bn: "তাকবীরে তাশরীক পড়া: আল্লাহু আকবার, আল্লাহু আকবার...",
+            en: "Recite Takbeer al-Tashreeq: Allahu Akbar, Allahu Akbar..."
+          },
+          {
+            bn: "সম্ভব হলে নফল রোজা রাখা",
+            en: "Keep a voluntary fast if you are both able to do so"
+          },
+          {
+            bn: "সঙ্গী বা সঙ্গিনীর সাথে সুন্নাহ মোতাবিক দ্বীনী আলোচনা করা",
+            en: "Share and discuss a topic of Islamic faith according to the Sunnah"
+          }
         ];
       }
     } else if (hijriDay === 10) {
@@ -93,9 +120,18 @@ export default function Dashboard() {
       specialDeedText = "Eid Mubarak! Celebrate this special day with immense gratitude, beautiful clothing, family bonding, and charity.";
       specialDeedBangla = "ঈদ মোবারক! আজকের বিশেষ দিনটি মহান আল্লাহ্‌র কৃতজ্ঞতা, সুন্দর পোশাক পরিধান, আত্মীয়দের খোঁজ নেওয়া এবং কুরবানীর মাধ্যমে আনন্দময় করে তুলুন।";
       checklist = [
-        "ঈদের সালাতে একে অপরের জন্য দোয়া করা",
-        "একে অপরকে ঈদের উপহার দেওয়া",
-        "ঈদের নফল দান ও কুরবানীর কাজগুলোর অংশ নেওয়া"
+        {
+          bn: "ঈদের সালাতে একে অপরের জন্য দোয়া করা",
+          en: "Perform Eid prayers and supplicate warmly for one another"
+        },
+        {
+          bn: "একে অপরকে ঈদের উপহার দেওয়া",
+          en: "Exchange beautiful Eid gifts of appreciation"
+        },
+        {
+          bn: "ঈদের নফল দান ও কুরবানীর কাজগুলোর অংশ নেওয়া",
+          en: "Participate in Eid charity, distribution of meat, and Qurbani obligations"
+        }
       ];
     } else {
       const dayOfHijri = hijriDay;
@@ -104,18 +140,36 @@ export default function Dashboard() {
         specialDeedText = "It is highly recommended (Sunnah) to fast the 13th, 14th, and 15th of every lunar month. Fasting these 3 days is like fasting the entire lifetime.";
         specialDeedBangla = "আরবি মাসের ১৩, ১৪ ও ১৫ তারিখ আইয়ামুল বিজের রোজা রাখা অত্যন্ত সওয়াবের কাজ। চলুন দুজনে মিলে এই তিন দিন নফল রোজা রাখার নিয়ত করি।";
         checklist = [
-          "আইয়ামুল বিজের নফল রোজার নিয়ত ও প্রস্তুতি",
-          "সঙ্গীকে সেহরি ও ইফতারের কাজে সাহায্য করা",
-          "ইবলিস ও গুনাহ থেকে নিজেদের হেফাযত করা"
+          {
+            bn: "আইয়ামুল বিজের নফল রোজার নিয়ত ও প্রস্তুতি",
+            en: "Make intention and prepare for the White Days (Ayyam al-Beed) fasts"
+          },
+          {
+            bn: "সঙ্গীকে সেহরি ও ইফতারের কাজে সাহায্য করা",
+            en: "Support your partner in preparing the Suhoor and Iftar meals"
+          },
+          {
+            bn: "ইবলিস ও গুনাহ থেকে নিজেদের হেফাযত করা",
+            en: "Guard your speech, actions, and gaze from bad habits and sin"
+          }
         ];
       } else {
         specialDeedTitle = "Reflecting on Quran & Sunnah (কুরআন ও সুন্নাহর আলো)";
         specialDeedText = "Knowledge increases faith. Read a small portion of Tafsir or Islamic history together today.";
         specialDeedBangla = "আজকে দুজনে একসাথে বসে কুরআনের একটি আয়াতের অর্থ বা তাফসীর পাঠ করুন। দ্বীনী জ্ঞান একে অপরের প্রতি ভালোবাসা ও সম্মান বৃদ্ধি করে।";
         checklist = [
-          "আজ অন্তত ১০ মিনিট কিতাব তিলাওয়াত বা তাফসীর পড়া",
-          "সঙ্গীর মুখে কোনো একটি হাদিস বা সুন্নাহর গল্প শোনা",
-          "রাতের বেলা একসাথে অন্তত ২ রাকাত নফল নামাজ আদায় করা"
+          {
+            bn: "আজ অন্তত ১০ মিনিট কিতাব তিলাওয়াত বা তাফসীর পড়া",
+            en: "Devote at least 10 minutes to reading the Holy Quran or its Tafsir together"
+          },
+          {
+            bn: "সঙ্গীর মুখে কোনো একটি হাদিস বা সুন্নাহর গল্প শোনা",
+            en: "Listen to your spouse reciting a Hadith or telling an inspiring Sunnah story"
+          },
+          {
+            bn: "রাতের বেলা একসাথে অন্তত ২ রাকাত নফল নামাজ আদায় করা",
+            en: "Pray at least 2 Rak'ahs of voluntary prayer (Tahajjud or Nafl) together tonight"
+          }
         ];
       }
     }
@@ -130,6 +184,8 @@ export default function Dashboard() {
       checklist
     };
   };
+
+
 
   const getTodayDeedCompletedKey = () => `moon_deed_${format(new Date(), "yyyy-MM-dd")}`;
   const [deedCompletedStatus, setDeedCompletedStatus] = useState<boolean>(() => {
@@ -428,7 +484,7 @@ export default function Dashboard() {
                       <h3 className="text-sm font-semibold uppercase tracking-widest text-gold">Today's Special Deed (আজকের বিশেষ আমল)</h3>
                       <p className="text-[11px] text-slate-gray flex items-center gap-1.5 mt-0.5">
                         <Clock size={11} />
-                        <span>চন্দ্র দিনপঞ্জিকা: <strong>{deed.day} {deed.month} {deed.year} AH</strong></span>
+                        <span>Hijri Calendar (চন্দ্র দিনপঞ্জিকা): <strong>{deed.day} {deed.month} {deed.year} AH</strong></span>
                       </p>
                     </div>
                   </div>
@@ -470,20 +526,25 @@ export default function Dashboard() {
                       <span>✦</span>
                       আজকের বিশেষ আমলসমূহ (Today's Checklist)
                     </h5>
-                    <ul className="space-y-3.5">
+                    <ul className="space-y-4">
                       {deed.checklist.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5">
+                        <li key={idx} className="flex items-start gap-3">
                           <div className={cn(
-                            "w-4.5 h-4.5 rounded-full border flex items-center justify-center text-[10px] mt-0.5 shrink-0 transition-colors",
+                            "w-5 h-5 rounded-full border flex items-center justify-center text-[10px] mt-0.5 shrink-0 transition-colors",
                             deedCompletedStatus 
                               ? "bg-emerald-500/20 border-emerald-500 text-emerald-300" 
                               : "border-gold/30 text-gold bg-gold/5"
                           )}>
                             {deedCompletedStatus ? "✓" : idx + 1}
                           </div>
-                          <span className="text-xs md:text-sm text-ivory/90 font-bangla leading-relaxed font-medium">
-                            {item}
-                          </span>
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-xs md:text-sm text-ivory/90 font-bangla leading-relaxed font-semibold">
+                              {item.bn}
+                            </span>
+                            <span className="text-[11px] text-slate-gray italic leading-normal font-sans">
+                              {item.en}
+                            </span>
+                          </div>
                         </li>
                       ))}
                     </ul>
