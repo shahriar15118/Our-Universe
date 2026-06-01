@@ -1,12 +1,12 @@
-# 🌙 Deen - Islamic Spiritual Companion for Couples
+# 🌙 Our Whisper - Islamic Spiritual Companion for Couples
 
-**Deen (দ্বীন)** is an ambient, deeply spiritual companion application designed specifically for married couples. Built upon the pristine principles of the Qur'an and Sunnah, the application aims to nurture **Mawaddah** (affection) and **Rahmah** (mercy) between spouses by helping them grow, track, and elevate their daily spiritual habits together in beautiful harmony.
+**Our Whisper** is an ambient, deeply spiritual companion application designed specifically for married couples. Built upon the pristine principles of the Qur'an and Sunnah, the application aims to nurture **Mawaddah** (affection) and **Rahmah** (mercy) between spouses by helping them grow, track, and elevate their daily spiritual habits together in beautiful harmony.
 
 ---
 
 ## 🌟 Core Purpose & Mission (প্রজেক্টের মূল উদ্দেশ্য ও দর্শন)
 
-আধুনিক জীবনের ব্যস্ততার মাঝে দম্পতিরা যেন একে অপরের সাথে আধ্যাত্মিক এবং দ্বীনি মেলবন্ধন আরও মজবুত করতে পারেন, সেই স্বপ্ন নিয়ে **Deen** অ্যাপটি তৈরি করা হয়েছে। 
+আধুনিক জীবনের ব্যস্ততার মাঝে দম্পতিরা যেন একে অপরের সাথে আধ্যাত্মিক এবং দ্বীনি মেলবন্ধন আরও মজবুত করতে পারেন, সেই স্বপ্ন নিয়ে **Our Whisper** অ্যাপটি তৈরি করা হয়েছে। 
 
 - **আধ্যাত্মিক মেলবন্ধন (Spiritual Unity):** এটি কেবল একটি ব্যক্তিগত ট্র্যাকার নয়; বরং এটি স্বামী-স্ত্রীকে একযোগে দ্বীনি অভ্যাসের খোঁজ রাখতে উৎসাহিত করে।
 - **স্নেহ ও দয়া (Mawaddah & Rahmah):** কুরআন ও সুন্নাহর আলোকে সুখী দাম্পত্য গড়ে তোলার জন্য এক গভীর অনুপ্রেরণার উৎস।
@@ -45,7 +45,7 @@
 
 ## 🛠️ Environmental Settings & Prerequisites (যা যা প্রয়োজন)
 
-To unlock the full features of Deen, the following environment variables can be configured within your `.env` (or Vercel environment parameters):
+To unlock the full features of Our Whisper, the following environment variables can be configured within your `.env` (or Vercel environment parameters):
 
 ### For AI and Backend Features (Server-Side)
 - `GEMINI_API_KEY`: Your Google Gemini API Key. Used in the server for transliterating verses on the fly, finding emotional state analysis, and conversing with **Ruh AI**.
