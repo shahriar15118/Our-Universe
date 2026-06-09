@@ -23,6 +23,33 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+// Helper for calling Gemini with robust fallback models in case of high demand (503 status/rate limited)
+async function generateContentWithFallback(params: {
+  contents: any;
+  config?: any;
+}) {
+  if (!genAI) throw new Error("Gemini API key not configured");
+  
+  const modelsToTry = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"];
+  let lastError = null;
+  
+  for (const model of modelsToTry) {
+    try {
+      console.log(`[AI] Attempting AI generation with model: ${model}`);
+      const response = await genAI.models.generateContent({
+        ...params,
+        model: model
+      });
+      return response;
+    } catch (err: any) {
+      console.warn(`[AI] Model ${model} failed, error details:`, err.message || err);
+      lastError = err;
+    }
+  }
+  
+  throw lastError || new Error("All fallback models failed");
+}
+
 // Simple in-memory cache for Quran verses
 const quranCache = new Map<string, any>();
 
@@ -83,8 +110,7 @@ app.get("/api/quran/verses", async (req, res) => {
     if (genAI && combined.length > 0) {
       try {
         const textToTransliterate = combined.map((c, i) => `${i}|${c.text}`).join("\n");
-        const response: any = await genAI.models.generateContent({
-          model: "gemini-3.5-flash",
+        const response: any = await generateContentWithFallback({
           contents: [{ parts: [{ text: `Transliterate these Quranic verses into Bengali (Bangla Uccharon). 
             Format: JSON array of strings only. Length: ${combined.length}.
             
@@ -127,8 +153,7 @@ app.post("/api/journal/identify-mood", async (req, res) => {
 
   try {
     const { text } = req.body;
-    const response = await genAI.models.generateContent({
-      model: "gemini-3.5-flash",
+    const response = await generateContentWithFallback({
       contents: [{ parts: [{ text: `Identify the primary mood from this journal entry: "${text}". Choose exactly one word from this list: Radiant, Loved, Peaceful, Quiet, Restless, Energetic. Return ONLY the word.` }] }],
     });
 
@@ -157,8 +182,7 @@ app.post("/api/quran/transliterate", async (req, res) => {
     Verses:
     ${ayahs.map((a: any, i: number) => `${i + 1}. ${a.text}`).join("\n")}`;
 
-    const response = await genAI.models.generateContent({
-      model: "gemini-3.5-flash",
+    const response = await generateContentWithFallback({
       contents: [{ parts: [{ text: prompt }] }],
       config: {
         responseMimeType: "application/json"
@@ -182,18 +206,47 @@ app.post("/api/ruh/chat", async (req, res) => {
   }
 
   try {
-    const { message, coupleContext } = req.body;
+    const { message, history, coupleContext } = req.body;
     
-    const response = await genAI.models.generateContent({ 
-      model: "gemini-3.5-flash",
-      contents: [{ parts: [{ text: message }] }],
+    // Transform history to contents format expected by Gemini API (roles must alternate, e.g. user, model)
+    const contents: any[] = [];
+    if (history && Array.isArray(history)) {
+      history.forEach((h: any) => {
+        // Skip default/welcome message so that history starts with the first actual user turn
+        if (h.sender === "ruh" && h.text.startsWith("Assalamu Alaikum. I am Ruh")) {
+          return;
+        }
+        contents.push({
+          role: h.sender === "user" ? "user" : "model",
+          parts: [{ text: h.text }]
+        });
+      });
+    }
+    
+    // Filter out any leading model messages before the first user message to guarantee strict starting on 'user'
+    let startIndex = 0;
+    while (startIndex < contents.length && contents[startIndex].role === "model") {
+      startIndex++;
+    }
+    const finalContents = contents.slice(startIndex);
+    
+    // Append the current message
+    finalContents.push({
+      role: "user",
+      parts: [{ text: message }]
+    });
+
+    const response = await generateContentWithFallback({ 
+      contents: finalContents,
       config: {
         systemInstruction: `You are Ruh (روح), a deeply spiritual, wise, and Islamically inspiring AI companion for a married couple. 
         Your primary goal is to inspire them with the beauty of Islam, teach them about mercy (Rahmah) and affection (Mawaddah) in marriage through the lens of the Qur'an and Sunnah.
         
         Language Requirement:
-        - Primary Language: You MUST respond in high-quality, fluent, polite, and deeply soulful Bengali (বাংলা) by default. Use warm and respectful Islamic greetings and vocabulary in Bengali (e.g., স্নেহের, প্রিয়, সুপ্রিয়, আল্লাহ তাআলা, সালাত, সাবর, রহমান).
-        - If the user explicitly asks you to speak in English, or if context strongly demands English, you can use English. Otherwise, always prefer Bengali.
+        - Critical Language Rule: You MUST dynamically detect the language of the user's prompt (message) and respond in that EXACT SAME language.
+        - If the user writes or prompts in English, you MUST respond entirely in beautiful, polite, and deeply soulful English.
+        - If the user writes or prompts in Bengali (or Banglish/Roman Bengali script), you MUST respond entirely in polite, fluent, and deeply soulful Bengali (বাংলা).
+        - Always mirror the user's chosen language perfectly. Do not respond in Bengali if they prompt in English, and vice versa.
         
         Style Guidelines:
         1. Use deeply poetic yet clear, warming, and soulful Bengali.
@@ -201,7 +254,7 @@ app.post("/api/ruh/chat", async (req, res) => {
         3. Be a supportive "elder" figure who nurtures their spiritual growth as a pair.
         4. Focus on making their bond a "Sadaqah Jariyah" for each other.
         5. If they are feeling down, provide comfort through Islamic reminders (e.g., Sabr, Shukr, Tawakul).
-        6. CRITICAL: When writing poems, spiritual songs (Nashid/Ghazal), or romantic verses in Bengali, always format them with beautiful stanzas, proper spacing, and separate lines (using standard line breaks '\n') so they read and look like gorgeous structured poetry rather than a single continuous flat paragraph or broken formatting.
+        6. CRITICAL: When writing poems, spiritual songs (Nashid/Ghazal), or romantic verses in Bengali, always format them with beautiful stanzas, proper spacing, and separate lines (using standard line breaks '\\n') so they read and look like gorgeous structured poetry rather than a single continuous flat paragraph or broken formatting.
         
         Couple Context: ${JSON.stringify(coupleContext || {})}
         
@@ -225,8 +278,7 @@ app.post("/api/emotion/guidance", async (req, res) => {
   try {
     const { emotion } = req.body;
     
-    const response = await genAI.models.generateContent({ 
-      model: "gemini-3.5-flash",
+    const response = await generateContentWithFallback({ 
       contents: [{ parts: [{ text: `Provide spiritual guidance from the Quran and Sunnah for someone feeling "${emotion}". 
       Return the response in a structured JSON format with the following fields:
       - ayah: The Arabic text of a relevant Quranic verse.

@@ -21,7 +21,6 @@ export default function Profile() {
 
   // Voluntary Support states
   const [supportCopiedText, setSupportCopiedText] = useState<string | null>(null);
-  const [selectedSupportTier, setSelectedSupportTier] = useState<number | null>(null);
   const [customSupportAmount, setCustomSupportAmount] = useState("");
   const [supportMethod, setSupportMethod] = useState<'bank' | 'rocket'>('bank');
   const [showSupportSuccess, setShowSupportSuccess] = useState(false);
@@ -446,7 +445,7 @@ export default function Profile() {
               )}
             >
               <Gift size={14} className="text-gold animate-pulse" />
-              {showSupportAccount ? "Hide Accounts & Options" : "Show Accounts & Support Options"}
+              {showSupportAccount ? "Close Donation Panel" : "Support Voluntary Project (Sadaqah)"}
               {showSupportAccount ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </button>
           </div>

@@ -1,6 +1,6 @@
 {
   "name": "Our Whisper",
-  "description": "A private universe for romantic Islamic couples to nurture love, preserve memories, and grow spiritually together.",
+  "description": "Our Whisper is a private digital sanctuary designed for married Muslim couples to enrich their relationships. By combining personal mood tracking (Heart Compass) with real-time verse sharing, daily spiritual trackers, private secret vaults, and a shared memory timeline, it guides couples to cultivate Mawaddah (love) and Rahmah (mercy). Powered by Ruh, our AI spiritual counselor, couples can easily consult text-based guidance while building lasting habits and strengthening their faith.",
   "requestFramePermissions": [
     "camera",
     "microphone",

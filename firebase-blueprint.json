@@ -115,6 +115,20 @@
         "timestamp": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "emotion", "text"]
+    },
+    "DeenLog": {
+      "title": "DeenLog",
+      "description": "Spiritual deeds logged by a spouse.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "actionType": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "date": { "type": "string" }
+      },
+      "required": ["userId", "actionType", "text"]
     }
   },
   "firestore": {
@@ -149,6 +163,10 @@
     "/couples/{coupleId}/favorites/{favoriteId}": {
       "schema": "Favorite",
       "description": "Spiritual anchors saved by the couple."
+    },
+    "/couples/{coupleId}/deen_logs/{logId}": {
+      "schema": "DeenLog",
+      "description": "Logged spiritual activities."
     }
   }
 }

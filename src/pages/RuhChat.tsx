@@ -14,17 +14,53 @@ interface Message {
 
 export default function RuhChat() {
   const { couple, profile } = useCouple();
-  const [messages, setMessages] = useState<Message[]>([
-    {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Load from localStorage
+    const saved = localStorage.getItem(`ruh_chat_history_${couple?.id || 'default'}`);
+    const initialWelcome: Message = {
       id: "1",
       text: "Assalamu Alaikum. I am Ruh, your spiritual and emotional companion. How can I serve your hearts today?",
       sender: "ruh",
       timestamp: new Date()
+    };
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const now = new Date().getTime();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        
+        // Filter out those older than 1 day
+        const validMsgs = parsed
+          .map((m: any) => ({
+            ...m,
+            timestamp: new Date(m.timestamp)
+          }))
+          .filter((m: Message) => (now - m.timestamp.getTime()) < oneDayMs);
+
+        if (validMsgs.length > 0) {
+          setMessages(validMsgs);
+        } else {
+          setMessages([initialWelcome]);
+        }
+      } catch (e) {
+        setMessages([initialWelcome]);
+      }
+    } else {
+      setMessages([initialWelcome]);
     }
-  ]);
-  const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  }, [couple?.id]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem(`ruh_chat_history_${couple?.id || 'default'}`, JSON.stringify(messages));
+    }
+  }, [messages, couple?.id]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -53,6 +89,9 @@ export default function RuhChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: input,
+          history: messages
+            .filter(m => !m.text.includes("I couldn't establish") && !m.text.includes("temporary high demand") && !m.text.includes("AI connection"))
+            .map(m => ({ sender: m.sender, text: m.text })),
           coupleContext: {
             husbandName: profile?.role === 'husband' ? profile.name : 'Unknown',
             wifeName: profile?.role === 'wife' ? profile.name : 'Unknown',
@@ -61,8 +100,15 @@ export default function RuhChat() {
         })
       });
 
+      let errorTextToUse = "";
       if (!response.ok) {
-        throw new Error(`API returned HTTP ${response.status}`);
+        try {
+          const errData = await response.json();
+          if (errData && errData.error) {
+            errorTextToUse = errData.error;
+          }
+        } catch (_) {}
+        throw new Error(errorTextToUse || `API returned HTTP ${response.status}`);
       }
 
       const data = await response.json();
@@ -75,11 +121,15 @@ export default function RuhChat() {
       };
 
       setMessages(prev => [...prev, ruhMessage]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Chat error:", error);
+      const isCustomError = error.message && !error.message.includes("API returned") && !error.message.includes("Failed to fetch");
+      const errText = isCustomError 
+        ? error.message 
+        : "I couldn't establish an AI connection to my soul core. The spiritual AI engine might be experiencing temporary high demand or a network issue. Please repeat your message in a few moments, as indeed with hardship there is ease.";
       const ruhErrorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "I couldn't establish an AI connection to my soul core. If you are running the app on a static hosting platform (like Vercel), server-side APIs (relying on Node.js/Express) are not available of because Vercel doesn't run the custom backend server. Please run the app on Google AI Studio's Cloud Run environment to enjoy the full AI-powered chat companion!",
+        text: errText,
         sender: "ruh",
         timestamp: new Date()
       };
@@ -136,10 +186,21 @@ export default function RuhChat() {
           ))}
           
           {isTyping && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2">
-              <div className="w-2 h-2 bg-rose-gold/40 rounded-full animate-bounce [animation-delay:-0.3s]" />
-              <div className="w-2 h-2 bg-rose-gold/40 rounded-full animate-bounce [animation-delay:-0.15s]" />
-              <div className="w-2 h-2 bg-rose-gold/40 rounded-full animate-bounce" />
+            <motion.div 
+              initial={{ opacity: 0, x: -20, y: 10 }} 
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              className="mr-auto items-start max-w-[80%] flex flex-col space-y-1"
+            >
+              <div className="bg-white/[0.03] border border-white/10 text-ivory/80 px-4 py-3 rounded-2xl rounded-tl-none flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-rose-gold rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1.5 h-1.5 bg-rose-gold rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1.5 h-1.5 bg-rose-gold rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+                <span className="text-xs italic text-ivory/60 font-serif tracking-wide">
+                  Ruh is reflecting...
+                </span>
+              </div>
             </motion.div>
           )}
         </div>

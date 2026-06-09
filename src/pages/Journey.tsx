@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { GlassCard } from "@/src/components/ui/GlassCard";
 import { Book, Heart, Moon, Star, Sun, Compass, Send, CheckCircle2, MessageSquare, AlertCircle, TrendingUp, Clock, User, Users, Bell, Settings, ChevronRight, ChevronLeft, RotateCcw } from "lucide-react";
 import { useAuth, useCouple } from "@/src/App";
-import { db } from "@/src/lib/firebase";
-import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, serverTimestamp, getDoc } from "firebase/firestore";
+import { db, handleFirestoreError, OperationType } from "@/src/lib/firebase";
+import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, serverTimestamp, getDoc, collection, addDoc, query, orderBy, limit } from "firebase/firestore";
 import { format, differenceInDays, startOfDay, isAfter, parse, differenceInMinutes } from "date-fns";
 import { cn } from "@/src/lib/utils";
 import { X } from "lucide-react";
@@ -362,9 +362,36 @@ const learningTopics = [
   }
 ];
 
+const DIARY_ITEMS = [
+  {
+    category: "Five Daily Prayers",
+    items: [
+      { id: "Fajr", label: "Fajr", icon: "🕌", type: "prayer" },
+      { id: "Dhuhr", label: "Dhuhr", icon: "🕌", type: "prayer" },
+      { id: "Asr", label: "Asr", icon: "🕌", type: "prayer" },
+      { id: "Maghrib", label: "Maghrib", icon: "🕌", type: "prayer" },
+      { id: "Isha", label: "Isha", icon: "🕌", type: "prayer" },
+    ]
+  },
+  {
+    category: "Voluntary Devotions",
+    items: [
+      { id: "tahajjud", label: "Tahajjud", icon: "🌌", type: "extra" },
+      { id: "duha", label: "Duha / Ishraq", icon: "🌅", type: "extra" },
+      { id: "quran", label: "Quran Recitation", icon: "📖", type: "extra" },
+      { id: "dhikr", label: "Morning Adhkar", icon: "📿", type: "extra" },
+      { id: "dhikrEvening", label: "Evening Adhkar", icon: "📿", type: "extra" },
+      { id: "learning", label: "Deen Study", icon: "🎓", type: "extra" },
+    ]
+  }
+];
+
 export default function Journey() {
   const { profile, couple, partner } = useCouple();
+  const todayStr = format(new Date(), "yyyy-MM-dd");
+  const docPath = couple?.id ? `couples/${couple.id}/deen_daily/${todayStr}` : null;
   const [viewMode, setViewMode] = useState<"me" | "partner">("me");
+  const [selectedDiaryDate, setSelectedDiaryDate] = useState<string>(todayStr);
   const [myData, setMyData] = useState<DeenData>({
     prayers: {},
     quran: false,
@@ -376,6 +403,8 @@ export default function Journey() {
   });
   const [partnerData, setPartnerData] = useState<DeenData | null>(null);
   const [notes, setNotes] = useState<DeenNote[]>([]);
+  const [deenLogs, setDeenLogs] = useState<any[]>([]);
+  const [subSection, setSubSection] = useState<"nudges" | "logs">("nudges");
   const [newNote, setNewNote] = useState("");
   const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -614,9 +643,6 @@ export default function Journey() {
     }
   }, [showQuranModal]);
 
-  const todayStr = format(new Date(), "yyyy-MM-dd");
-  const docPath = couple?.id ? `couples/${couple.id}/deen_daily/${todayStr}` : null;
-
   useEffect(() => {
     const fetchTimes = async () => {
       try {
@@ -720,6 +746,29 @@ export default function Journey() {
     return () => unsub();
   }, [docPath, profile?.userId, partner?.userId, couple?.deenStreak]);
 
+  useEffect(() => {
+    if (!couple?.id || !db) return;
+
+    const q = query(
+      collection(db, "couples", couple.id, "deen_logs"),
+      orderBy("timestamp", "desc"),
+      limit(100)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const logsList: any[] = [];
+      snapshot.forEach((docSnap) => {
+        logsList.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      setDeenLogs(logsList);
+    }, (error) => {
+      console.error("Error loading deen logs:", error);
+      handleFirestoreError(error, OperationType.LIST, `couples/${couple.id}/deen_logs`);
+    });
+
+    return () => unsubscribe();
+  }, [couple?.id, db]);
+
   const getCurrentPrayer = () => {
     if (!prayerTimes.Fajr) return "Fajr";
     const now = new Date();
@@ -770,6 +819,45 @@ export default function Journey() {
     }
   };
 
+  const logDeed = async (type: "prayer" | "extra", id: string) => {
+    if (!db || !couple?.id || !profile) return;
+    try {
+      let logText = "";
+      if (type === "prayer") {
+        const prayerNames: Record<string, string> = {
+          Fajr: "Fajr",
+          Dhuhr: "Dhuhr",
+          Asr: "Asr",
+          Maghrib: "Maghrib",
+          Isha: "Isha"
+        };
+        logText = `${profile.name} offered ${prayerNames[id] || id} Salah.`;
+      } else {
+        const extraNames: Record<string, string> = {
+          quran: "recited the Holy Quran",
+          dhikr: "completed the Morning Adhkar",
+          dhikrEvening: "completed the Evening Adhkar",
+          tahajjud: "offered Tahajjud Salah",
+          duha: "offered Duha Salah",
+          learning: "studied Islamic Knowledge"
+        };
+        logText = `${profile.name} ${extraNames[id] || `completed the ${id} activity`}.`;
+      }
+
+      await addDoc(collection(db, "couples", couple.id, "deen_logs"), {
+        userId: profile.userId,
+        userName: profile.name,
+        actionType: id,
+        text: logText,
+        timestamp: serverTimestamp(),
+        date: todayStr
+      });
+    } catch (e) {
+      console.error("Failed to write deen log:", e);
+      handleFirestoreError(e, OperationType.CREATE, `couples/${couple.id}/deen_logs`);
+    }
+  };
+
   const toggleItem = async (type: "prayer" | "extra", id: string) => {
     if (!db || !docPath || !profile?.userId || viewMode !== "me") return;
 
@@ -798,6 +886,9 @@ export default function Journey() {
       updateObj.lastUpdated = serverTimestamp();
       
       await updateDoc(docRef, updateObj);
+      if (newStatus) {
+        await logDeed(type, id);
+      }
     } catch (e: any) {
       if (e.code === 'not-found') {
         const initialUserData: any = {
@@ -822,10 +913,78 @@ export default function Journey() {
           notes: []
         };
         await setDoc(docRef, initialData, { merge: true });
+        if (newStatus) {
+          await logDeed(type, id);
+        }
       } else {
         console.error("Firestore Toggle Error:", e);
       }
     }
+  };
+
+  const getDiaryDays = () => {
+    const days = [];
+    const now = new Date();
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(now.getDate() - i);
+      const dateStr = format(d, "yyyy-MM-dd");
+      const hasAnyActivity = deenLogs.some(l => l.date === dateStr);
+      days.push({
+        dateStr,
+        dayName: format(d, "eee"),
+        dayNum: format(d, "d"),
+        hasActivity: hasAnyActivity,
+        isToday: dateStr === todayStr
+      });
+    }
+    return days;
+  };
+
+  const getDeedStatus = (userId: string | undefined, id: string, type: "prayer" | "extra", dateStr: string) => {
+    if (!userId) return { done: false, time: null };
+    
+    // Deen logs are ordered desc by timestamp, filter to find ones matching dateStr, userId, actionType
+    const logsForDate = deenLogs.filter(l => 
+      l.date === dateStr && 
+      l.userId === userId && 
+      l.actionType === id
+    );
+
+    let isDone = false;
+    let timeStr: string | null = null;
+
+    if (logsForDate.length > 0) {
+      const matchingLog = logsForDate[0];
+      isDone = true;
+      if (matchingLog.timestamp?.seconds) {
+        timeStr = format(new Date(matchingLog.timestamp.seconds * 1000), "h:mm a");
+      } else if (matchingLog.timestamp instanceof Date) {
+        timeStr = format(matchingLog.timestamp, "h:mm a");
+      } else if (typeof matchingLog.timestamp === "string" || matchingLog.timestamp?.toDate) {
+        try {
+          const date = matchingLog.timestamp.toDate ? matchingLog.timestamp.toDate() : new Date(matchingLog.timestamp);
+          timeStr = format(date, "h:mm a");
+        } catch (e) {
+          timeStr = "Logged";
+        }
+      } else {
+        timeStr = "Done";
+      }
+    } else {
+      if (dateStr === todayStr) {
+        if (userId === profile?.userId) {
+          isDone = type === "prayer" ? !!myData.prayers?.[id] : !!(myData as any)[id];
+        } else if (userId === partner?.userId) {
+          isDone = type === "prayer" ? !!partnerData?.prayers?.[id] : !!(partnerData as any)?.[id];
+        }
+        if (isDone) {
+          timeStr = "Completed";
+        }
+      }
+    }
+
+    return { done: isDone, time: timeStr };
   };
 
   const sendNote = async () => {
@@ -1056,6 +1215,7 @@ export default function Journey() {
                         strokeWidth="3"
                         fill="transparent"
                         strokeDasharray={2 * Math.PI * 17}
+                        initial={{ strokeDashoffset: 2 * Math.PI * 17 }}
                         animate={{ strokeDashoffset: 2 * Math.PI * 17 * (1 - completedPrayersCount / 5) }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
                       />
@@ -1288,114 +1448,371 @@ export default function Journey() {
 
         {/* Partner Notes & Polls */}
         <section className="space-y-6">
-          <div className="flex items-center gap-3 text-left">
-            <MessageSquare className="text-gold" size={18} />
-            <h3 className="heading-accent m-0">Sacred Reminders</h3>
-          </div>
-
-          <GlassCard className="p-0 border-white/5 overflow-hidden shadow-lg bg-white/[0.01]">
-            <div className="p-3 flex gap-3 items-center">
-              <input 
-                type="text"
-                placeholder="Leave a spiritual nudge..."
-                value={newNote}
-                onChange={(e) => setNewNote(e.target.value)}
-                className="flex-1 bg-transparent border-none outline-none text-ivory placeholder:text-slate-gray/40 font-serif px-3 py-2 text-sm text-left"
-              />
-              <button 
-                onClick={sendNote}
-                className="p-3 bg-gold hover:bg-gold/95 text-midnight rounded-[16px] hover:scale-105 active:scale-95 transition-all shadow-md shadow-gold/15 shrink-0"
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 text-left">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="text-gold" size={18} />
+              <h3 className="heading-accent m-0">Sacred Connections</h3>
+            </div>
+            
+            {/* Elegant Sub-Tab switcher */}
+            <div className="flex bg-white/5 border border-white/5 p-1 rounded-2xl w-full sm:w-72">
+              <button
+                onClick={() => setSubSection("nudges")}
+                className={cn(
+                  "flex-1 py-2 text-[10px] uppercase font-bold tracking-widest rounded-xl transition-all",
+                  subSection === "nudges" ? "bg-gold text-midnight font-bold shadow-md shadow-gold/10" : "text-slate-gray hover:text-ivory"
+                )}
               >
-                <Send size={16} />
+                Reminders
+              </button>
+              <button
+                onClick={() => setSubSection("logs")}
+                className={cn(
+                  "flex-1 py-2 text-[10px] uppercase font-bold tracking-widest rounded-xl transition-all",
+                  subSection === "logs" ? "bg-gold text-midnight font-bold shadow-md shadow-gold/10" : "text-slate-gray hover:text-ivory"
+                )}
+                id="view-deeds-diary-button"
+              >
+                Deeds Diary
               </button>
             </div>
-          </GlassCard>
+          </div>
 
-          <div className="space-y-4">
-             <AnimatePresence>
-              {notes.length === 0 ? (
-                <p className="text-center text-[10px] uppercase tracking-widest text-slate-gray/60 py-10 border border-dashed border-white/5 rounded-[24px]">No echoes to share yet</p>
-              ) : (
-                [...notes].reverse().map((note) => {
-                  const isFromMe = note.from === profile?.userId;
-                  return (
-                    <motion.div
-                      key={note.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={cn(
-                        "p-6 rounded-[28px] border flex flex-col gap-4 transition-all text-left relative overflow-hidden",
-                        isFromMe 
-                          ? "bg-white/[0.01] border-white/5" 
-                          : "bg-gold/[0.03] border-gold/15 shadow-sm"
-                      )}
-                    >
-                      <div className="flex justify-between items-start gap-4">
-                        <div className="flex gap-3 text-left">
-                          <div className={cn("p-2.5 rounded-xl shrink-0 flex items-center justify-center h-10 w-10", isFromMe ? "bg-white/5 text-slate-gray" : "bg-gold text-midnight")}>
-                             <Heart size={14} />
-                          </div>
-                          <div>
-                            <p className="text-base font-serif text-champagne leading-relaxed">{note.text}</p>
-                            <p className="text-[9px] uppercase tracking-[0.2em] text-slate-gray mt-1.5 font-bold opacity-60">
-                              {isFromMe ? "Sent by you" : `From ${partner?.name?.split(' ')[0] || 'Spouse'}`}
-                            </p>
-                          </div>
-                        </div>
-                        {!isFromMe && !note.seen && <AlertCircle size={14} className="text-gold animate-pulse shrink-0 mt-1" />}
+          <AnimatePresence mode="wait">
+            {subSection === "logs" ? (
+              <motion.div
+                key="deen-logs"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-6"
+              >
+                {/* Visual Section Title */}
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 bg-white/[0.02] border border-white/5 p-4 rounded-3xl">
+                  <div className="text-left space-y-1.5 flex-1">
+                    <h4 className="text-base font-serif font-black text-gold tracking-wide leading-relaxed">
+                      اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى
+                    </h4>
+                    <div className="space-y-1">
+                      <p className="text-[10px] text-ivory/80 font-bold font-serif leading-relaxed">
+                        উচ্চারণ: "আল্লাহুম্মা ইন্নী আসআলুকা আল-হুদা" • Pronunciation: "Allahumma inni as'aluka-l-huda"
+                      </p>
+                      <p className="text-[10px] text-slate-gray font-medium font-serif leading-relaxed">
+                        "হে আল্লাহ, আমি আপনার কাছে হেদায়াত কামনা করি" • "O Allah, indeed I ask You for guidance"
+                      </p>
+                      <p className="text-[8px] text-slate-gray/80 font-bold uppercase tracking-widest pt-1 border-t border-white/5">
+                        Smart Deeds Diary & Relationship Synchronizer
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedDiaryDate(todayStr)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 active:scale-95 text-[9px] uppercase tracking-widest text-gold font-bold border border-white/5 rounded-xl transition-all self-start sm:self-auto"
+                  >
+                    <RotateCcw size={10} />
+                    Reset to Today
+                  </button>
+                </div>
+
+                {/* Horizontal Mini-Calendar Row */}
+                <div className="bg-white/[0.01] border border-white/5 p-4 rounded-3xl space-y-3.5">
+                  <div className="flex items-center justify-between px-1">
+                    <span className="text-[9px] uppercase tracking-widest font-black text-slate-gray">
+                      Select Date
+                    </span>
+                    <span className="text-xs font-serif text-gold font-bold bg-gold/10 px-3 py-1 rounded-full border border-gold/15">
+                      {format(parse(selectedDiaryDate, "yyyy-MM-dd", new Date()), "eeee, d MMMM yyyy")}
+                    </span>
+                  </div>
+                  
+                  <div className="flex gap-2.5 overflow-x-auto scrollbar-none py-1 justify-between">
+                    {getDiaryDays().map((day) => {
+                      const isSelected = day.dateStr === selectedDiaryDate;
+                      return (
+                        <button
+                          key={day.dateStr}
+                          onClick={() => setSelectedDiaryDate(day.dateStr)}
+                          className={cn(
+                            "flex-1 min-w-[54px] max-w-[70px] py-3 px-2 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all border",
+                            isSelected
+                              ? "bg-gold text-midnight border-gold shadow-[0_0_15px_rgba(197,160,89,0.25)] font-bold scale-[1.03]"
+                              : "bg-white/[0.01] hover:bg-white/5 text-slate-gray hover:text-ivory border-white/5"
+                          )}
+                        >
+                          <span className={cn("text-[8px] uppercase tracking-wider font-extrabold", isSelected ? "text-midnight" : "text-slate-gray/60")}>
+                            {day.dayName}
+                          </span>
+                          <span className={cn("text-base font-serif font-black", isSelected ? "text-midnight" : "text-ivory")}>
+                            {day.dayNum}
+                          </span>
+                          
+                          {/* Small activity indicator dot */}
+                          {day.hasActivity && (
+                            <span className={cn("w-1 h-1 rounded-full", isSelected ? "bg-midnight" : "bg-gold/60")} />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Summary Rooms Grid */}
+                <div className="space-y-6">
+                  {DIARY_ITEMS.map((cat, catIdx) => (
+                    <div key={catIdx} className="space-y-3.5">
+                      <div className="flex items-center gap-2 pl-1.5 text-left">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold" />
+                        <h5 className="text-[10px] sm:text-[11px] uppercase tracking-widest font-serif font-black text-gold/95">{cat.category}</h5>
                       </div>
 
-                      {!isFromMe && !note.seen && (
-                         <button 
-                           onClick={() => acknowledgeNote(note.id, "seen")}
-                           className="w-full py-3 bg-gold text-midnight rounded-xl text-[10px] uppercase tracking-widest font-bold shadow-md hover:bg-gold/90 transition-all shadow-gold/10"
-                         >
-                           Read Reminder
-                         </button>
-                      )}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {cat.items.map((deed) => {
+                          const meStatus = getDeedStatus(profile?.userId, deed.id, deed.type as any, selectedDiaryDate);
+                          const partnerStatus = partner?.userId 
+                            ? getDeedStatus(partner.userId, deed.id, deed.type as any, selectedDiaryDate)
+                            : { done: false, time: null };
 
-                      {!isFromMe && note.seen && (
-                         <div className="space-y-3 pt-3 border-t border-white/5">
-                            <p className="text-[8px] uppercase tracking-widest text-gold/80 font-bold text-center">Followed this reminder?</p>
-                            <div className="flex gap-2">
-                               <button 
-                                 onClick={() => acknowledgeNote(note.id, "followed")}
-                                 className={cn(
-                                   "flex-1 py-2.5 rounded-xl text-[9px] uppercase tracking-widest font-bold border transition-all",
-                                   note.followed === true ? "bg-emerald-500 text-white border-emerald-500" : "bg-white/5 border-white/10 text-slate-gray/70 hover:bg-white/10"
-                                 )}
-                               >
-                                 Yes
-                               </button>
-                               <button 
-                                 onClick={() => acknowledgeNote(note.id, "ignored")}
-                                 className={cn(
-                                   "flex-1 py-2.5 rounded-xl text-[9px] uppercase tracking-widest font-bold border transition-all",
-                                   note.followed === false ? "bg-red-500/20 border-red-500/30 text-red-300" : "bg-white/5 border-white/10 text-slate-gray/70 hover:bg-white/10"
-                                 )}
-                               >
-                                 No
-                               </button>
+                          return (
+                            <div
+                              key={deed.id}
+                              className="bg-white/[0.01] border border-white/5 rounded-3xl p-4.5 flex flex-col justify-between gap-4 hover:bg-white/[0.02] transition-colors text-left"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2.5">
+                                  <span className="text-xl">{deed.icon}</span>
+                                  <h6 className="text-[13px] font-serif font-extrabold text-ivory/95">{deed.label}</h6>
+                                </div>
+                                <span className="text-[8px] uppercase tracking-widest font-mono text-slate-gray bg-white/5 py-0.5 px-2 rounded-full border border-white/5">
+                                  {deed.id}
+                                </span>
+                              </div>
+
+                              {/* Slots/Rooms Comparison representing both partners */}
+                              <div className="grid grid-cols-2 gap-3.5 pt-1">
+                                {/* User Side */}
+                                <div className={cn(
+                                  "p-3 rounded-2xl border flex flex-col items-start gap-1 transition-all",
+                                  meStatus.done 
+                                    ? "bg-emerald-500/[0.03] border-emerald-500/20 text-emerald-400" 
+                                    : "bg-white/[0.01] border-white/5 text-slate-gray/30"
+                                )}>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-xs">🤵</span>
+                                    <span className="text-[9px] uppercase tracking-wider font-extrabold">You</span>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 mt-1 w-full">
+                                    {meStatus.done ? (
+                                      <>
+                                        <CheckCircle2 size={11} className="text-emerald-400 shrink-0" />
+                                        <span className="text-[10px] font-mono leading-none font-bold">{meStatus.time || "Completed"}</span>
+                                      </>
+                                    ) : (
+                                      <span className="text-[9px] italic leading-none font-bold text-slate-gray/30">Incomplete</span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Partner Side */}
+                                <div className={cn(
+                                  "p-3 rounded-2xl border flex flex-col items-start gap-1 transition-all",
+                                  partnerStatus.done 
+                                    ? "bg-emerald-500/[0.03] border-emerald-500/20 text-emerald-400" 
+                                    : "bg-white/[0.01] border-white/5 text-slate-gray/30"
+                                )}>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-xs">🧕</span>
+                                    <span className="text-[9px] uppercase tracking-wider font-extrabold truncate max-w-[80px]">
+                                      {partner?.name || "Spouse"}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 mt-1 w-full">
+                                    {partnerStatus.done ? (
+                                      <>
+                                        <CheckCircle2 size={11} className="text-emerald-400 shrink-0" />
+                                        <span className="text-[10px] font-mono leading-none font-bold">{partnerStatus.time || "Completed"}</span>
+                                      </>
+                                    ) : (
+                                      <span className="text-[9px] italic leading-none font-bold text-slate-gray/30">Incomplete</span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                         </div>
-                      )}
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-                      {isFromMe && note.seen && (
-                         <div className="flex justify-between items-center text-[7px] uppercase tracking-widest font-black border-t border-white/5 pt-3 mt-1">
-                            <span className="text-gold/50">Seen by spouse</span>
-                            {note.followed !== null && (
-                               <span className={note.followed ? "text-emerald-400" : "text-amber-500/75"}>
-                                 {note.followed ? "Followed successfully" : "Not yet followed"}
-                               </span>
+                {/* Selected Day's Chronological Activity Log (Timeline summary) */}
+                <div className="pt-5 border-t border-white/5 space-y-4">
+                  <div className="text-left pl-1.5">
+                    <h5 className="text-[10px] sm:text-[11px] uppercase tracking-widest font-serif font-black text-ivory/80">
+                      Day Chronological Feed ({format(parse(selectedDiaryDate, "yyyy-MM-dd", new Date()), "d MMM")})
+                    </h5>
+                    <p className="text-[9px] text-slate-gray/60 mt-0.5">Chronological summary of logged spiritual deeds</p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {(() => {
+                      const dayLogs = deenLogs.filter(log => log.date === selectedDiaryDate);
+                      if (dayLogs.length === 0) {
+                        return (
+                          <p className="text-center text-[10px] uppercase tracking-widest text-slate-gray/40 py-8 border border-dashed border-white/5 rounded-2xl bg-white/[0.01]">
+                            No activities logged specifically for this day
+                          </p>
+                        );
+                      }
+                      return dayLogs.map((log) => {
+                        const isMe = log.userId === profile?.userId;
+                        const logDate = log.timestamp?.seconds 
+                          ? format(new Date(log.timestamp.seconds * 1000), "h:mm a") 
+                          : "Just now";
+                        
+                        return (
+                          <div
+                            key={log.id}
+                            className={cn(
+                              "p-4 rounded-2xl border transition-all text-left flex items-start gap-3.5 bg-white/[0.005]",
+                              isMe ? "border-white/5" : "border-gold/15 bg-gold/[0.005]"
                             )}
-                         </div>
-                      )}
-                    </motion.div>
-                  );
-                })
-              )}
-             </AnimatePresence>
-          </div>
+                          >
+                            <div className="text-xl mt-0.5">
+                              {log.actionType === "quran" ? "📖" : 
+                               log.actionType?.toLowerCase().includes("dhikr") ? "📿" : "🕌"}
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-[13px] font-serif text-ivory/90 leading-relaxed font-bold">
+                                {log.text}
+                              </p>
+                              <div className="flex items-center gap-1.5 mt-1.5">
+                                <span className="text-[8px] uppercase tracking-widest text-slate-gray font-black">
+                                  {isMe ? "You" : partner?.name || "Spouse"}
+                                </span>
+                                <span className="text-[8px] text-slate-gray/40 font-bold">•</span>
+                                <span className="text-[8px] text-slate-gray font-mono font-bold">{logDate}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="reminders"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-6"
+              >
+                <GlassCard className="p-0 border-white/5 overflow-hidden shadow-lg bg-white/[0.01]">
+                  <div className="p-3 flex gap-3 items-center">
+                    <input 
+                      type="text"
+                      placeholder="Leave a spiritual nudge..."
+                      value={newNote}
+                      onChange={(e) => setNewNote(e.target.value)}
+                      className="flex-1 bg-transparent border-none outline-none text-ivory placeholder:text-slate-gray/40 font-serif px-3 py-2 text-sm text-left"
+                    />
+                    <button 
+                      onClick={sendNote}
+                      className="p-3 bg-gold hover:bg-gold/95 text-midnight rounded-[16px] hover:scale-105 active:scale-95 transition-all shadow-md shadow-gold/15 shrink-0"
+                    >
+                      <Send size={16} />
+                    </button>
+                  </div>
+                </GlassCard>
+
+                <div className="space-y-4">
+                  {notes.length === 0 ? (
+                    <p className="text-center text-[10px] uppercase tracking-widest text-slate-gray/60 py-10 border border-dashed border-white/5 rounded-[24px]">No echoes to share yet</p>
+                  ) : (
+                    [...notes].reverse().map((note) => {
+                      const isFromMe = note.from === profile?.userId;
+                      return (
+                        <motion.div
+                          key={note.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className={cn(
+                            "p-6 rounded-[28px] border flex flex-col gap-4 transition-all text-left relative overflow-hidden",
+                            isFromMe 
+                              ? "bg-white/[0.01] border-white/5" 
+                              : "bg-gold/[0.03] border-gold/15 shadow-sm"
+                          )}
+                        >
+                          <div className="flex justify-between items-start gap-4">
+                            <div className="flex gap-3 text-left">
+                              <div className={cn("p-2.5 rounded-xl shrink-0 flex items-center justify-center h-10 w-10", isFromMe ? "bg-white/5 text-slate-gray" : "bg-gold text-midnight")}>
+                                 <Heart size={14} />
+                              </div>
+                              <div>
+                                <p className="text-base font-serif text-champagne leading-relaxed">{note.text}</p>
+                                <p className="text-[9px] uppercase tracking-[0.2em] text-slate-gray mt-1.5 font-bold opacity-60">
+                                  {isFromMe ? "Sent by you" : `From ${partner?.name?.split(' ')[0] || 'Spouse'}`}
+                                </p>
+                              </div>
+                            </div>
+                            {!isFromMe && !note.seen && <AlertCircle size={14} className="text-gold animate-pulse shrink-0 mt-1" />}
+                          </div>
+
+                          {!isFromMe && !note.seen && (
+                             <button 
+                               onClick={() => acknowledgeNote(note.id, "seen")}
+                               className="w-full py-3 bg-gold text-midnight rounded-xl text-[10px] uppercase tracking-widest font-bold shadow-md hover:bg-gold/90 transition-all shadow-gold/10"
+                             >
+                               Read Reminder
+                             </button>
+                          )}
+
+                          {!isFromMe && note.seen && (
+                             <div className="space-y-3 pt-3 border-t border-white/5">
+                                <p className="text-[8px] uppercase tracking-widest text-gold/80 font-bold text-center">Followed this reminder?</p>
+                                <div className="flex gap-2">
+                                   <button 
+                                     onClick={() => acknowledgeNote(note.id, "followed")}
+                                     className={cn(
+                                       "flex-1 py-2.5 rounded-xl text-[9px] uppercase tracking-widest font-bold border transition-all",
+                                       note.followed === true ? "bg-emerald-500 text-white border-emerald-500" : "bg-white/5 border-white/10 text-slate-gray/70 hover:bg-white/10"
+                                     )}
+                                   >
+                                     Yes
+                                   </button>
+                                   <button 
+                                     onClick={() => acknowledgeNote(note.id, "ignored")}
+                                     className={cn(
+                                       "flex-1 py-2.5 rounded-xl text-[9px] uppercase tracking-widest font-bold border transition-all",
+                                       note.followed === false ? "bg-red-500/20 border-red-500/30 text-red-300" : "bg-white/5 border-white/10 text-slate-gray/70 hover:bg-white/10"
+                                     )}
+                                   >
+                                     No
+                                   </button>
+                                </div>
+                             </div>
+                          )}
+
+                          {isFromMe && note.seen && (
+                             <div className="flex justify-between items-center text-[7px] uppercase tracking-widest font-black border-t border-white/5 pt-3 mt-1">
+                                <span className="text-gold/50">Seen by spouse</span>
+                                {note.followed !== null && (
+                                   <span className={note.followed ? "text-emerald-400" : "text-amber-500/75"}>
+                                     {note.followed ? "Followed successfully" : "Not yet followed"}
+                                   </span>
+                                )}
+                             </div>
+                          )}
+                        </motion.div>
+                      );
+                    })
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
       </div>
 

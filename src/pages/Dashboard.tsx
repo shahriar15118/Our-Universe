@@ -41,6 +41,7 @@ export default function Dashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSurpriseModal, setShowSurpriseModal] = useState(false);
   const [partnerMood, setPartnerMood] = useState<Mood | null>(null);
+  const [showSharedVerseModal, setShowSharedVerseModal] = useState(false);
   const [memoryCount, setMemoryCount] = useState(0);
 
   const getSimulatedHijriDeed = () => {
@@ -232,19 +233,42 @@ export default function Dashboard() {
   useEffect(() => {
     if (!couple?.id || !partner?.userId) return;
 
-    // Fetch partner's latest mood for today
+    // Fetch partner's latest mood
     const q = query(
       collection(db, "couples", couple.id, "moods"),
-      where("userId", "==", partner.userId),
-      where("date", "==", today)
+      where("userId", "==", partner.userId)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (!snapshot.empty) {
-        // Sort client-side to find the latest
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Mood));
-        const latest = data.sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)[0];
-        setPartnerMood(latest);
+        const data = snapshot.docs.map(doc => {
+          const d = doc.data();
+          return { id: doc.id, ...d } as Mood;
+        });
+
+        const now = new Date();
+        // Filter out expired items
+        const activeData = data.filter(item => {
+          if (item.expiresAt) {
+            const expTime = item.expiresAt.seconds ? new Date(item.expiresAt.seconds * 1000) : new Date(item.expiresAt);
+            return expTime > now;
+          }
+          // Default fallback: 24h filter
+          const itemTime = item.timestamp?.seconds ? new Date(item.timestamp.seconds * 1000) : new Date();
+          return now.getTime() - itemTime.getTime() < 24 * 60 * 60 * 1000;
+        });
+
+        if (activeData.length > 0) {
+          // Sort client-side to find the latest
+          const latest = activeData.sort((a, b) => {
+            const timeA = a.timestamp?.seconds || 0;
+            const timeB = b.timestamp?.seconds || 0;
+            return timeB - timeA;
+          })[0];
+          setPartnerMood(latest);
+        } else {
+          setPartnerMood(null);
+        }
       } else {
         setPartnerMood(null);
       }
@@ -253,7 +277,7 @@ export default function Dashboard() {
     });
 
     return () => unsubscribe();
-  }, [couple?.id, partner?.userId, today]);
+  }, [couple?.id, partner?.userId]);
 
   useEffect(() => {
     if (!couple?.id) return;
@@ -509,15 +533,21 @@ export default function Dashboard() {
                   {/* Left Side: Text Details */}
                   <div className="col-span-12 lg:col-span-7 space-y-4 text-left">
                     <div className="space-y-1">
-                      <span className="text-[10px] uppercase tracking-[0.2em] font-extrabold text-gold/60">Hot Topic</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] font-extrabold text-gold/60">Today's Focus / আজকের আমল</span>
                       <h4 className="text-xl md:text-2xl font-serif text-champagne">{deed.title}</h4>
                     </div>
-                    <p className="text-sm font-medium text-ivory leading-relaxed font-bangla text-emerald-100/90">
-                      {deed.bangla}
-                    </p>
-                    <p className="text-xs text-slate-gray/90 leading-relaxed italic">
-                      "{deed.text}"
-                    </p>
+                    <div className="space-y-3">
+                      <div className="border-l-2 border-gold/30 pl-3">
+                        <p className="text-sm font-medium text-ivory leading-relaxed font-bangla text-emerald-100/90">
+                          {deed.bangla}
+                        </p>
+                      </div>
+                      <div className="border-l-2 border-white/10 pl-3">
+                        <p className="text-xs text-slate-gray/95 leading-relaxed font-normal italic">
+                          "{deed.text}"
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Right Side: Checklist Points */}
@@ -628,7 +658,13 @@ export default function Dashboard() {
         {/* Right Column Grid */}
         <div className="col-span-12 md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
            <GlassCard 
-             onClick={() => navigate('/emotion-guide')}
+             onClick={() => {
+                if (partnerMood && partnerMood.verse) {
+                  setShowSharedVerseModal(true);
+                } else {
+                  navigate('/emotion-guide');
+                }
+              }}
              className={cn(
                "flex flex-col justify-between p-10 group cursor-pointer hover:border-gold/30 transition-all",
                partnerMood && "border-gold/30 bg-gold/5"
@@ -640,10 +676,16 @@ export default function Dashboard() {
                   partnerMood ? "bg-gold/20" : "bg-white/5 group-hover:bg-gold/10"
                 )}>
                   {partnerMood ? (
-                    emotions.find(e => e.id === partnerMood.emotionId)?.icon ? (
-                      React.createElement(emotions.find(e => e.id === partnerMood.emotionId)!.icon, { size: 30, className: "text-gold" })
-                    ) : "🕊️"
-                  ) : "🕊️"}
+                    <div className="relative">
+                      <Heart className="text-rose-gold fill-rose-gold animate-pulse relative z-10" size={30} />
+                      <Heart className="text-rose-gold/30 fill-rose-gold/20 absolute inset-0 blur-xs scale-125" size={30} />
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <Heart className="text-gold/85 fill-gold/10 relative z-10 hover:scale-105 transition-transform" size={28} />
+                      <Heart className="text-gold/20 fill-gold/5 absolute inset-0 blur-[2px] scale-115" size={28} />
+                    </div>
+                  )}
                 </div>
                 <h4 className="text-2xl font-serif text-ivory">For your Heart</h4>
                 <p className="text-[10px] uppercase tracking-widest text-slate-gray mt-3 font-bold">
@@ -847,6 +889,87 @@ export default function Dashboard() {
                   className="w-full py-5 bg-gold text-midnight rounded-[24px] font-black uppercase tracking-[0.3em] text-[10px] shadow-lg shadow-gold/20 hover:scale-[1.02] active:scale-95 transition-all"
                 >
                   Alhamdulillah
+                </button>
+              </GlassCard>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Shared Verse Modal */}
+      <AnimatePresence>
+        {showSharedVerseModal && partnerMood && partnerMood.verse && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-midnight/90 backdrop-blur-2xl overflow-y-auto">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="w-full max-w-lg my-8"
+            >
+              <GlassCard className="p-8 border-gold/30 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50"></div>
+                
+                <div className="flex justify-between items-center mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-gold/10 flex items-center justify-center text-gold">
+                      <Heart className="fill-gold/10" size={20} />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-serif text-ivory">Shared from {partner?.name?.split(' ')[0] || "Spouse"}'s Heart</h2>
+                      <p className="text-[8px] uppercase tracking-widest text-slate-gray font-bold mt-0.5">Spiritual healing reminder</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setShowSharedVerseModal(false)} className="text-slate-gray hover:text-ivory p-2 hover:bg-white/5 rounded-full transition-all">
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Arabic text with beautiful rendering */}
+                  <div className="p-6 bg-white/[0.02] border border-white/5 rounded-3xl">
+                     <p className="arabic-text text-3xl mb-4 text-champagne text-right leading-loose">
+                       {partnerMood.verse.ayah}
+                     </p>
+                     <p className="text-[10px] text-left uppercase tracking-widest text-gold font-bold">{partnerMood.verse.ref}</p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <span className="text-[9px] uppercase tracking-widest text-slate-gray font-bold block text-left">Translation</span>
+                    <p className="text-base font-serif italic text-ivory/80 leading-relaxed text-left">
+                      "{partnerMood.verse.trans}"
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 border-t border-white/5 pt-4">
+                    <span className="text-[9px] uppercase tracking-widest text-slate-gray font-bold block text-left">Reflection</span>
+                    <p className="text-sm text-champagne/80 font-serif leading-relaxed text-left">
+                      {partnerMood.verse.tafsir}
+                    </p>
+                  </div>
+
+                  {partnerMood.verse.dua && (
+                     <div className="border-t border-white/5 pt-4 space-y-4">
+                        <span className="text-[9px] uppercase tracking-widest text-slate-gray font-bold block text-left">Healing Dua</span>
+                        <div className="p-6 bg-gold/[0.03] border border-gold/15 rounded-3xl">
+                          <p className="arabic-text text-2xl text-right text-champagne mb-4 leading-loose">{partnerMood.verse.dua.arabic}</p>
+                          {partnerMood.verse.dua.bangla && (
+                            <p className="text-base text-gold font-bold leading-relaxed font-bangla text-left mb-2">
+                              {partnerMood.verse.dua.bangla}
+                            </p>
+                          )}
+                          <p className="text-sm italic text-ivory/60 leading-relaxed text-left">
+                            "{partnerMood.verse.dua.trans}"
+                          </p>
+                        </div>
+                     </div>
+                  )}
+                </div>
+
+                <button 
+                  onClick={() => setShowSharedVerseModal(false)}
+                  className="w-full py-5 bg-gold text-midnight rounded-[24px] font-black uppercase tracking-[0.3em] text-[10px] shadow-lg shadow-gold/20 hover:scale-[1.02] active:scale-95 transition-all mt-8"
+                >
+                  Ameen, I feel peace
                 </button>
               </GlassCard>
             </motion.div>

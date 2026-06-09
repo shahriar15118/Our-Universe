@@ -861,6 +861,7 @@ export default function EmotionGuide() {
   const [isSearching, setIsSearching] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
+  const [selectedDuration, setSelectedDuration] = useState<number>(24);
   
   const [guidanceMode, setGuidanceMode] = useState<"curated" | "ai">("curated");
   const [favorites, setFavorites] = useState<any[]>([]);
@@ -1052,16 +1053,21 @@ export default function EmotionGuide() {
   };
 
   const handleShare = async () => {
-    if (!selectedEmotion || !couple?.id || !user?.uid) return;
+    if (!selectedEmotion || !couple?.id || !user?.uid || !activeGuidance) return;
     
     setIsSharing(true);
     try {
       const today = new Date().toISOString().split('T')[0];
+      const now = new Date();
+      const expiresAt = new Date(now.getTime() + selectedDuration * 60 * 60 * 1000);
+
       await addDoc(collection(db, "couples", couple.id, "moods"), {
         userId: user.uid,
         emotionId: selectedEmotion,
+        verse: activeGuidance,
         date: today,
-        timestamp: serverTimestamp()
+        timestamp: serverTimestamp(),
+        expiresAt: expiresAt
       });
       setShareSuccess(true);
       setTimeout(() => setShareSuccess(false), 3000);
@@ -1235,6 +1241,39 @@ export default function EmotionGuide() {
                   </div>
                 </div>
 
+                {/* Keep Duration Selector */}
+                <div className="mt-8 p-4 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col gap-3 text-left">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] uppercase tracking-widest font-black text-slate-gray">Keep Duration on Spouse's Screen</span>
+                    <span className="text-[9px] text-gold font-mono uppercase bg-gold/10 px-2 py-0.5 rounded font-bold">
+                      {selectedDuration === 876000 ? "Eternal" : `${selectedDuration} Hour${selectedDuration > 1 ? "s" : ""}`}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-5 gap-2">
+                    {[
+                      { label: "1 Hour", value: 1 },
+                      { label: "6 Hours", value: 6 },
+                      { label: "24 Hours", value: 24 },
+                      { label: "3 Days", value: 72 },
+                      { label: "Eternal", value: 876000 }
+                    ].map((opt) => (
+                      <button
+                        key={opt.label}
+                        onClick={() => setSelectedDuration(opt.value)}
+                        className={cn(
+                          "py-2 rounded-xl text-[9px] uppercase tracking-widest font-bold transition-all border text-center",
+                          selectedDuration === opt.value
+                            ? "bg-gold text-midnight border-gold font-black shadow-md shadow-gold/10"
+                            : "bg-white/5 border-white/10 text-slate-gray hover:text-ivory hover:bg-white/10"
+                        )}
+                        id={`duration-opt-${opt.value}`}
+                      >
+                        {opt.label.split(" ")[0]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="mt-10 pt-10 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
                   <button 
                     onClick={handleSaveFavorite}
@@ -1259,7 +1298,7 @@ export default function EmotionGuide() {
                         : "bg-gold text-midnight hover:scale-[1.02] shadow-gold/20"
                     )}
                   >
-                    {isSharing ? "Sending..." : shareSuccess ? <>Shared with Spouse <CheckCircle2 size={16} /></> : <>Share frequency with Spouse <Share2 size={16} /></>}
+                    {isSharing ? "Sending..." : shareSuccess ? <>Shared with Spouse <CheckCircle2 size={16} /></> : <>Share with Spouse <Share2 size={16} /></>}
                   </button>
                 </div>
               </div>

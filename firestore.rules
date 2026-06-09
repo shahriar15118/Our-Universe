@@ -80,7 +80,13 @@ service cloud.firestore {
         allow read, write: if isMemberOf(request.auth.uid, coupleId);
       }
 
+      // Updated Rule for Shared Emotion Anchors & Guidance Favoriting
       match /favorites/{favoriteId} {
+        allow read, write: if isMemberOf(request.auth.uid, coupleId);
+      }
+
+      // Updated Rule for Deen Activity Logs
+      match /deen_logs/{logId} {
         allow read, write: if isMemberOf(request.auth.uid, coupleId);
       }
     }

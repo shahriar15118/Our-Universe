@@ -93,6 +93,18 @@ export interface Mood {
   emotionId: string;
   date: string; // YYYY-MM-DD
   timestamp: any;
+  verse?: {
+    ayah: string;
+    ref: string;
+    trans: string;
+    tafsir: string;
+    dua?: {
+      arabic: string;
+      trans: string;
+      bangla: string;
+    };
+  };
+  expiresAt?: any;
 }
 
 export type AppTheme = 'Moonlit Night' | 'Desert Rose' | 'Ocean Calm' | 'Golden Dusk';
