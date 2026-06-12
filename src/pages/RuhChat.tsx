@@ -140,7 +140,7 @@ export default function RuhChat() {
   };
 
   return (
-    <div className="container mx-auto px-4 pt-12 h-screen max-w-2xl flex flex-col">
+    <div className="container mx-auto px-4 pt-6 md:pt-12 h-[calc(100dvh-20px)] max-w-2xl flex flex-col">
       <header className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <div className="bg-rose-gold/20 p-2 rounded-full">

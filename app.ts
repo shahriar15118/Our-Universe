@@ -1,5 +1,5 @@
 import express from "express";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -30,14 +30,23 @@ async function generateContentWithFallback(params: {
 }) {
   if (!genAI) throw new Error("Gemini API key not configured");
   
-  const modelsToTry = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"];
+  // Place fastest and lowest latency models first ('gemini-3.1-flash-lite' and 'gemini-flash-latest' have minimal/no thinking latency)
+  const modelsToTry = ["gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.5-flash"];
   let lastError = null;
   
   for (const model of modelsToTry) {
     try {
       console.log(`[AI] Attempting AI generation with model: ${model}`);
+      
+      const modelConfig = { ...(params.config || {}) };
+      if (model.startsWith("gemini-3")) {
+        // Set thinking level to MINIMAL to reduce reasoning latency and achieve instant responses
+        modelConfig.thinkingConfig = { thinkingLevel: ThinkingLevel.MINIMAL };
+      }
+      
       const response = await genAI.models.generateContent({
         ...params,
+        config: modelConfig,
         model: model
       });
       return response;

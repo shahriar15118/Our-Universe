@@ -417,13 +417,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container mx-auto px-6 pt-12 max-w-4xl pb-40">
+    <div className="container mx-auto px-4 sm:px-6 pt-8 sm:pt-12 max-w-4xl pb-40">
       {/* Header Area */}
-      <header className="flex items-center justify-between mb-12">
-        <div className="flex items-center gap-5">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 sm:mb-12">
+        <div className="flex items-center gap-4 sm:gap-5">
           <motion.div 
             whileHover={{ scale: 1.1 }}
-            className="w-16 h-16 rounded-full border-2 border-gold p-1 shadow-[0_0_20px_rgba(197,160,89,0.3)] cursor-pointer"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-gold p-1 shadow-[0_0_20px_rgba(197,160,89,0.3)] cursor-pointer shrink-0"
             onClick={() => navigate('/profile')}
           >
             <div className="w-full h-full rounded-full bg-indigo-deep flex items-center justify-center overflow-hidden">
@@ -435,53 +435,53 @@ export default function Dashboard() {
             </div>
           </motion.div>
           <div>
-            <h1 className="text-3xl font-serif tracking-wide text-champagne">Our Whisper</h1>
+            <h1 className="text-2xl sm:text-3xl font-serif tracking-wide text-champagne">Our Whisper</h1>
             <p className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Eternal Connection</p>
           </div>
         </div>
-        <div className="text-right hidden sm:block">
-           <div className="flex items-center justify-end gap-2 text-gold mb-1">
+        <div className="text-left sm:text-right">
+           <div className="flex items-center sm:justify-end gap-2 text-gold mb-1">
              <Clock size={12} />
              <p className="text-[10px] uppercase tracking-wider font-bold">{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}</p>
            </div>
-           <p className="text-champagne font-serif italic text-xl">Salaam, {profile?.name}</p>
+           <p className="text-champagne font-serif italic text-lg sm:text-xl">Salaam, {profile?.name}</p>
         </div>
       </header>
 
       {/* Main Counter Hero */}
-      <section className="flex flex-col items-center justify-center py-16 text-center bg-white/5 backdrop-blur-md rounded-[50px] border border-white/10 shadow-2xl relative overflow-hidden mb-12 group">
+      <section className="flex flex-col items-center justify-center py-10 sm:py-16 text-center bg-white/5 backdrop-blur-md rounded-[32px] sm:rounded-[50px] border border-white/10 shadow-2xl relative overflow-hidden mb-8 sm:mb-12 group">
         <div className="absolute inset-0 bg-gradient-to-b from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-30"></div>
         
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-[10px] uppercase tracking-[0.5em] text-gold mb-10 font-bold"
+          className="text-[9px] sm:text-[10px] uppercase tracking-[0.3em] sm:tracking-[0.5em] text-gold mb-6 sm:mb-10 font-bold px-4"
         >
           Sacred Union Since {couple.weddingDate ? new Date(couple.weddingDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "The Beginning"}
         </motion.div>
         
-        <div className="flex items-baseline gap-2 md:gap-8 mb-4 flex-wrap justify-center">
+        <div className="flex items-baseline gap-1.5 sm:gap-4 md:gap-8 mb-4 flex-wrap justify-center px-4 w-full">
           <CounterUnit value={timeTogether.days} label="Days" />
-          <span className="text-3xl md:text-5xl font-light text-white/5 select-none self-center">:</span>
+          <span className="text-xl sm:text-3xl md:text-5xl font-light text-white/5 select-none self-center">:</span>
           <CounterUnit value={timeTogether.hours} label="Hours" />
-          <span className="text-3xl md:text-5xl font-light text-white/5 select-none self-center">:</span>
+          <span className="text-xl sm:text-3xl md:text-5xl font-light text-white/5 select-none self-center">:</span>
           <CounterUnit value={timeTogether.mins} label="Minutes" />
-          <span className="text-3xl md:text-5xl font-light text-white/5 select-none self-center">:</span>
+          <span className="text-xl sm:text-3xl md:text-5xl font-light text-white/5 select-none self-center">:</span>
           <CounterUnit value={timeTogether.secs} label="Seconds" />
         </div>
 
-        <div className="mt-16 px-12 max-w-2xl relative">
-           <div className="w-12 h-px bg-gold/40 mx-auto mb-10"></div>
-           <p className="text-2xl md:text-4xl font-serif italic text-champagne leading-relaxed">
+        <div className="mt-8 sm:mt-16 px-4 sm:px-12 max-w-2xl relative">
+           <div className="w-12 h-px bg-gold/40 mx-auto mb-6 sm:mb-10"></div>
+           <p className="text-lg sm:text-2xl md:text-4xl font-serif italic text-champagne leading-relaxed">
              "And He placed between you affection and mercy."
            </p>
-           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-gray mt-8 font-bold opacity-60">Surah Ar-Rum · 30:21</p>
+           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-gray mt-6 sm:mt-8 font-bold opacity-60">Surah Ar-Rum · 30:21</p>
            
            <motion.div 
              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
              transition={{ repeat: Infinity, duration: 4 }}
-             className="absolute -top-10 -left-10 text-gold/20"
+             className="absolute -top-10 -left-10 text-gold/20 hidden sm:block"
            >
              <Heart size={80} strokeWidth={1} />
            </motion.div>
@@ -489,23 +489,23 @@ export default function Dashboard() {
       </section>
 
       {/* Grid of Content */}
-      <div className="grid grid-cols-12 gap-8">
+      <div className="grid grid-cols-12 gap-4 sm:gap-8">
         {/* Dynamic Moon Notice / Today's Special Deed */}
         {(() => {
           const deed = getSimulatedHijriDeed();
           return (
             <div className="col-span-12">
-              <GlassCard className="p-8 md:p-10 border-gold/20 shadow-2xl relative overflow-hidden bg-gradient-to-br from-white/[0.03] to-white/[0.01]">
+              <GlassCard className="p-5 sm:p-8 md:p-10 border-gold/20 shadow-2xl relative overflow-hidden bg-gradient-to-br from-white/[0.03] to-white/[0.01]">
                 <div className="absolute top-0 right-0 w-44 h-44 bg-gold/5 rounded-full blur-3xl"></div>
                 
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 pb-6 border-b border-white/5 relative z-10">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 mb-8 pb-6 border-b border-white/5 relative z-10">
                   <div className="flex items-center gap-4">
                     <div className="p-3.5 bg-gradient-to-br from-gold/10 to-transparent text-gold rounded-2xl border border-gold/20 flex items-center justify-center relative shadow-lg">
                       <Moon size={24} className="relative z-10 animate-pulse text-gold" />
                       <Star size={10} className="absolute top-1.5 right-1.5 text-gold/60 animate-bounce" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold uppercase tracking-widest text-gold">Today's Special Deed (আজকের বিশেষ আমল)</h3>
+                      <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-gold">Today's Special Deed (আজকের বিশেষ আমল)</h3>
                       <p className="text-[11px] text-slate-gray flex items-center gap-1.5 mt-0.5">
                         <Clock size={11} />
                         <span>Hijri Calendar (চন্দ্র দিনপঞ্জিকা): <strong>{deed.day} {deed.month} {deed.year} AH</strong></span>
@@ -519,7 +519,7 @@ export default function Dashboard() {
                       className={cn(
                         "px-6 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold shadow-md transition-all flex items-center gap-2",
                         deedCompletedStatus 
-                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" 
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" 
                           : "bg-gold text-midnight hover:scale-105 active:scale-95 shadow-lg shadow-gold/20"
                       )}
                     >
@@ -529,7 +529,7 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-12 gap-8 relative z-10">
+                <div className="grid grid-cols-12 gap-4 sm:gap-8 relative z-10">
                   {/* Left Side: Text Details */}
                   <div className="col-span-12 lg:col-span-7 space-y-4 text-left">
                     <div className="space-y-1">
@@ -551,7 +551,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Right Side: Checklist Points */}
-                  <div className="col-span-12 lg:col-span-5 bg-white/5 border border-white/5 p-6 rounded-[28px] text-left space-y-4">
+                  <div className="col-span-12 lg:col-span-5 bg-white/5 border border-white/5 p-4 sm:p-6 rounded-[20px] sm:rounded-[28px] text-left space-y-4">
                     <h5 className="text-[10px] uppercase tracking-widest font-bold text-gold flex items-center gap-1.5">
                       <span>✦</span>
                       আজকের বিশেষ আমলসমূহ (Today's Checklist)
@@ -586,10 +586,10 @@ export default function Dashboard() {
         })()}
 
         {/* Left Column */}
-        <div className="col-span-12 md:col-span-4 flex flex-col gap-8">
+        <div className="col-span-12 md:col-span-4 flex flex-col gap-4 sm:gap-8">
            <GlassCard 
              onClick={() => setShowSecretModal(true)}
-             className="flex-1 min-h-[300px] p-10 flex flex-col justify-between group cursor-pointer hover:border-gold/30 transition-all border-white/10"
+             className="flex-1 min-h-[300px] p-5 sm:p-8 md:p-10 flex flex-col justify-between group cursor-pointer hover:border-gold/30 transition-all border-white/10"
            >
               <div>
                 <h3 className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold mb-1">Vault</h3>
@@ -620,7 +620,7 @@ export default function Dashboard() {
 
            <div 
              onClick={() => navigate('/journey')}
-             className="bg-gradient-to-br from-gold to-champagne rounded-[40px] p-8 h-44 flex flex-col justify-between shadow-2xl shadow-gold/20 cursor-pointer hover:scale-[1.02] transition-all group"
+             className="bg-gradient-to-br from-gold to-champagne rounded-[24px] sm:rounded-[40px] p-5 sm:p-8 h-44 flex flex-col justify-between shadow-2xl shadow-gold/20 cursor-pointer hover:scale-[1.02] transition-all group"
            >
               <div className="flex justify-between items-start">
                 <h3 className="text-[10px] uppercase tracking-[0.3em] text-midnight font-bold">Deen Streak</h3>
@@ -637,7 +637,7 @@ export default function Dashboard() {
 
            <GlassCard 
               onClick={() => setShowSurpriseModal(true)}
-              className="p-8 h-44 flex flex-col justify-between group cursor-pointer hover:border-gold/30 transition-all border-white/10 overflow-hidden relative"
+              className="p-5 sm:p-8 h-44 flex flex-col justify-between group cursor-pointer hover:border-gold/30 transition-all border-white/10 overflow-hidden relative"
             >
                <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
                  <GiftIcon size={120} className="text-gold" />
@@ -656,7 +656,7 @@ export default function Dashboard() {
         </div>
 
         {/* Right Column Grid */}
-        <div className="col-span-12 md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="col-span-12 md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
            <GlassCard 
              onClick={() => {
                 if (partnerMood && partnerMood.verse) {
@@ -666,7 +666,7 @@ export default function Dashboard() {
                 }
               }}
              className={cn(
-               "flex flex-col justify-between p-10 group cursor-pointer hover:border-gold/30 transition-all",
+               "flex flex-col justify-between p-5 sm:p-10 group cursor-pointer hover:border-gold/30 transition-all",
                partnerMood && "border-gold/30 bg-gold/5"
              )}
            >
@@ -702,7 +702,7 @@ export default function Dashboard() {
 
            <GlassCard 
              onClick={() => navigate('/timeline')}
-             className="flex flex-col justify-between p-10 group cursor-pointer hover:border-gold/30 transition-all border-white/10"
+             className="flex flex-col justify-between p-5 sm:p-10 group cursor-pointer hover:border-gold/30 transition-all border-white/10"
            >
               <div>
                 <div className="w-14 h-14 rounded-3xl bg-white/5 flex items-center justify-center text-3xl mb-8 shadow-inner group-hover:bg-gold/10 transition-colors">🖇️</div>
@@ -727,9 +727,9 @@ export default function Dashboard() {
 
            <GlassCard 
              onClick={() => navigate('/ruh')}
-             className="col-span-1 sm:col-span-2 p-10 flex items-center justify-between group cursor-pointer hover:bg-white/[0.08] transition-all border-gold/10"
+             className="col-span-1 sm:col-span-2 p-5 sm:p-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 group cursor-pointer hover:bg-white/[0.08] transition-all border-gold/10"
            >
-              <div className="flex items-center gap-10">
+              <div className="flex items-center gap-4 sm:gap-10">
                 <div className="relative">
                   <div className="w-24 h-24 rounded-[32px] bg-indigo-deep border border-gold/30 flex items-center justify-center text-4xl shadow-2xl relative z-10 overflow-hidden">
                      <div className="absolute inset-0 bg-gradient-to-tr from-gold/20 to-transparent"></div>
@@ -742,9 +742,9 @@ export default function Dashboard() {
                    <p className="text-sm text-slate-gray mt-2 italic font-serif opacity-80">"How is your heart feeling today?"</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                 <div className="w-14 h-14 rounded-full border border-gold/40 flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-midnight transition-all shadow-lg group-hover:shadow-gold/40">
-                    <ChevronRight size={24} />
+              <div className="flex items-center gap-4 self-end sm:self-auto">
+                 <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-gold/40 flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-midnight transition-all shadow-lg group-hover:shadow-gold/40 shrink-0">
+                    <ChevronRight size={20} className="sm:size-[24px]" />
                  </div>
               </div>
            </GlassCard>
@@ -983,10 +983,10 @@ export default function Dashboard() {
 function CounterUnit({ value, label }: { value: number, label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="text-5xl md:text-8xl font-serif text-ivory tracking-tighter drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
+      <span className="text-3xl sm:text-5xl md:text-8xl font-serif text-ivory tracking-tighter drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
         {value.toLocaleString()}
       </span>
-      <span className="text-[10px] uppercase tracking-[0.3em] text-gold mt-2 font-bold">{label}</span>
+      <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-gold mt-2 font-bold">{label}</span>
     </div>
   );
 }

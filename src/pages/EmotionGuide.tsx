@@ -1079,28 +1079,28 @@ export default function EmotionGuide() {
   };
 
   return (
-    <div className="container mx-auto px-6 pt-12 max-w-2xl pb-40">
-      <header className="mb-12">
-        <h1 className="text-4xl font-serif text-champagne mb-2">Heart's Compass</h1>
+    <div className="container mx-auto px-4 sm:px-6 pt-8 sm:pt-12 max-w-2xl pb-40">
+      <header className="mb-8 sm:mb-12">
+        <h1 className="text-3xl sm:text-4xl font-serif text-champagne mb-2">Heart's Compass</h1>
         <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">Divine guidance for your soul's state</p>
       </header>
 
-      <GlassCard className="p-0 border-white/10 overflow-hidden mb-12 shadow-2xl">
-        <form onSubmit={handleCustomSearch} className="flex items-center gap-4 p-4 md:p-6 bg-white/5 backdrop-blur-xl">
-           <div className="p-4 bg-gold/10 text-gold rounded-2xl">
-             <Search size={20} />
+      <GlassCard className="p-0 rounded-2xl sm:rounded-3xl border-white/10 overflow-hidden mb-8 sm:mb-12 shadow-2xl">
+        <form onSubmit={handleCustomSearch} className="flex items-center gap-2.5 sm:gap-4 p-2.5 sm:p-4 md:p-6 pr-3.5 sm:pr-4 md:pr-6 bg-white/5 backdrop-blur-xl">
+           <div className="p-2.5 sm:p-4 bg-gold/10 text-gold rounded-xl sm:rounded-2xl shrink-0">
+             <Search size={18} className="sm:size-[20px]" />
            </div>
            <input 
              type="text"
              placeholder="How is your heart today? (e.g., 'stressed about work', 'feeling empty')"
              value={customEmotion}
              onChange={(e) => setCustomEmotion(e.target.value)}
-             className="flex-1 bg-transparent border-none outline-none text-ivory placeholder:text-slate-gray/50 font-serif text-lg"
+             className="flex-1 min-w-0 bg-transparent border-none outline-none text-ivory placeholder:text-slate-gray/50 font-serif text-sm sm:text-base md:text-lg"
            />
            <button 
              type="submit"
              disabled={isSearching}
-             className="px-8 py-4 bg-gold text-midnight rounded-xl font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-gold/20 disabled:opacity-50"
+             className="px-4 sm:px-8 py-3 sm:py-4 bg-gold text-midnight rounded-xl font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-gold/20 disabled:opacity-50 shrink-0"
            >
              {isSearching ? "Searching..." : "Listen"}
            </button>

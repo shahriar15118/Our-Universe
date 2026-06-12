@@ -1525,7 +1525,7 @@ export default function Journey() {
                     </span>
                   </div>
                   
-                  <div className="flex gap-2.5 overflow-x-auto scrollbar-none py-1 justify-between">
+                  <div className="flex gap-1.5 sm:gap-2.5 overflow-x-auto scrollbar-none py-1 justify-start sm:justify-between w-full">
                     {getDiaryDays().map((day) => {
                       const isSelected = day.dateStr === selectedDiaryDate;
                       return (
@@ -1533,7 +1533,7 @@ export default function Journey() {
                           key={day.dateStr}
                           onClick={() => setSelectedDiaryDate(day.dateStr)}
                           className={cn(
-                            "flex-1 min-w-[54px] max-w-[70px] py-3 px-2 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all border",
+                            "flex-1 min-w-[44px] sm:min-w-[54px] max-w-[70px] py-2 sm:py-3 px-1 sm:px-2 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center gap-1 transition-all border shrink-0",
                             isSelected
                               ? "bg-gold text-midnight border-gold shadow-[0_0_15px_rgba(197,160,89,0.25)] font-bold scale-[1.03]"
                               : "bg-white/[0.01] hover:bg-white/5 text-slate-gray hover:text-ivory border-white/5"
@@ -2021,7 +2021,7 @@ export default function Journey() {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="w-full max-w-xl"
             >
-              <GlassCard className="p-6 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
+              <GlassCard className="p-5 sm:p-8 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
                 <div className="absolute top-4 right-4 z-10">
                   <button onClick={() => setShowDhikrModal(false)} className="text-slate-gray hover:text-gold transition-colors p-2 bg-midnight/40 rounded-full">
                     <X size={20} />
@@ -2097,7 +2097,7 @@ export default function Journey() {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="w-full max-w-xl"
             >
-              <GlassCard className="p-6 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
+              <GlassCard className="p-5 sm:p-8 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
                 <div className="absolute top-4 right-4 z-10">
                   <button onClick={() => setShowTahajjudModal(false)} className="text-slate-gray hover:text-gold transition-colors p-2 bg-midnight/40 rounded-full">
                     <X size={20} />
@@ -2219,7 +2219,7 @@ export default function Journey() {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="w-full max-w-xl"
             >
-              <GlassCard className="p-6 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
+              <GlassCard className="p-5 sm:p-8 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
                 <div className="absolute top-4 right-4 z-10">
                   <button onClick={() => setShowDuhaModal(false)} className="text-slate-gray hover:text-gold transition-colors p-2 bg-midnight/40 rounded-full">
                     <X size={20} />
@@ -2327,7 +2327,7 @@ export default function Journey() {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="w-full max-w-xl"
             >
-              <GlassCard className="p-6 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
+              <GlassCard className="p-5 sm:p-8 md:p-10 border-gold/30 shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
                 <div className="absolute top-4 right-4 z-10">
                   <button 
                     onClick={() => {
