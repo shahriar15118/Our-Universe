@@ -54,54 +54,6 @@ const postSalahAdhkar = [
     banglaUccharon: "আল্লাহু আকবার",
     translation: "আল্লাহ সবচেয়ে মহান", 
     repeat: 34 
-  },
-];
-
-const morningAdhkar = [
-  { 
-    arabic: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ", 
-    transliteration: "Asbahna wa asbahal-mulku lillah...", 
-    banglaUccharon: "আসবাহনা ওয়া আসবাহাল মুলকু লিল্লাহি ওয়ালহামদু লিল্লাহ, লা ইলাহা ইল্লাল্লাহু ওয়াহদাহু লা শারিকা লাহু",
-    translation: "আমরা সকালে উপনীত হয়েছি এবং রাজত্ব আল্লাহর হয়ে সকালে উপনীত হয়েছে...", 
-    repeat: 1 
-  },
-  { 
-    arabic: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ", 
-    transliteration: "Ya Hayyu Ya Qayyum...", 
-    banglaUccharon: "ইয়া হাইয়ু ইয়া কাইয়ূমু বিরাহমাতিকা আস্তাগীসু আসলিহ লী শা'নী কুল্লাহু ওয়া লা তাকিলনী ইলা নাফসী তারফাতা আইন",
-    translation: "হে চিরঞ্জীব, হে চিরস্থায়ী! আপনার রহমতের উসিলায় আমি সাহায্য প্রার্থনা করছি...", 
-    repeat: 1 
-  },
-  {
-    arabic: "اللَّهُمَّ مَا أَصْبَحَ بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ، فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَهُ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ",
-    transliteration: "Allahumma ma asbaha bi min ni'mah...",
-    banglaUccharon: "আল্লাহুম্মা মা আসবাহা বি মিন নিমাতিন আও বিআহাদিম মিন খালকিকা পামীনকা ওয়াহদাকা লা শারিকা লাকা ফালাকাল হামদু ওয়ালাকাশ শুকর",
-    translation: "হে আল্লাহ! যে নেয়ামত আমার এই ভোরে আমি পেয়েছি বা আপনার সৃষ্টির কেউ পেয়েছে তা সবই শুধু আপনার পক্ষ থেকে...",
-    repeat: 1
-  }
-];
-
-const eveningAdhkar = [
-  { 
-    arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ", 
-    transliteration: "Amsayna wa amsal-mulku lillah...", 
-    banglaUccharon: "আমসাইনা ওয়া আমসাল মুলকু লিল্লাহি ওয়ালহামদু লিল্লাহ, লা ইলাহা ইল্লাল্লাহু ওয়াহদাহু লা শারিকা লাহু",
-    translation: "আমরা সন্ধ্যায় উপনীত হয়েছি এবং রাজত্ব আল্লাহর হয়ে সন্ধ্যায় উপনীত হয়েছে...", 
-    repeat: 1 
-  },
-  { 
-    arabic: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ", 
-    transliteration: "Allahumma bika amsayna...", 
-    banglaUccharon: "আল্লাহুম্মা বিকা আমসাইনা, ওয়া বিকা আসবাহনা, ওয়া বিকা নাহইয়া, ওয়া বিকা নামূতু, ওয়া ইলাইকাল মাসীর",
-    translation: "হে আল্লাহ! আপনার সাহায্যেই আমরা সন্ধ্যা করেছি, আপনার সাহায্যেই ভোর করেছি...", 
-    repeat: 1 
-  },
-  {
-    arabic: "اللَّهُمَّ مَا أَمْسَى بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ، فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَهُ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ",
-    transliteration: "Allahumma ma amsa bi min ni'mah...",
-    banglaUccharon: "আল্লাহুম্মা মা আমসা বি মিন নিমাতিন আও বিআহাদিম মিন খালকিকা পামীনকা ওয়াহদাকা লা শারিকা লাকা ফালাকাল হামদু ওয়ালাকাশ শুকর",
-    translation: "হে আল্লাহ! যে নেয়ামত আমার এই সন্ধ্যায় আমি পেয়েছি বা আপনার সৃষ্টির কেউ পেয়েছে তা সবই শুধু আপনার পক্ষ থেকে...",
-    repeat: 1
   }
 ];
 
@@ -125,29 +77,15 @@ const dhikrCollections: Record<string, {
       {
         arabic: "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ",
         transliteration: "Astaghfirullahal 'Adheem...",
-        banglaUccharon: "আস্তাগফিরুল্লাহাল আজিমাল্লাজি লা ইলাহা ইল্লা হুয়াল হাইয়ুল কাইয়ুমু ওয়া আতুবু ইলাইহি",
-        translation: "আমি মহান আল্লাহর নিকট ক্ষমা প্রার্থনা করছি, যিনি ব্যতীত কোন উপাস্য নেই, যিনি চিরঞ্জীব, চিরস্থায়ী এবং আমি তাঁর দিকেই প্রত্যাবর্তন করছি।",
-        repeat: 3
-      },
-      {
-        arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ، سُبْحَانَ اللَّهِ الْعَظِيمِ",
-        transliteration: "Subhanallahi wa bihamdihi, Subhanallahal 'Adheem",
-        banglaUccharon: "সুবহানাল্লাহি ওয়া বিহামদিহি, সুবহানাল্লাহিল আজিম",
-        translation: "আল্লাহর পবিত্রতা ঘোষণা করছি তাঁর প্রশংসার সাথে, মহিমান্বিত আল্লাহর পবিত্রতা বর্ণনা করছি।",
-        repeat: 100
-      },
-      {
-        arabic: "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
-        transliteration: "La ilaha illallah wahdahu...",
-        banglaUccharon: "লা ইলাহা ইল্লাল্লাহু ওয়াহদাহু লা শারিকা লাহু, লাহুল মুলকু ওয়া লাহুল হামদু ওয়া হুয়া আলা কুলি শাইয়িন কাদির",
-        translation: "আল্লাহ ব্যতীত কোন সত্য উপাস্য নেই, তিনি একক, তাঁর অংশীদার নেই, রাজত্ব ও প্রশংসা তাঁরই এবং তিনি সবকিছুর ওপর ক্ষমতাবান।",
+        banglaUccharon: "আস্তাগফিরুল্লাহাল আজীম আল্লাযী লা ইলাহা ইল্লা হুয়াল হাইয়্যুল কাইয়্যুমু ওয়া আতূবু ইলাইহি",
+        translation: "আমি মহান আল্লাহর নিকট ক্ষমা প্রার্থনা করছি, যিনি ছাড়া কোনো উপাস্য নেই, যিনি চিরঞ্জীব, চিরস্থায়ী এবং আমি তাঁর দিকেই প্রত্যাবর্তন করছি।",
         repeat: 100
       }
     ]
   },
   postFajr: {
-    title: "Post-Fajr Salah (Morning Adhkar)",
-    banglaTitle: "ফজর পরবর্তী ও সকালের আজকার",
+    title: "Post-Fajr Salah (Morning Dhikr & Amal)",
+    banglaTitle: "ফজর পরবর্তী ও সকালের জিকির ও আমল",
     icon: Sun,
     items: [
       { 
@@ -164,53 +102,33 @@ const dhikrCollections: Record<string, {
         translation: "আমরা সকালে উপনীত হয়েছি এবং রাজত্ব আল্লাহর হয়ে সকালে উপনীত হয়েছে...",
         repeat: 1
       },
-      { 
-        arabic: "سُبْحَانَ اللهِ", 
-        transliteration: "SubhanAllah", 
-        banglaUccharon: "সুবহানআল্লাহ",
-        translation: "আল্লাহ অতি পবিত্র", 
-        repeat: 33 
-      },
-      { 
-        arabic: "الْحَمْدُ لِلَّهِ", 
-        transliteration: "Alhamdulillah", 
-        banglaUccharon: "আলহামদুলিল্লাহ",
-        translation: "সমস্ত প্রশংসা আল্লাহর জন্য", 
-        repeat: 33 
-      },
-      { 
-        arabic: "اللهُ أَكْبَرُ", 
-        transliteration: "Allahu Akbar", 
-        banglaUccharon: "আল্লাহু আকবার",
-        translation: "আল্লাহ সবচেয়ে মহান", 
-        repeat: 34 
-      }
+      ...postSalahAdhkar
     ]
   },
   postDhuhr: {
-    title: "Post-Dhuhr Salah Adhkar",
-    banglaTitle: "যোহর পরবর্তী আজকার",
+    title: "Post-Dhuhr Salah Dhikr",
+    banglaTitle: "যোহর পরবর্তী জিকির ও আমল",
     icon: Sun,
     items: postSalahAdhkar
   },
   postAsr: {
-    title: "Post-Asr Salah Adhkar",
-    banglaTitle: "আসর পরবর্তী আজকার",
+    title: "Post-Asr Salah Dhikr",
+    banglaTitle: "আসর পরবর্তী জিকির ও আমল",
     icon: Sun,
     items: [
       ...postSalahAdhkar,
       {
         arabic: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ",
         transliteration: "Allahumma bika amsayna...",
-        banglaUccharon: "আল্লাহুম্মা বিকা আমসাইনা, ওয়া বিকা আসবাহনা, ওয়া বিকা নাহইয়া, ওয়া বিকা নামূতু, ওয়া ইলাইকাল মাসীর",
+        banglaUccharon: "আল্লাহুম্মা বিকা আমসাইনা, ওয়া বিকা আসবাহনা, ওয়া বিকা নাহইয়া, ওয়া বিকা নামൂতু, ওয়া ইলাইকাল মাসীর",
         translation: "হে আল্লাহ! আপনার সাহায্যেই আমরা সন্ধ্যা করেছি, আপনার সাহায্যেই ভোর করেছি...",
         repeat: 1
       }
     ]
   },
   postMaghrib: {
-    title: "Post-Maghrib Salah (Evening Adhkar)",
-    banglaTitle: "মাগরিব পরবর্তী ও সন্ধ্যার আজকার",
+    title: "Post-Maghrib Salah (Evening Dhikr)",
+    banglaTitle: "মাগরিব পরবর্তী ও সন্ধ্যার জিকির ও আমল",
     icon: Moon,
     items: [
       {
@@ -224,13 +142,13 @@ const dhikrCollections: Record<string, {
     ]
   },
   postIsha: {
-    title: "Post-Isha Salah Adhkar",
-    banglaTitle: "এশা পরবর্তী আজকার",
+    title: "Post-Isha Salah Dhikr",
+    banglaTitle: "এশা পরবর্তী জিকির ও আমল",
     icon: Moon,
     items: postSalahAdhkar
   },
   beforeSleep: {
-    title: "Before Sleep Adhkar",
+    title: "Before Sleep Dhikr & Amal",
     banglaTitle: "ঘুমানোর পূর্বের আমল ও দোয়া",
     icon: Moon,
     items: [
@@ -260,6 +178,13 @@ interface DeenData {
   tahajjud: boolean;
   duha: boolean;
   learning: boolean;
+  preFajrDhikr?: boolean;
+  postFajrDhikr?: boolean;
+  postDhuhrDhikr?: boolean;
+  postAsrDhikr?: boolean;
+  postMaghribDhikr?: boolean;
+  postIshaDhikr?: boolean;
+  beforeSleepDhikr?: boolean;
 }
 
 interface DeenNote {
@@ -374,13 +299,23 @@ const DIARY_ITEMS = [
     ]
   },
   {
+    category: "Amal & Dhikr (Time-Based)",
+    items: [
+      { id: "preFajrDhikr", label: "Pre-Fajr Dhikr & Amal", icon: "📿", type: "extra" },
+      { id: "postFajrDhikr", label: "Fajr Dhikr / Amal", icon: "📿", type: "extra" },
+      { id: "postDhuhrDhikr", label: "Dhuhr Dhikr / Amal", icon: "📿", type: "extra" },
+      { id: "postAsrDhikr", label: "Asr Dhikr / Amal", icon: "📿", type: "extra" },
+      { id: "postMaghribDhikr", label: "Maghrib Dhikr / Amal", icon: "📿", type: "extra" },
+      { id: "postIshaDhikr", label: "Isha Dhikr / Amal", icon: "📿", type: "extra" },
+      { id: "beforeSleepDhikr", label: "Before Sleep Dhikr & Amal", icon: "📿", type: "extra" },
+    ]
+  },
+  {
     category: "Voluntary Devotions",
     items: [
       { id: "tahajjud", label: "Tahajjud", icon: "🌌", type: "extra" },
       { id: "duha", label: "Duha / Ishraq", icon: "🌅", type: "extra" },
       { id: "quran", label: "Quran Recitation", icon: "📖", type: "extra" },
-      { id: "dhikr", label: "Morning Adhkar", icon: "📿", type: "extra" },
-      { id: "dhikrEvening", label: "Evening Adhkar", icon: "📿", type: "extra" },
       { id: "learning", label: "Deen Study", icon: "🎓", type: "extra" },
     ]
   }
@@ -400,6 +335,13 @@ export default function Journey() {
     tahajjud: false,
     duha: false,
     learning: false,
+    preFajrDhikr: false,
+    postFajrDhikr: false,
+    postDhuhrDhikr: false,
+    postAsrDhikr: false,
+    postMaghribDhikr: false,
+    postIshaDhikr: false,
+    beforeSleepDhikr: false,
   });
   const [partnerData, setPartnerData] = useState<DeenData | null>(null);
   const [notes, setNotes] = useState<DeenNote[]>([]);
@@ -436,17 +378,15 @@ export default function Journey() {
   const lastFetchedProgressRef = React.useRef<number | null>(null);
 
   useEffect(() => {
-    // Pre-fetch ayahs when profile is available or modal is open and progress changes
+    // Pre-fetch ayahs dynamically in background as soon as profile/progress is available, with zero delay
     if (profile) {
       const currentProg = profile.quranProgress || 0;
-      if (showQuranModal) {
-        if (lastFetchedProgressRef.current !== currentProg || ayahs.length === 0) {
-          lastFetchedProgressRef.current = currentProg;
-          fetchAyahs();
-        }
+      if (lastFetchedProgressRef.current !== currentProg || ayahs.length === 0) {
+        lastFetchedProgressRef.current = currentProg;
+        fetchAyahs();
       }
     }
-  }, [profile?.quranProgress, showQuranModal]);
+  }, [profile?.quranProgress]);
 
   useEffect(() => {
     if (!prayerTimes || Object.keys(prayerTimes).length === 0 || !profile) return;
@@ -726,7 +666,14 @@ export default function Journey() {
             dhikrEvening: false, 
             tahajjud: false, 
             duha: false, 
-            learning: false 
+            learning: false,
+            preFajrDhikr: false,
+            postFajrDhikr: false,
+            postDhuhrDhikr: false,
+            postAsrDhikr: false,
+            postMaghribDhikr: false,
+            postIshaDhikr: false,
+            beforeSleepDhikr: false
           });
         }
         if (partner?.userId) {
@@ -835,11 +782,18 @@ export default function Journey() {
       } else {
         const extraNames: Record<string, string> = {
           quran: "recited the Holy Quran",
-          dhikr: "completed the Morning Adhkar",
-          dhikrEvening: "completed the Evening Adhkar",
+          dhikr: "completed the Morning Dhikr & Amal",
+          dhikrEvening: "completed the Evening Dhikr & Amal",
           tahajjud: "offered Tahajjud Salah",
           duha: "offered Duha Salah",
-          learning: "studied Islamic Knowledge"
+          learning: "studied Islamic Knowledge",
+          preFajrDhikr: "completed Pre-Fajr Dhikr & Amal",
+          postFajrDhikr: "completed Post-Fajr Dhikr / Amal",
+          postDhuhrDhikr: "completed Post-Dhuhr Dhikr / Amal",
+          postAsrDhikr: "completed Post-Asr Dhikr / Amal",
+          postMaghribDhikr: "completed Post-Maghrib Dhikr / Amal",
+          postIshaDhikr: "completed Post-Isha Dhikr / Amal",
+          beforeSleepDhikr: "completed Before Sleep Dhikr & Amal"
         };
         logText = `${profile.name} ${extraNames[id] || `completed the ${id} activity`}.`;
       }
@@ -898,7 +852,14 @@ export default function Journey() {
           dhikrEvening: false,
           tahajjud: false,
           duha: false,
-          learning: false
+          learning: false,
+          preFajrDhikr: false,
+          postFajrDhikr: false,
+          postDhuhrDhikr: false,
+          postAsrDhikr: false,
+          postMaghribDhikr: false,
+          postIshaDhikr: false,
+          beforeSleepDhikr: false
         };
 
         if (type === "prayer") {
@@ -944,11 +905,23 @@ export default function Journey() {
   const getDeedStatus = (userId: string | undefined, id: string, type: "prayer" | "extra", dateStr: string) => {
     if (!userId) return { done: false, time: null };
     
-    // Deen logs are ordered desc by timestamp, filter to find ones matching dateStr, userId, actionType
+    let effectiveId = id;
+    if (id === "postFajrDhikr") {
+      const hasPostFajrLog = deenLogs.some(l => l.date === dateStr && l.userId === userId && l.actionType === "postFajrDhikr");
+      if (!hasPostFajrLog && deenLogs.some(l => l.date === dateStr && l.userId === userId && l.actionType === "dhikr")) {
+        effectiveId = "dhikr";
+      }
+    } else if (id === "postMaghribDhikr") {
+      const hasPostMaghribLog = deenLogs.some(l => l.date === dateStr && l.userId === userId && l.actionType === "postMaghribDhikr");
+      if (!hasPostMaghribLog && deenLogs.some(l => l.date === dateStr && l.userId === userId && l.actionType === "dhikrEvening")) {
+        effectiveId = "dhikrEvening";
+      }
+    }
+
     const logsForDate = deenLogs.filter(l => 
       l.date === dateStr && 
       l.userId === userId && 
-      l.actionType === id
+      l.actionType === effectiveId
     );
 
     let isDone = false;
@@ -974,9 +947,13 @@ export default function Journey() {
     } else {
       if (dateStr === todayStr) {
         if (userId === profile?.userId) {
-          isDone = type === "prayer" ? !!myData.prayers?.[id] : !!(myData as any)[id];
+          isDone = type === "prayer" ? !!myData.prayers?.[effectiveId] : !!(myData as any)[effectiveId];
+          if (!isDone && id === "postFajrDhikr") isDone = !!myData.dhikr;
+          if (!isDone && id === "postMaghribDhikr") isDone = !!myData.dhikrEvening;
         } else if (userId === partner?.userId) {
-          isDone = type === "prayer" ? !!partnerData?.prayers?.[id] : !!(partnerData as any)?.[id];
+          isDone = type === "prayer" ? !!partnerData?.prayers?.[effectiveId] : !!(partnerData as any)?.[effectiveId];
+          if (!isDone && id === "postFajrDhikr") isDone = !!partnerData?.dhikr;
+          if (!isDone && id === "postMaghribDhikr") isDone = !!partnerData?.dhikrEvening;
         }
         if (isDone) {
           timeStr = "Completed";
@@ -1042,7 +1019,14 @@ export default function Journey() {
     dhikrEvening: false, 
     tahajjud: false, 
     duha: false, 
-    learning: false 
+    learning: false,
+    preFajrDhikr: false,
+    postFajrDhikr: false,
+    postDhuhrDhikr: false,
+    postAsrDhikr: false,
+    postMaghribDhikr: false,
+    postIshaDhikr: false,
+    beforeSleepDhikr: false
   });
 
   if (loading) {
@@ -1333,7 +1317,7 @@ export default function Journey() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-4 md:gap-5">
             {[
               { id: "quran", label: "Quran", icon: Book, desc: "Recitation Plan", theme: "gold" },
-              { id: "dhikr", label: "Dhikr", icon: Star, desc: "Time-based Adhkar", theme: "emerald" },
+              { id: "dhikr", label: "Dhikr", icon: Star, desc: "Time-based Dhikr", theme: "emerald" },
               { id: "tahajjud", label: "Tahajjud", icon: Moon, desc: "Guide & Log", theme: "indigo" },
               { id: "duha", label: "Duha", icon: Sun, desc: "Forenoon Salah", theme: "amber" },
               { id: "learning", label: "Learning", icon: Compass, desc: "Deen Knowledge", theme: "purple" },
@@ -2071,13 +2055,38 @@ export default function Journey() {
                   </div>
 
                   <button 
-                    onClick={() => {
-                      if (viewMode === "me" && !myData.dhikr) toggleItem("extra", "dhikr");
+                    onClick={async () => {
+                      if (viewMode === "me") {
+                        const dhikrKeyToId: Record<string, string> = {
+                          preFajr: "preFajrDhikr",
+                          postFajr: "postFajrDhikr",
+                          postDhuhr: "postDhuhrDhikr",
+                          postAsr: "postAsrDhikr",
+                          postMaghrib: "postMaghribDhikr",
+                          postIsha: "postIshaDhikr",
+                          beforeSleep: "beforeSleepDhikr"
+                        };
+                        const targetId = dhikrKeyToId[activeKey] || "dhikr";
+                        if (!(myData as any)[targetId]) {
+                          await toggleItem("extra", targetId);
+                        }
+                        
+                        // Legacy support / general indicator active highlight
+                        if (activeKey === "postFajr" && !myData.dhikr) {
+                          await toggleItem("extra", "dhikr");
+                        }
+                        if (activeKey === "postMaghrib" && !myData.dhikrEvening) {
+                          await toggleItem("extra", "dhikrEvening");
+                        }
+                        if (!myData.dhikr) {
+                          await toggleItem("extra", "dhikr");
+                        }
+                      }
                       setShowDhikrModal(false);
                     }}
                     className="w-full py-4.5 bg-midnight border-2 border-gold/40 text-gold rounded-[20px] text-[10px] uppercase tracking-widest font-bold hover:bg-gold hover:text-midnight transition-all shadow-xl"
                   >
-                    Mark Daily Dhikr as Done (আজকার সম্পন্ন করেছি)
+                    Mark Daily Dhikr as Done
                   </button>
                 </div>
               </GlassCard>
@@ -2200,7 +2209,7 @@ export default function Journey() {
                         : "bg-gold text-midnight shadow-gold/30"
                     )}
                   >
-                    {myData.tahajjud ? "Mark Tahajjud as Undone (তাহাজ্জুদ সালাত বাতিল করুন)" : "Mark Tahajjud as Done (তাহাজ্জুদ সম্পন্ন করেছি)"}
+                    {myData.tahajjud ? "Mark Tahajjud as Undone" : "Mark Tahajjud as Done"}
                   </button>
                 </div>
               </GlassCard>
@@ -2308,7 +2317,7 @@ export default function Journey() {
                         : "bg-amber-500 text-midnight shadow-amber-500/30"
                     )}
                   >
-                    {myData.duha ? "Mark Duha as Undone (দ্বোহা সালাত বাতিল করুন)" : "Mark Duha as Done (দ্বোহা সালাত সম্পন্ন করেছি)"}
+                    {myData.duha ? "Mark Duha as Undone" : "Mark Duha as Done"}
                   </button>
                 </div>
               </GlassCard>
@@ -2418,7 +2427,7 @@ export default function Journey() {
                           onClick={() => setSelectedLearningTopic(null)}
                           className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gold text-[10px] uppercase tracking-widest font-bold rounded-lg transition-all flex items-center gap-1"
                         >
-                          ← ফিরে যান (Back)
+                          ← Back
                         </button>
                         <span className="text-[10px] text-slate-gray">দ্বীনি শিক্ষা কক্ষ</span>
                       </div>
@@ -2460,7 +2469,7 @@ export default function Journey() {
                         : "bg-purple-500 text-white shadow-purple-500/30"
                     )}
                   >
-                    {myData.learning ? "Mark Learning as Undone (জ্ঞান অর্জন বাতিল করুন)" : "Mark Learning as Done (জ্ঞান অর্জন সম্পন্ন করেছি)"}
+                    {myData.learning ? "Mark Learning as Undone" : "Mark Learning as Done"}
                   </button>
                 </div>
               </GlassCard>

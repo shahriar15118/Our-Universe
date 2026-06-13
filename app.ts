@@ -31,7 +31,7 @@ async function generateContentWithFallback(params: {
   if (!genAI) throw new Error("Gemini API key not configured");
   
   // Place fastest and lowest latency models first ('gemini-3.1-flash-lite' and 'gemini-flash-latest' have minimal/no thinking latency)
-  const modelsToTry = ["gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.5-flash"];
+  const modelsToTry = ["gemini-2.5-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"];
   let lastError = null;
   
   for (const model of modelsToTry) {

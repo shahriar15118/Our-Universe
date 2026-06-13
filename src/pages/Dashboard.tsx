@@ -449,34 +449,34 @@ export default function Dashboard() {
       </header>
 
       {/* Main Counter Hero */}
-      <section className="flex flex-col items-center justify-center py-10 sm:py-16 text-center bg-white/5 backdrop-blur-md rounded-[32px] sm:rounded-[50px] border border-white/10 shadow-2xl relative overflow-hidden mb-8 sm:mb-12 group">
+      <section className="flex flex-col items-center justify-center py-16 text-center bg-white/5 backdrop-blur-md rounded-[40px] sm:rounded-[50px] border border-white/10 shadow-2xl relative overflow-hidden mb-12 group px-6 sm:px-12">
         <div className="absolute inset-0 bg-gradient-to-b from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-30"></div>
         
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-[9px] sm:text-[10px] uppercase tracking-[0.3em] sm:tracking-[0.5em] text-gold mb-6 sm:mb-10 font-bold px-4"
+          className="text-[10px] uppercase tracking-[0.4em] sm:tracking-[0.5em] text-gold mb-12 font-bold px-4"
         >
           Sacred Union Since {couple.weddingDate ? new Date(couple.weddingDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "The Beginning"}
         </motion.div>
         
-        <div className="flex items-baseline gap-1.5 sm:gap-4 md:gap-8 mb-4 flex-wrap justify-center px-4 w-full">
+        <div className="flex items-baseline gap-3 sm:gap-4 md:gap-8 mb-6 flex-wrap justify-center w-full max-w-4xl mx-auto">
           <CounterUnit value={timeTogether.days} label="Days" />
-          <span className="text-xl sm:text-3xl md:text-5xl font-light text-white/5 select-none self-center">:</span>
+          <span className="text-4xl sm:text-6xl md:text-8xl lg:text-[10rem] xl:text-[11.5rem] font-thin text-gold/25 select-none self-center mb-6 sm:mb-10 md:mb-14 leading-none">:</span>
           <CounterUnit value={timeTogether.hours} label="Hours" />
-          <span className="text-xl sm:text-3xl md:text-5xl font-light text-white/5 select-none self-center">:</span>
+          <span className="text-4xl sm:text-6xl md:text-8xl lg:text-[10rem] xl:text-[11.5rem] font-thin text-gold/25 select-none self-center mb-6 sm:mb-10 md:mb-14 leading-none">:</span>
           <CounterUnit value={timeTogether.mins} label="Minutes" />
-          <span className="text-xl sm:text-3xl md:text-5xl font-light text-white/5 select-none self-center">:</span>
+          <span className="text-4xl sm:text-6xl md:text-8xl lg:text-[10rem] xl:text-[11.5rem] font-thin text-gold/25 select-none self-center mb-6 sm:mb-10 md:mb-14 leading-none">:</span>
           <CounterUnit value={timeTogether.secs} label="Seconds" />
         </div>
 
-        <div className="mt-8 sm:mt-16 px-4 sm:px-12 max-w-2xl relative">
-           <div className="w-12 h-px bg-gold/40 mx-auto mb-6 sm:mb-10"></div>
-           <p className="text-lg sm:text-2xl md:text-4xl font-serif italic text-champagne leading-relaxed">
+        <div className="mt-12 sm:mt-16 px-4 sm:px-12 max-w-2xl relative">
+           <div className="w-12 h-px bg-gold/40 mx-auto mb-10"></div>
+           <p className="text-xl sm:text-2xl md:text-4xl font-serif italic text-champagne leading-relaxed">
              "And He placed between you affection and mercy."
            </p>
-           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-gray mt-6 sm:mt-8 font-bold opacity-60">Surah Ar-Rum · 30:21</p>
+           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-gray mt-8 font-bold opacity-60">Surah Ar-Rum · 30:21</p>
            
            <motion.div 
              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
@@ -983,10 +983,10 @@ export default function Dashboard() {
 function CounterUnit({ value, label }: { value: number, label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="text-3xl sm:text-5xl md:text-8xl font-serif text-ivory tracking-tighter drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
+      <span className="text-5xl sm:text-7xl md:text-9xl lg:text-[11.5rem] xl:text-[13rem] font-serif font-semibold bg-gradient-to-b from-white via-champagne to-gold bg-clip-text text-transparent tracking-tighter drop-shadow-[0_10px_30px_rgba(197,160,89,0.3)] leading-none">
         {value.toLocaleString()}
       </span>
-      <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-gold mt-2 font-bold">{label}</span>
+      <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-gold mt-2 font-bold">{label}</span>
     </div>
   );
 }
