@@ -142,10 +142,12 @@ export default function Timeline() {
     setLoading(true);
     try {
       const memoryRef = doc(db, "memories", editingMilestone.id);
+      const textVal = editingMilestone.caption || (editingMilestone as any).note || "";
       await updateDoc(memoryRef, {
         title: editingMilestone.title,
         emotion: editingMilestone.emotion,
-        caption: editingMilestone.caption,
+        caption: textVal,
+        note: textVal,
         date: editingMilestone.date,
         mediaUrl: editingMilestone.mediaUrl || ""
       });
@@ -322,17 +324,22 @@ export default function Timeline() {
                 <div className="w-1.5 h-1.5 bg-gold rounded-full" />
               </div>
 
-              <GlassCard className="hover:bg-white/[0.07] transition-all group p-8 border-white/10 hover:border-gold/20 flex flex-col gap-6 relative">
-                <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+               <GlassCard className="hover:bg-white/[0.07] transition-all group p-8 border-white/10 hover:border-gold/20 flex flex-col gap-6 relative">
+                <div className="absolute top-6 right-6 flex gap-2 z-20">
                   <button 
-                    onClick={() => setEditingMilestone(milestone)}
-                    className="p-2 bg-white/5 border border-white/10 rounded-lg text-gold/60 hover:text-gold hover:bg-gold/10 transition-all"
+                    onClick={() => setEditingMilestone({
+                      ...milestone,
+                      caption: milestone.caption || (milestone as any).note || ""
+                    })}
+                    className="p-2 bg-white/10 border border-white/20 rounded-lg text-gold hover:text-gold hover:bg-gold/20 transition-all shadow-md"
+                    title="Edit Memory"
                   >
                     <Edit2 size={14} />
                   </button>
                   <button 
                     onClick={() => handleDeleteStory(milestone.id)}
-                    className="p-2 bg-white/5 border border-white/10 rounded-lg text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                    className="p-2 bg-white/10 border border-white/20 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-400/20 transition-all shadow-md"
+                    title="Delete Memory"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -361,7 +368,7 @@ export default function Timeline() {
                 )}
 
                 <p className="text-sm text-champagne leading-relaxed font-serif opacity-80">
-                  {milestone.caption}
+                  {milestone.caption || (milestone as any).note || ""}
                 </p>
 
                 {/* Comments Section */}
